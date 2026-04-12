@@ -1,12 +1,15 @@
 import { motion } from 'framer-motion';
 import {
   GraduationCap, Crown, ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
-  Bot, BarChart3, Save, MessageSquare, Library, CheckCircle, Sparkles
+  Bot, BarChart3, Save, MessageSquare, Library, CheckCircle, Sparkles, LogOut
 } from 'lucide-react';
+import type { SupabaseUser } from '../lib/supabase';
 
 interface Props {
   onEnterFree: () => void;
   onEnterPremium: () => void;
+  user?: SupabaseUser | null;
+  onSignOut?: () => void;
 }
 
 const features = [
@@ -28,7 +31,10 @@ const strategies = [
   { icon: Zap, name: 'Conservative', color: '#a855f7', desc: 'Safety buffer for peace of mind' },
 ];
 
-export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
+export default function LandingPage({ onEnterFree, onEnterPremium, user, onSignOut }: Props) {
+  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'Student';
+  const avatarUrl = user?.user_metadata?.avatar_url;
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden">
       {/* Ambient blurs */}
@@ -38,7 +44,7 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
         <div className="absolute top-[40%] right-[30%] w-[300px] h-[300px] bg-cyan-500/[0.02] rounded-full blur-[120px]" />
       </div>
 
-      {/* Minimal header */}
+      {/* Header with user info */}
       <header className="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
@@ -46,6 +52,30 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
           </div>
           <span className="text-lg font-bold tracking-tight">Trackademic</span>
         </div>
+        {user && (
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={displayName} className="w-7 h-7 rounded-full border border-white/10" />
+              ) : (
+                <div className="w-7 h-7 rounded-full bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-[11px] font-bold text-amber-300">
+                  {displayName[0]?.toUpperCase()}
+                </div>
+              )}
+              <span className="text-[12px] text-white/40 hidden sm:block">{displayName}</span>
+            </div>
+            {onSignOut && (
+              <button
+                onClick={onSignOut}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-white/20 hover:text-white/40 hover:bg-white/[0.04] text-[11px] transition-colors cursor-pointer"
+                title="Sign out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Sign out</span>
+              </button>
+            )}
+          </div>
+        )}
       </header>
 
       {/* Hero */}
@@ -57,7 +87,9 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/[0.08] border border-amber-400/15 mb-8">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-[11px] text-amber-300/80 font-medium">Smart grade optimization for students</span>
+            <span className="text-[11px] text-amber-300/80 font-medium">
+              {user ? `Welcome back, ${displayName}!` : 'Smart grade optimization for students'}
+            </span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight">

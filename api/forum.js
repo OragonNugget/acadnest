@@ -1,4 +1,4 @@
-import supabase from './_supabase.js';
+import supabase, { getUserIdFromRequest } from './_supabase.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -7,6 +7,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   try {
+    // Public: anyone can read forum posts
     if (req.method === 'GET') {
       const { data, error } = await supabase
         .from('forum_posts')
@@ -16,6 +17,11 @@ export default async function handler(req, res) {
       if (error) throw error;
       return res.status(200).json(data);
     }
+
+    // Write operations require auth
+    const userId = await getUserIdFromRequest(req);
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
     if (req.method === 'POST') {
       const { author, title, body, category, is_premium_author } = req.body;
       if (!title || !body || !author) {
@@ -25,6 +31,7 @@ export default async function handler(req, res) {
         .from('forum_posts')
         .insert({
           author,
+          author_id: userId,  // store user id for future ownership checks
           title,
           body,
           category: category || 'general',
@@ -39,7 +46,12 @@ export default async function handler(req, res) {
     }
     if (req.method === 'DELETE') {
       const { id } = req.body;
-      const { error } = await supabase.from('forum_posts').delete().eq('id', id);
+      // Only allow deleting own posts
+      const { error } = await supabase
+        .from('forum_posts')
+        .delete()
+        .eq('id', id)
+        .eq('author_id', userId);
       if (error) throw error;
       return res.status(200).json({ ok: true });
     }

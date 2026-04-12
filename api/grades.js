@@ -1,4 +1,4 @@
-import supabase from './_supabase.js';
+import supabase, { getUserIdFromRequest } from './_supabase.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -6,41 +6,36 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(204).end();
 
+  const userId = await getUserIdFromRequest(req);
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
   try {
     if (req.method === 'GET') {
-      const { student_id } = req.query;
-      let query = supabase.from('saved_grades').select('*').order('created_at', { ascending: false });
-      if (student_id) query = query.eq('student_id', student_id);
-      const { data, error } = await query;
+      const { data, error } = await supabase
+        .from('saved_grades')
+        .select('*')
+        .eq('student_id', userId)
+        .order('created_at', { ascending: false });
       if (error) throw error;
       return res.status(200).json(data);
     }
     if (req.method === 'POST') {
-      const { student_id, name, components_snapshot, current_grade } = req.body;
-      if (!name) return res.status(400).json({ error: 'Name is required' });
+      const { name, components_snapshot, current_grade } = req.body;
       const { data, error } = await supabase
         .from('saved_grades')
-        .insert({
-          student_id: student_id || 'default',
-          name,
-          components_snapshot: components_snapshot || [],
-          current_grade: current_grade || 0,
-        })
+        .insert({ student_id: userId, name, components_snapshot, current_grade })
         .select()
         .single();
       if (error) throw error;
       return res.status(201).json(data);
     }
     if (req.method === 'PUT') {
-      const { id, name, components_snapshot, current_grade } = req.body;
-      const updates = {};
-      if (name !== undefined) updates.name = name;
-      if (components_snapshot !== undefined) updates.components_snapshot = components_snapshot;
-      if (current_grade !== undefined) updates.current_grade = current_grade;
+      const { id, components_snapshot, current_grade } = req.body;
       const { data, error } = await supabase
         .from('saved_grades')
-        .update(updates)
+        .update({ components_snapshot, current_grade })
         .eq('id', id)
+        .eq('student_id', userId)
         .select()
         .single();
       if (error) throw error;
@@ -48,7 +43,11 @@ export default async function handler(req, res) {
     }
     if (req.method === 'DELETE') {
       const { id } = req.body;
-      const { error } = await supabase.from('saved_grades').delete().eq('id', id);
+      const { error } = await supabase
+        .from('saved_grades')
+        .delete()
+        .eq('id', id)
+        .eq('student_id', userId);
       if (error) throw error;
       return res.status(200).json({ ok: true });
     }

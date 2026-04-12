@@ -1,4 +1,5 @@
 import { Crown, Sparkles, MessageSquare, Library, LayoutDashboard, LogOut, GraduationCap } from 'lucide-react';
+import type { SupabaseUser } from '../lib/supabase';
 
 interface HeaderProps {
   isPremium: boolean;
@@ -6,15 +7,20 @@ interface HeaderProps {
   currentPage: string;
   onNavigate: (page: string) => void;
   onGoToLanding: () => void;
+  user?: SupabaseUser | null;
+  onSignOut?: () => void;
 }
 
-export default function Header({ isPremium, onTogglePremium, currentPage, onNavigate, onGoToLanding }: HeaderProps) {
+export default function Header({ isPremium, onTogglePremium, currentPage, onNavigate, onGoToLanding, user, onSignOut }: HeaderProps) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'gwa', label: 'GWA', icon: GraduationCap, premiumOnly: true },
     { id: 'forum', label: 'Forum', icon: MessageSquare },
     { id: 'templates', label: 'Templates', icon: Library },
   ];
+
+  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || '';
+  const avatarUrl = user?.user_metadata?.avatar_url;
 
   return (
     <header className="w-full border-b border-white/[0.06] bg-[#0a0a0f]/80 backdrop-blur-xl sticky top-0 z-50">
@@ -74,13 +80,45 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
             {isPremium ? <Crown className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
             <span className="hidden sm:inline">{isPremium ? 'Premium' : 'Upgrade'}</span>
           </button>
-          <button
-            onClick={onGoToLanding}
-            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-white/20 hover:text-white/40 hover:bg-white/[0.03] text-[11px] transition-colors cursor-pointer"
-            title="Back to home"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-          </button>
+
+          {user ? (
+            <div className="flex items-center gap-2">
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={displayName}
+                  className="w-7 h-7 rounded-full border border-white/10 cursor-pointer"
+                  onClick={onGoToLanding}
+                  title={displayName}
+                />
+              ) : (
+                <div
+                  className="w-7 h-7 rounded-full bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-[11px] font-bold text-amber-300 cursor-pointer"
+                  onClick={onGoToLanding}
+                  title={displayName}
+                >
+                  {displayName[0]?.toUpperCase()}
+                </div>
+              )}
+              {onSignOut && (
+                <button
+                  onClick={onSignOut}
+                  className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-white/20 hover:text-red-400/60 hover:bg-red-500/[0.05] text-[11px] transition-colors cursor-pointer"
+                  title="Sign out"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={onGoToLanding}
+              className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-white/20 hover:text-white/40 hover:bg-white/[0.03] text-[11px] transition-colors cursor-pointer"
+              title="Back to home"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
     </header>

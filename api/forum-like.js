@@ -9,7 +9,6 @@ export default async function handler(req, res) {
   try {
     if (req.method === 'POST') {
       const { id } = req.body;
-      // Get current likes
       const { data: post, error: getErr } = await supabase
         .from('forum_posts')
         .select('likes')
