@@ -26,7 +26,7 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
             </div>
             <div className="hidden sm:block">
               <h1 className="text-base font-bold text-white tracking-tight leading-none">Trackademic</h1>
-              <p className="text-[10px] text-white/35">Strategy · Optimizer · Calculator</p>
+              <p className="text-[10px] text-white/35">Plan Smarter · Score Better</p>
             </div>
           </button>
         </div>
