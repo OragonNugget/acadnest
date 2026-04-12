@@ -1,6 +1,6 @@
 {
   "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "https://bwnzztdslfgqenflcupw.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://rwzyjnwsadlpsnppmxrc.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_JhHGkW1o30f2URdWsFAB4Q_2xpHXBjK",
     "SUPABASE_SERVICE_ROLE_KEY": "sb_secret_icHiEhy4naPfasAyLOiUbA_GAUyKqzE",
     "VITE_SUPABASE_URL": "https://bwnzztdslfgqenflcupw.supabase.co",
