@@ -1,4 +1,4 @@
-import { BookOpen, Crown, Sparkles, MessageSquare, Library, LayoutDashboard, LogOut, GraduationCap } from 'lucide-react';
+import { GraduationCap, Crown, Sparkles, MessageSquare, Library, LayoutDashboard, LogOut, GraduationCap } from 'lucide-react';
 
 interface HeaderProps {
   isPremium: boolean;
@@ -22,7 +22,7 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
         <div className="flex items-center gap-3">
           <button onClick={() => onNavigate('dashboard')} className="flex items-center gap-3 cursor-pointer">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
-              <BookOpen className="w-4.5 h-4.5 text-[#0a0a0f]" />
+              <GraduationCap className="w-4.5 h-4.5 text-[#0a0a0f]" />
             </div>
             <div className="hidden sm:block">
               <h1 className="text-base font-bold text-white tracking-tight leading-none">Trackademic</h1>
