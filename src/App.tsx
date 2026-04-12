@@ -21,6 +21,8 @@ import type { Component as GradeComponent, GradeResult, WeakArea } from './lib/c
 import { computeGrades, detectWeakAreas, isTargetPossible } from './lib/calculationEngine';
 import { generateAllStrategies, type Strategy } from './lib/strategyEngine';
 import { generateCoachAnalysis, type CoachAnalysis } from './lib/coachEngine';
+import { generatePrediction, type GradePrediction } from './lib/predictionEngine';
+import PredictionPanel from './components/PredictionPanel';
 
 type AppView = 'landing' | 'app';
 
@@ -100,6 +102,11 @@ export default function App() {
     if (!gradeResult) return null;
     return generateCoachAnalysis(components, gradeResult, weakAreas, strategies, settings.target_grade);
   }, [components, gradeResult, weakAreas, strategies, settings.target_grade]);
+
+  const prediction: GradePrediction | null = useMemo(() => {
+    if (!gradeResult) return null;
+    return generatePrediction(components, gradeResult);
+  }, [components, gradeResult]);
 
   const targetPossible = gradeResult ? isTargetPossible(gradeResult.maxPossibleGrade, settings.target_grade) : true;
 
@@ -466,6 +473,11 @@ export default function App() {
               targetPossible={targetPossible}
               externalSelectedId={selectedStrategyId}
               onExternalSelectedClear={() => setSelectedStrategyId(null)}
+            />
+            <PredictionPanel
+              prediction={prediction}
+              isPremium={settings.is_premium}
+              currentGrade={gradeResult?.currentGrade ?? 0}
             />
             <WeakAreasPanel weakAreas={weakAreas} isPremium={settings.is_premium} />
             <ScenarioSimulator components={components} isPremium={settings.is_premium} />
