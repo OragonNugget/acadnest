@@ -344,7 +344,7 @@ export default function App() {
           className="flex flex-col items-center gap-4"
         >
           <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
-          <p className="text-sm text-white/30">Loading GradeForge...</p>
+          <p className="text-sm text-white/30">Loading Trackademic...</p>
         </motion.div>
       </div>
     );
