@@ -1,4 +1,4 @@
-import { GraduationCap, Crown, Sparkles, MessageSquare, Library, LayoutDashboard, LogOut, GraduationCap } from 'lucide-react';
+import { BookOpen, Crown, Sparkles, MessageSquare, Library, LayoutDashboard, LogOut, GraduationCap } from 'lucide-react';
 
 interface HeaderProps {
   isPremium: boolean;
