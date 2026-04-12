@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import {
-  BookOpen, Crown, ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
+  GraduationCap, Crown, ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
   Bot, BarChart3, Save, MessageSquare, Library, CheckCircle, Sparkles
 } from 'lucide-react';
 
@@ -42,7 +42,7 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
       <header className="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
-            <BookOpen className="w-5 h-5 text-[#0a0a0f]" />
+            <GraduationCap className="w-5 h-5 text-[#0a0a0f]" />
           </div>
           <span className="text-lg font-bold tracking-tight">Trackademic</span>
         </div>
@@ -237,7 +237,7 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-              <BookOpen className="w-3 h-3 text-[#0a0a0f]" />
+              <GraduationCap className="w-3 h-3 text-[#0a0a0f]" />
             </div>
             <span className="text-xs text-white/25">Trackademic</span>
           </div>
