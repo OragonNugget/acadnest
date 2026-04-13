@@ -5,13 +5,12 @@ import {
   Bot, BarChart3, Save, MessageSquare, Library, CheckCircle, Sparkles,
 } from 'lucide-react';
 import { PREMIUM_PRICE, PREMIUM_PRICE_PERIOD } from './PaymentPage';
-import { supabase } from '../lib/supabaseClient';
 
 interface Props {
   onEnterFree: () => void;
   onGoToPayment: () => void;
-  onLoginSuccess: () => void;
 }
+
 
 const features = [
   { icon: BarChart3, title: 'Grade Calculator', desc: 'Weighted averages, component tracking, entry management', free: true },
@@ -32,9 +31,8 @@ const strategies = [
   { icon: Zap, name: 'Conservative', color: '#a855f7', desc: 'Safety buffer for peace of mind' },
 ];
 
-export default function LandingPage({ onEnterFree, onGoToPayment, onLoginSuccess }: Props) {
+export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
   const [showLogin, setShowLogin] = useState(false);
-  const [loginLoading, setLoginLoading] = useState(false);
 
 
   return (
@@ -55,10 +53,9 @@ export default function LandingPage({ onEnterFree, onGoToPayment, onLoginSuccess
           <span className="text-lg font-bold tracking-tight">Trackademic</span>
         </div>
         <button
-          onClick={() => { setShowLogin(true); setLoginError(''); }}
+          onClick={() => setShowLogin(true)}
           className="flex items-center gap-1.5 text-[11px] text-white/30 hover:text-white/60 cursor-pointer transition-colors"
         >
-          <LogIn className="w-3.5 h-3.5" />
           Have an account? Log in
         </button>
       </header>
@@ -102,8 +99,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment, onLoginSuccess
 
                 <button
                   onClick={() => { setShowLogin(false); onEnterFree(); }}
-                  disabled={loginLoading}
-                  className="w-full py-2.5 rounded-lg bg-amber-400/20 border border-amber-400/25 text-sm font-medium text-amber-300 hover:bg-amber-400/30 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full py-2.5 rounded-lg bg-amber-400/20 border border-amber-400/25 text-sm font-medium text-amber-300 hover:bg-amber-400/30 transition-colors cursor-pointer flex items-center justify-center gap-2"
                 >
                   Continue with Google →
                 </button>

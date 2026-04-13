@@ -387,7 +387,6 @@ export default function App() {
       <LandingPage
         onEnterFree={enterApp}
         onGoToPayment={goToPayment}
-        onLoginSuccess={() => setAppView('app')}
       />
     );
   }
