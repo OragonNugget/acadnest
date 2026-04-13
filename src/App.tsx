@@ -162,17 +162,26 @@ export default function App() {
 
   const targetPossible = gradeResult ? isTargetPossible(gradeResult.maxPossibleGrade, settings.target_grade) : true;
 
-  // Google OAuth — redirectTo uses current domain so it works on both Vercel and local
+  // Google OAuth — always show account picker so users can switch accounts
   const enterApp = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin },
+      options: {
+        redirectTo: window.location.origin,
+        queryParams: { prompt: 'select_account' },
+      },
     });
   };
 
   const goToLanding = async () => {
-    await supabase.auth.signOut();
-    sessionStorage.removeItem('gradeforge_view');
+    // Sign out from Supabase
+    await supabase.auth.signOut({ scope: 'local' });
+    // Clear everything from this browser so no account lingers
+    sessionStorage.clear();
+    localStorage.clear();
+    setComponents([]);
+    setSavedGrades([]);
+    setSettings({ target_grade: 80, is_premium: false });
     setAppView('landing');
   };
 
