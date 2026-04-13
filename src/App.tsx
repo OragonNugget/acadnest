@@ -114,11 +114,7 @@ export default function App() {
 
     if (user && session) {
       // Logged in: make sure we're in app view and fetch data
-      if (appView === 'payment') {
-    return <PaymentPage onBack={() => setAppView('landing')} />;
-  }
-
-  if (appView === 'landing') {
+      if (appView === 'landing') {
         sessionStorage.setItem('gradeforge_view', 'app');
         setAppView('app');
       } else {

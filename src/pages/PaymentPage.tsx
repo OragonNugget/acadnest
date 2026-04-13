@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Crown, ArrowLeft, CheckCircle, Zap, Shield, Target, Bot, Save, Lock } from 'lucide-react';
+import { Crown, ArrowLeft, CheckCircle, Lock } from 'lucide-react';
 
 // ─────────────────────────────────────────────
 // EDIT PRICING HERE
