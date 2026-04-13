@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Heart, MessageSquare, Crown, Send, Lock, Plus, X } from 'lucide-react';
+import { supabase, type SupabaseUser } from '../lib/supabase';
 
 interface ForumPost {
   id: number;
@@ -17,6 +18,7 @@ interface ForumPost {
 interface Props {
   onBack: () => void;
   isPremium: boolean;
+  user?: SupabaseUser | null;
 }
 
 const categories = ['general', 'study-tips', 'exam-prep', 'time-management', 'motivation', 'resources'];
@@ -29,7 +31,8 @@ const categoryColors: Record<string, string> = {
   'resources': 'bg-purple-500/10 text-purple-400',
 };
 
-export default function ForumPage({ onBack, isPremium }: Props) {
+export default function ForumPage({ onBack, isPremium, user }: Props) {
+  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || '';
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -37,7 +40,15 @@ export default function ForumPage({ onBack, isPremium }: Props) {
   const [newTitle, setNewTitle] = useState('');
   const [newBody, setNewBody] = useState('');
   const [newCategory, setNewCategory] = useState('general');
-  const [newAuthor, setNewAuthor] = useState('');
+  const [newAuthor, setNewAuthor] = useState(displayName);
+
+  const getAuthHeaders = async (): Promise<Record<string, string>> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    return {
+      'Content-Type': 'application/json',
+      ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+    };
+  };
 
   const fetchPosts = async () => {
     try {
@@ -55,9 +66,10 @@ export default function ForumPage({ onBack, isPremium }: Props) {
 
   const handleCreate = async () => {
     if (!newTitle.trim() || !newBody.trim() || !newAuthor.trim()) return;
+    const headers = await getAuthHeaders();
     await fetch('/api/forum', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
         author: newAuthor.trim(),
         title: newTitle.trim(),
@@ -68,7 +80,7 @@ export default function ForumPage({ onBack, isPremium }: Props) {
     });
     setNewTitle('');
     setNewBody('');
-    setNewAuthor('');
+    setNewAuthor(displayName);
     setShowCreate(false);
     await fetchPosts();
   };

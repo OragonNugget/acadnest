@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Download, User, BookOpen, Search, X, Upload, Lock } from 'lucide-react';
+import { supabase, type SupabaseUser } from '../lib/supabase';
 
 interface CommunityTemplate {
   id: number;
@@ -18,9 +19,11 @@ interface Props {
   onBack: () => void;
   isPremium: boolean;
   onApplyTemplate: (components: { name: string; weight: number }[]) => void;
+  user?: SupabaseUser | null;
 }
 
-export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate }: Props) {
+export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate, user }: Props) {
+  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || '';
   const [templates, setTemplates] = useState<CommunityTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -28,8 +31,16 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
   const [uploadTitle, setUploadTitle] = useState('');
   const [uploadSubject, setUploadSubject] = useState('');
   const [uploadProf, setUploadProf] = useState('');
-  const [uploadAuthor, setUploadAuthor] = useState('');
+  const [uploadAuthor, setUploadAuthor] = useState(displayName);
   const [uploadComponents, setUploadComponents] = useState<{ name: string; weight: string }[]>([{ name: '', weight: '' }]);
+
+  const getAuthHeaders = async (): Promise<Record<string, string>> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    return {
+      'Content-Type': 'application/json',
+      ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+    };
+  };
 
   const fetchTemplates = async () => {
     try {
@@ -63,21 +74,22 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
       .map(c => ({ name: c.name.trim(), weight: parseFloat(c.weight) || 0 }));
     if (comps.length === 0) return;
 
+    const headers = await getAuthHeaders();
     await fetch('/api/templates', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
         title: uploadTitle.trim(),
         subject: uploadSubject.trim(),
         professor: uploadProf.trim(),
         components: comps,
-        author: uploadAuthor.trim() || 'Anonymous',
+        author: uploadAuthor.trim() || displayName || 'Anonymous',
       }),
     });
     setUploadTitle('');
     setUploadSubject('');
     setUploadProf('');
-    setUploadAuthor('');
+    setUploadAuthor(displayName);
     setUploadComponents([{ name: '', weight: '' }]);
     setShowUpload(false);
     await fetchTemplates();

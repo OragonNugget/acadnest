@@ -16,6 +16,7 @@ import ForumPage from './pages/ForumPage';
 import TemplateBrowserPage from './pages/TemplateBrowserPage';
 import GWACalculatorPage from './pages/GWACalculatorPage';
 import LandingPage from './pages/LandingPage';
+import AuthPage from './pages/AuthPage';
 import { Loader2, Trash2 } from 'lucide-react';
 import type { Component as GradeComponent, GradeResult, WeakArea } from './lib/calculationEngine';
 import { computeGrades, detectWeakAreas, isTargetPossible } from './lib/calculationEngine';
@@ -23,14 +24,15 @@ import { generateAllStrategies, type Strategy } from './lib/strategyEngine';
 import { generateCoachAnalysis, type CoachAnalysis } from './lib/coachEngine';
 import { generatePrediction, type GradePrediction } from './lib/predictionEngine';
 import PredictionPanel from './components/PredictionPanel';
+import { supabase, type SupabaseUser } from './lib/supabase';
 
-type AppView = 'landing' | 'app';
+type AppView = 'auth' | 'landing' | 'app';
 
 export default function App() {
-  const [appView, setAppView] = useState<AppView>(() => {
-    const saved = sessionStorage.getItem('gradeforge_view');
-    return (saved === 'app') ? 'app' : 'landing';
-  });
+  const [appView, setAppView] = useState<AppView>('auth');
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
   const [components, setComponents] = useState<GradeComponent[]>([]);
   const [settings, setSettings] = useState<{ target_grade: number; is_premium: boolean }>({ target_grade: 80, is_premium: false });
   const [loading, setLoading] = useState(true);
@@ -41,14 +43,65 @@ export default function App() {
   const [selectedStrategyId, setSelectedStrategyId] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
-  // Fetch all data
+  // ─── Auth initialization ───────────────────────────────────────────────────
+  useEffect(() => {
+    // Check current session on mount (handles OAuth redirect)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user as SupabaseUser);
+        // Restore view: if they had chosen free/premium before, go to landing to choose again
+        const savedView = sessionStorage.getItem('trackademic_view');
+        setAppView(savedView === 'app' ? 'app' : 'landing');
+      } else {
+        setAppView('auth');
+      }
+      setAuthLoading(false);
+    });
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user as SupabaseUser);
+        const savedView = sessionStorage.getItem('trackademic_view');
+        if (savedView !== 'app') setAppView('landing');
+      } else {
+        setUser(null);
+        setAppView('auth');
+        sessionStorage.removeItem('trackademic_view');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    sessionStorage.removeItem('trackademic_view');
+    await supabase.auth.signOut();
+    setAppView('auth');
+    setUser(null);
+  };
+
+  // ─── API helpers (pass user id as student_id) ──────────────────────────────
+  const studentId = user?.id || 'anonymous';
+
+  const authHeaders = useCallback(async (): Promise<Record<string, string>> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    return {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+  }, []);
+
   const fetchData = useCallback(async () => {
+    if (!user) return;
     try {
+      const headers = await authHeaders();
       const [compsRes, entriesRes, settingsRes, gradesRes] = await Promise.all([
-        fetch('/api/components?student_id=default'),
-        fetch('/api/entries'),
-        fetch('/api/settings?student_id=default'),
-        fetch('/api/grades?student_id=default'),
+        fetch(`/api/components?student_id=${studentId}`, { headers }),
+        fetch(`/api/entries?student_id=${studentId}`, { headers }),
+        fetch(`/api/settings?student_id=${studentId}`, { headers }),
+        fetch(`/api/grades?student_id=${studentId}`, { headers }),
       ]);
       const comps = await compsRes.json();
       const entries = await entriesRes.json();
@@ -73,16 +126,17 @@ export default function App() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user, studentId, authHeaders]);
 
   useEffect(() => {
-    if (appView === 'app') {
+    if (appView === 'app' && user) {
       fetchData();
     } else {
       setLoading(false);
     }
-  }, [appView, fetchData]);
+  }, [appView, user, fetchData]);
 
+  // ─── Grade computation (unchanged) ────────────────────────────────────────
   const gradeResult: GradeResult | null = useMemo(() => {
     if (components.length === 0) return null;
     return computeGrades(components);
@@ -110,31 +164,35 @@ export default function App() {
 
   const targetPossible = gradeResult ? isTargetPossible(gradeResult.maxPossibleGrade, settings.target_grade) : true;
 
+  // ─── Navigation helpers ────────────────────────────────────────────────────
   const enterApp = async (premium: boolean) => {
-    sessionStorage.setItem('gradeforge_view', 'app');
+    sessionStorage.setItem('trackademic_view', 'app');
     setAppView('app');
     setLoading(true);
+    const headers = await authHeaders();
     await fetch('/api/settings', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ student_id: 'default', is_premium: premium }),
+      headers,
+      body: JSON.stringify({ student_id: studentId, is_premium: premium }),
     });
     setSettings(s => ({ ...s, is_premium: premium }));
     await fetchData();
   };
 
   const goToLanding = () => {
-    sessionStorage.removeItem('gradeforge_view');
+    sessionStorage.removeItem('trackademic_view');
     setAppView('landing');
   };
 
+  // ─── CRUD operations ───────────────────────────────────────────────────────
   const addComponent = async (name: string, weight: number) => {
     setSaving(true);
+    const headers = await authHeaders();
     try {
       const res = await fetch('/api/components', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ student_id: 'default', name, weight }),
+        headers,
+        body: JSON.stringify({ student_id: studentId, name, weight }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -149,42 +207,34 @@ export default function App() {
 
   const deleteComponent = async (id: number) => {
     setSaving(true);
-    await fetch('/api/components', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
+    const headers = await authHeaders();
+    await fetch('/api/components', { method: 'DELETE', headers, body: JSON.stringify({ id }) });
     await fetchData();
     setSaving(false);
   };
 
   const updateComponent = async (id: number, data: Partial<GradeComponent>) => {
     setSaving(true);
-    await fetch('/api/components', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, ...data }),
-    });
+    const headers = await authHeaders();
+    await fetch('/api/components', { method: 'PUT', headers, body: JSON.stringify({ id, ...data }) });
     await fetchData();
     setSaving(false);
   };
 
   const toggleDone = async (id: number, done: boolean) => {
     setSaving(true);
-    await fetch('/api/components', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, done }),
-    });
+    const headers = await authHeaders();
+    await fetch('/api/components', { method: 'PUT', headers, body: JSON.stringify({ id, done }) });
     await fetchData();
     setSaving(false);
   };
 
   const addEntry = async (componentId: number, score: number, maxScore: number, label: string) => {
     setSaving(true);
+    const headers = await authHeaders();
     await fetch('/api/entries', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ component_id: componentId, score, max_score: maxScore, label }),
     });
     await fetchData();
@@ -193,41 +243,41 @@ export default function App() {
 
   const deleteEntry = async (entryId: number) => {
     setSaving(true);
-    await fetch('/api/entries', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: entryId }),
-    });
+    const headers = await authHeaders();
+    await fetch('/api/entries', { method: 'DELETE', headers, body: JSON.stringify({ id: entryId }) });
     await fetchData();
     setSaving(false);
   };
 
   const updateTarget = async (target: number) => {
     setSettings(s => ({ ...s, target_grade: target }));
+    const headers = await authHeaders();
     await fetch('/api/settings', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ student_id: 'default', target_grade: target }),
+      headers,
+      body: JSON.stringify({ student_id: studentId, target_grade: target }),
     });
   };
 
   const togglePremium = async () => {
     const newPremium = !settings.is_premium;
     setSettings(s => ({ ...s, is_premium: newPremium }));
+    const headers = await authHeaders();
     await fetch('/api/settings', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ student_id: 'default', is_premium: newPremium }),
+      headers,
+      body: JSON.stringify({ student_id: studentId, is_premium: newPremium }),
     });
   };
 
   const clearAllComponents = async () => {
     setSaving(true);
     setShowClearConfirm(false);
+    const headers = await authHeaders();
     await fetch('/api/clear-components', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ student_id: 'default' }),
+      headers,
+      body: JSON.stringify({ student_id: studentId }),
     });
     setActiveGradeId(null);
     await fetchData();
@@ -242,11 +292,12 @@ export default function App() {
       done: c.done,
       entries: c.entries.map(e => ({ score: e.score, max_score: e.max_score, label: e.label })),
     }));
+    const headers = await authHeaders();
     const res = await fetch('/api/grades', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
-        student_id: 'default',
+        student_id: studentId,
         name,
         components_snapshot: snapshot,
         current_grade: gradeResult?.currentGrade ?? 0,
@@ -260,16 +311,17 @@ export default function App() {
 
   const loadGrade = async (grade: SavedGrade) => {
     setSaving(true);
+    const headers = await authHeaders();
     await fetch('/api/clear-components', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ student_id: 'default' }),
+      headers,
+      body: JSON.stringify({ student_id: studentId }),
     });
     const snapshot = grade.components_snapshot as any[];
     await fetch('/api/bulk-create', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ student_id: 'default', components: snapshot }),
+      headers,
+      body: JSON.stringify({ student_id: studentId, components: snapshot }),
     });
     setActiveGradeId(grade.id);
     await fetchData();
@@ -284,9 +336,10 @@ export default function App() {
       done: c.done,
       entries: c.entries.map(e => ({ score: e.score, max_score: e.max_score, label: e.label })),
     }));
+    const headers = await authHeaders();
     await fetch('/api/grades', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ id, components_snapshot: snapshot, current_grade: gradeResult?.currentGrade ?? 0 }),
     });
     await fetchData();
@@ -295,11 +348,8 @@ export default function App() {
 
   const deleteSavedGrade = async (id: number) => {
     setSaving(true);
-    await fetch('/api/grades', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
+    const headers = await authHeaders();
+    await fetch('/api/grades', { method: 'DELETE', headers, body: JSON.stringify({ id }) });
     if (activeGradeId === id) setActiveGradeId(null);
     await fetchData();
     setSaving(false);
@@ -307,16 +357,17 @@ export default function App() {
 
   const applyTemplate = async (templateComponents: { name: string; weight: number }[]) => {
     setSaving(true);
+    const headers = await authHeaders();
     await fetch('/api/clear-components', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ student_id: 'default' }),
+      headers,
+      body: JSON.stringify({ student_id: studentId }),
     });
     await fetch('/api/bulk-create', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
-        student_id: 'default',
+        student_id: studentId,
         components: templateComponents.map(tc => ({ name: tc.name, weight: tc.weight, done: false, entries: [] })),
       }),
     });
@@ -325,16 +376,35 @@ export default function App() {
     setSaving(false);
   };
 
-  // Landing page
+  // ─── Render ────────────────────────────────────────────────────────────────
+
+  // Checking auth session
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+        <Loader2 className="w-7 h-7 text-amber-400 animate-spin" />
+      </div>
+    );
+  }
+
+  // Not signed in → show auth page
+  if (appView === 'auth' || !user) {
+    return <AuthPage onAuthSuccess={() => setAppView('landing')} />;
+  }
+
+  // Signed in but haven't picked plan → show landing
   if (appView === 'landing') {
     return (
       <LandingPage
         onEnterFree={() => enterApp(false)}
         onEnterPremium={() => enterApp(true)}
+        user={user}
+        onSignOut={handleSignOut}
       />
     );
   }
 
+  // Loading app data
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
@@ -352,10 +422,10 @@ export default function App() {
 
   // Page routing
   if (currentPage === 'forum') {
-    return <ForumPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} />;
+    return <ForumPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} user={user} />;
   }
   if (currentPage === 'templates') {
-    return <TemplateBrowserPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} onApplyTemplate={applyTemplate} />;
+    return <TemplateBrowserPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} onApplyTemplate={applyTemplate} user={user} />;
   }
   if (currentPage === 'gwa') {
     return <GWACalculatorPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} savedGrades={savedGrades} />;
@@ -376,6 +446,8 @@ export default function App() {
         currentPage={currentPage}
         onNavigate={setCurrentPage}
         onGoToLanding={goToLanding}
+        user={user}
+        onSignOut={handleSignOut}
       />
 
       <main className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6">
