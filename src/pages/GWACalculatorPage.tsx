@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, Plus, Trash2, Save, X, BookMarked,
@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import type { SavedGrade } from '../components/SavedGradesSidebar';
 import { percentToGPA, formatGPA, gpaToColor, calculateGWA, GPA_TABLE } from '../lib/gpaScale';
+import { useAuth } from '../hooks/useAuth';
 
 interface GWACourse {
   id: string;
@@ -36,6 +37,7 @@ let idCounter = 0;
 function genId() { return `gwa-${++idCounter}-${Date.now()}`; }
 
 export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Props) {
+  const { session } = useAuth();
   const [courses, setCourses] = useState<GWACourse[]>([]);
   const [records, setRecords] = useState<GWARecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,9 +48,18 @@ export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Pr
   const [showImport, setShowImport] = useState(false);
   const [showScaleRef, setShowScaleRef] = useState(false);
 
-  const fetchRecords = async () => {
+  const authHeaders = useCallback((): Record<string, string> => ({
+    'Content-Type': 'application/json',
+    ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+  }), [session]);
+
+  const fetchRecords = useCallback(async () => {
     try {
-      const res = await fetch('/api/gwa?student_id=default');
+      const res = await fetch('/api/gwa', { headers: authHeaders() });
+      if (!res.ok) {
+        console.error('Fetch GWA records failed:', res.status, await res.json().catch(() => ({})));
+        return;
+      }
       const data = await res.json();
       setRecords(data || []);
     } catch (err) {
@@ -56,9 +67,9 @@ export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Pr
     } finally {
       setLoading(false);
     }
-  };
+  }, [authHeaders]);
 
-  useEffect(() => { fetchRecords(); }, []);
+  useEffect(() => { if (session) fetchRecords(); }, [session, fetchRecords]);
 
   const gwa = useMemo(() => {
     const valid = courses.filter(c => c.units > 0);
@@ -128,17 +139,19 @@ export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Pr
   const handleSave = async () => {
     if (!saveName.trim()) return;
     setSaving(true);
-    await fetch('/api/gwa', {
+    const res = await fetch('/api/gwa', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify({
-        student_id: 'default',
         name: saveName.trim(),
         semester: saveSemester.trim(),
         courses: courses.map(c => ({ name: c.name, units: c.units, gradePercent: c.gradePercent, gpa: c.gpa })),
         gwa,
       }),
     });
+    if (!res.ok) {
+      console.error('Save GWA failed:', res.status, await res.json().catch(() => ({})));
+    }
     setSaveName('');
     setSaveSemester('');
     setShowSave(false);
@@ -160,11 +173,14 @@ export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Pr
 
   const deleteRecord = async (id: number) => {
     setSaving(true);
-    await fetch('/api/gwa', {
+    const res = await fetch('/api/gwa', {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify({ id }),
     });
+    if (!res.ok) {
+      console.error('Delete GWA failed:', res.status, await res.json().catch(() => ({})));
+    }
     await fetchRecords();
     setSaving(false);
   };
