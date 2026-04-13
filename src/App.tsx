@@ -52,10 +52,7 @@ export default function App() {
   const fetchData = useCallback(async () => {
     try {
       const [compsRes, entriesRes, settingsRes, gradesRes] = await Promise.all([
-        fetch('/api/components?student_id=default'),
         fetch('/api/entries'),
-        fetch('/api/settings?student_id=default'),
-        fetch('/api/grades?student_id=default'),
       ]);
       const comps = await compsRes.json();
       const entries = await entriesRes.json();
@@ -144,7 +141,7 @@ useEffect(() => {
       const res = await fetch('/api/components', {
         method: 'POST',
         fetch('/api/components', { headers: authHeaders() }),
-        body: JSON.stringify({ student_id: 'default', name, weight }),
+        body: JSON.stringify({ name, weight }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -217,7 +214,7 @@ useEffect(() => {
     await fetch('/api/settings', {
       method: 'PUT',
       fetch('/api/components', { headers: authHeaders() }),
-      body: JSON.stringify({ student_id: 'default', target_grade: target }),
+      body: JSON.stringify({ target_grade: target }),
     });
   };
 
@@ -227,7 +224,7 @@ useEffect(() => {
     await fetch('/api/settings', {
       method: 'PUT',
       fetch('/api/components', { headers: authHeaders() }),
-      body: JSON.stringify({ student_id: 'default', is_premium: newPremium }),
+      body: JSON.stringify({ is_premium: newPremium }),
     });
   };
 
@@ -237,7 +234,6 @@ useEffect(() => {
     await fetch('/api/clear-components', {
       method: 'POST',
       fetch('/api/components', { headers: authHeaders() }),
-      body: JSON.stringify({ student_id: 'default' }),
     });
     setActiveGradeId(null);
     await fetchData();
@@ -256,7 +252,6 @@ useEffect(() => {
       method: 'POST',
       fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({
-        student_id: 'default',
         name,
         components_snapshot: snapshot,
         current_grade: gradeResult?.currentGrade ?? 0,
@@ -273,13 +268,12 @@ useEffect(() => {
     await fetch('/api/clear-components', {
       method: 'POST',
       fetch('/api/components', { headers: authHeaders() }),
-      body: JSON.stringify({ student_id: 'default' }),
     });
     const snapshot = grade.components_snapshot as any[];
     await fetch('/api/bulk-create', {
       method: 'POST',
       fetch('/api/components', { headers: authHeaders() }),
-      body: JSON.stringify({ student_id: 'default', components: snapshot }),
+      body: JSON.stringify({ components: snapshot }),
     });
     setActiveGradeId(grade.id);
     await fetchData();
@@ -320,13 +314,12 @@ useEffect(() => {
     await fetch('/api/clear-components', {
       method: 'POST',
       fetch('/api/components', { headers: authHeaders() }),
-      body: JSON.stringify({ student_id: 'default' }),
     });
     await fetch('/api/bulk-create', {
       method: 'POST',
       fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({
-        student_id: 'default',
+    
         components: templateComponents.map(tc => ({ name: tc.name, weight: tc.weight, done: false, entries: [] })),
       }),
     });
