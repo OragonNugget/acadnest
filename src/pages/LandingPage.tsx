@@ -1,12 +1,17 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   GraduationCap, Crown, ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
-  Bot, BarChart3, Save, MessageSquare, Library, CheckCircle, Sparkles
+  Bot, BarChart3, Save, MessageSquare, Library, CheckCircle, Sparkles,
+  Loader2, Eye, EyeOff, LogIn,
 } from 'lucide-react';
+import { PREMIUM_PRICE, PREMIUM_PRICE_PERIOD } from './PaymentPage';
+import { supabase } from '../lib/supabaseClient';
 
 interface Props {
   onEnterFree: () => void;
-  onEnterPremium: () => void;
+  onGoToPayment: () => void;
+  onLoginSuccess: () => void;
 }
 
 const features = [
@@ -28,7 +33,30 @@ const strategies = [
   { icon: Zap, name: 'Conservative', color: '#a855f7', desc: 'Safety buffer for peace of mind' },
 ];
 
-export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
+export default function LandingPage({ onEnterFree, onGoToPayment, onLoginSuccess }: Props) {
+  const [showLogin, setShowLogin] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    setLoginLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: loginEmail.trim(),
+      password: loginPassword,
+    });
+    if (error) {
+      setLoginError(error.message);
+      setLoginLoading(false);
+      return;
+    }
+    onLoginSuccess();
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden">
       {/* Ambient blurs */}
@@ -38,7 +66,7 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
         <div className="absolute top-[40%] right-[30%] w-[300px] h-[300px] bg-cyan-500/[0.02] rounded-full blur-[120px]" />
       </div>
 
-      {/* Minimal header */}
+      {/* Header */}
       <header className="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
@@ -46,15 +74,124 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
           </div>
           <span className="text-lg font-bold tracking-tight">Trackademic</span>
         </div>
+        <button
+          onClick={() => { setShowLogin(true); setLoginError(''); }}
+          className="flex items-center gap-1.5 text-[11px] text-white/30 hover:text-white/60 cursor-pointer transition-colors"
+        >
+          <LogIn className="w-3.5 h-3.5" />
+          Have an account? Log in
+        </button>
       </header>
+
+      {/* Login modal */}
+      <AnimatePresence>
+        {showLogin && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              onClick={() => setShowLogin(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 16 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-50 flex items-center justify-center px-4 pointer-events-none"
+            >
+              <div
+                className="w-full max-w-sm rounded-2xl bg-[#111118] border border-white/[0.1] p-7 shadow-2xl shadow-black/60 pointer-events-auto relative"
+                onClick={e => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setShowLogin(false)}
+                  className="absolute top-4 right-4 text-white/20 hover:text-white/50 cursor-pointer text-xs"
+                >✕</button>
+
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                    <GraduationCap className="w-4 h-4 text-[#0a0a0f]" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-white">Welcome back</h2>
+                    <p className="text-[10px] text-white/30">Log in with your email & password</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleLogin} className="space-y-3">
+                  <div>
+                    <label className="text-[10px] text-white/30 block mb-1">Email</label>
+                    <input
+                      type="email"
+                      value={loginEmail}
+                      onChange={e => setLoginEmail(e.target.value)}
+                      placeholder="you@email.com"
+                      required
+                      disabled={loginLoading}
+                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40 disabled:opacity-50"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-white/30 block mb-1">Password</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={loginPassword}
+                        onChange={e => setLoginPassword(e.target.value)}
+                        placeholder="••••••••"
+                        required
+                        disabled={loginLoading}
+                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2.5 pr-10 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40 disabled:opacity-50"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(v => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/50 cursor-pointer"
+                      >
+                        {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {loginError && (
+                    <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                      {loginError}
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loginLoading || !loginEmail || !loginPassword}
+                    className="w-full py-2.5 rounded-lg bg-amber-400/20 border border-amber-400/25 text-sm font-medium text-amber-300 hover:bg-amber-400/30 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-1"
+                  >
+                    {loginLoading
+                      ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Logging in...</>
+                      : <><LogIn className="w-3.5 h-3.5" /> Log In</>
+                    }
+                  </button>
+                </form>
+
+                <div className="mt-4 pt-4 border-t border-white/[0.06] text-center">
+                  <p className="text-[10px] text-white/20 mb-2">Or sign in with Google</p>
+                  <button
+                    onClick={() => { setShowLogin(false); onEnterFree(); }}
+                    disabled={loginLoading}
+                    className="text-[11px] text-white/30 hover:text-white/60 cursor-pointer transition-colors"
+                  >
+                    Continue with Google →
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Hero */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 pt-16 pb-24 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/[0.08] border border-amber-400/15 mb-8">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
             <span className="text-[11px] text-amber-300/80 font-medium">Smart grade optimization for students</span>
@@ -100,7 +237,7 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
 
             {/* Premium card */}
             <motion.button
-              onClick={onEnterPremium}
+              onClick={onGoToPayment}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="flex-1 rounded-2xl bg-gradient-to-br from-amber-400/[0.08] to-orange-500/[0.04] border border-amber-400/20 p-6 text-left cursor-pointer transition-colors hover:border-amber-400/35 group relative overflow-hidden"
@@ -112,7 +249,11 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
                     <Crown className="w-4 h-4 text-amber-400" />
                     <span className="text-xs font-semibold text-amber-300/80 uppercase tracking-wider">Premium</span>
                   </div>
-                  <span className="text-xl font-bold text-amber-300">Pro</span>
+                  {/* Edit price in PaymentPage.tsx → PREMIUM_PRICE / PREMIUM_PRICE_PERIOD */}
+                  <div className="text-right">
+                    <span className="text-xl font-bold text-amber-300">{PREMIUM_PRICE}</span>
+                    <span className="text-[10px] text-amber-300/40 ml-1">{PREMIUM_PRICE_PERIOD}</span>
+                  </div>
                 </div>
                 <ul className="space-y-2 mb-5">
                   {['Everything in Free', 'AI Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Edit & toggle done', 'Scenario simulator', 'Save/load templates', 'Create forum posts', 'No ads'].map(f => (
@@ -122,7 +263,7 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
                   ))}
                 </ul>
                 <div className="flex items-center gap-2 text-sm font-medium text-amber-300 group-hover:text-amber-200 transition-colors">
-                  Enter Premium <ArrowRight className="w-4 h-4" />
+                  Get Premium <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
             </motion.button>
@@ -132,28 +273,15 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
 
       {/* Strategy showcase */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">5 Strategies. One Goal.</h2>
           <p className="text-sm text-white/30">Each one is mathematically grounded — no guesswork.</p>
         </motion.div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {strategies.map((s, i) => {
             const Icon = s.icon;
             return (
-              <motion.div
-                key={s.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-4 hover:border-white/[0.1] transition-colors"
-              >
+              <motion.div key={s.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-4 hover:border-white/[0.1] transition-colors">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-3" style={{ backgroundColor: `${s.color}15` }}>
                   <Icon className="w-4 h-4" style={{ color: s.color }} />
                 </div>
@@ -167,36 +295,22 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
 
       {/* Features grid */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Everything You Need</h2>
           <p className="text-sm text-white/30">Free gets you started. Premium gets you there.</p>
         </motion.div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {features.map((f, i) => {
             const Icon = f.icon;
             return (
-              <motion.div
-                key={f.title}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-4 hover:border-white/[0.1] transition-colors"
-              >
+              <motion.div key={f.title} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-4 hover:border-white/[0.1] transition-colors">
                 <div className="flex items-center gap-2 mb-2">
                   <Icon className="w-4 h-4 text-white/30" />
                   <h3 className="text-xs font-semibold text-white/60">{f.title}</h3>
-                  {f.free ? (
-                    <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-white/[0.06] text-white/30 ml-auto">Free</span>
-                  ) : (
-                    <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-amber-400/10 text-amber-400/60 ml-auto">Pro</span>
-                  )}
+                  {f.free
+                    ? <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-white/[0.06] text-white/30 ml-auto">Free</span>
+                    : <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-amber-400/10 text-amber-400/60 ml-auto">Pro</span>
+                  }
                 </div>
                 <p className="text-[10px] text-white/20 leading-relaxed">{f.desc}</p>
               </motion.div>
@@ -207,25 +321,14 @@ export default function LandingPage({ onEnterFree, onEnterPremium }: Props) {
 
       {/* Bottom CTA */}
       <section className="relative z-10 max-w-3xl mx-auto px-6 py-20 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="rounded-2xl bg-gradient-to-br from-amber-400/[0.06] to-orange-500/[0.03] border border-amber-400/15 p-10"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-2xl bg-gradient-to-br from-amber-400/[0.06] to-orange-500/[0.03] border border-amber-400/15 p-10">
           <h2 className="text-2xl font-bold mb-3">Ready to forge better grades?</h2>
           <p className="text-sm text-white/30 mb-8">Join thousands of students who stopped guessing and started strategizing.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              onClick={onEnterFree}
-              className="px-6 py-3 rounded-xl bg-white/[0.06] border border-white/[0.1] text-sm font-medium text-white/60 hover:bg-white/[0.1] hover:text-white/80 transition-colors cursor-pointer"
-            >
+            <button onClick={onEnterFree} className="px-6 py-3 rounded-xl bg-white/[0.06] border border-white/[0.1] text-sm font-medium text-white/60 hover:bg-white/[0.1] hover:text-white/80 transition-colors cursor-pointer">
               Start Free
             </button>
-            <button
-              onClick={onEnterPremium}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400/25 to-orange-500/20 border border-amber-400/25 text-sm font-medium text-amber-300 hover:from-amber-400/35 hover:to-orange-500/30 transition-all cursor-pointer flex items-center gap-2 justify-center"
-            >
+            <button onClick={onGoToPayment} className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400/25 to-orange-500/20 border border-amber-400/25 text-sm font-medium text-amber-300 hover:from-amber-400/35 hover:to-orange-500/30 transition-all cursor-pointer flex items-center gap-2 justify-center">
               <Crown className="w-4 h-4" /> Go Premium
             </button>
           </div>

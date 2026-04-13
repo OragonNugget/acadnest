@@ -1,4 +1,4 @@
-import supabase from './_supabase.js';
+import { getUserClient, getAuthUser } from './_supabase.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -6,41 +6,43 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(204).end();
 
+  const { user, error: authError } = await getAuthUser(req.headers.authorization);
+  if (authError) return res.status(401).json({ error: authError });
+  const db = getUserClient(req.headers.authorization);
+
   try {
     if (req.method === 'GET') {
-      const { student_id } = req.query;
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from('user_settings')
         .select('*')
-        .eq('student_id', student_id || 'default')
+        .eq('user_id', user.id)
         .maybeSingle();
       if (error) throw error;
-      return res.status(200).json(data || { student_id: 'default', target_grade: 80, is_premium: false });
+      return res.status(200).json(data || { user_id: user.id, target_grade: 80, is_premium: false });
     }
     if (req.method === 'POST' || req.method === 'PUT') {
-      const { student_id, target_grade, is_premium } = req.body;
-      const sid = student_id || 'default';
-      const { data: existing } = await supabase
+      const { target_grade, is_premium } = req.body;
+      const { data: existing } = await db
         .from('user_settings')
         .select('id')
-        .eq('student_id', sid)
+        .eq('user_id', user.id)
         .maybeSingle();
       if (existing) {
         const updates = {};
         if (target_grade !== undefined) updates.target_grade = target_grade;
         if (is_premium !== undefined) updates.is_premium = is_premium;
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from('user_settings')
           .update(updates)
-          .eq('student_id', sid)
+          .eq('user_id', user.id)
           .select()
           .single();
         if (error) throw error;
         return res.status(200).json(data);
       } else {
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from('user_settings')
-          .insert({ student_id: sid, target_grade: target_grade || 80, is_premium: is_premium || false })
+          .insert({ user_id: user.id, target_grade: target_grade || 80, is_premium: is_premium || false })
           .select()
           .single();
         if (error) throw error;

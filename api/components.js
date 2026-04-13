@@ -1,4 +1,4 @@
-import supabase from './_supabase.js';
+import { getUserClient, getAuthUser } from './_supabase.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -6,20 +6,25 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(204).end();
 
+  const { user, error: authError } = await getAuthUser(req.headers.authorization);
+  if (authError) return res.status(401).json({ error: authError });
+  const db = getUserClient(req.headers.authorization);
+
   try {
     if (req.method === 'GET') {
-      const { student_id } = req.query;
-      let query = supabase.from('grade_components').select('*').order('created_at', { ascending: true });
-      if (student_id) query = query.eq('student_id', student_id);
-      const { data, error } = await query;
+      const { data, error } = await db
+        .from('grade_components')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true });
       if (error) throw error;
       return res.status(200).json(data);
     }
     if (req.method === 'POST') {
-      const { student_id, name, weight, done } = req.body;
-      const { data, error } = await supabase
+      const { name, weight, done } = req.body;
+      const { data, error } = await db
         .from('grade_components')
-        .insert({ student_id: student_id || 'default', name, weight: weight || 0, done: done || false })
+        .insert({ user_id: user.id, name, weight: weight || 0, done: done || false })
         .select()
         .single();
       if (error) throw error;
@@ -31,10 +36,11 @@ export default async function handler(req, res) {
       if (name !== undefined) updates.name = name;
       if (weight !== undefined) updates.weight = weight;
       if (done !== undefined) updates.done = done;
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from('grade_components')
         .update(updates)
         .eq('id', id)
+        .eq('user_id', user.id)
         .select()
         .single();
       if (error) throw error;
@@ -42,8 +48,8 @@ export default async function handler(req, res) {
     }
     if (req.method === 'DELETE') {
       const { id } = req.body;
-      await supabase.from('grade_entries').delete().eq('component_id', id);
-      const { error } = await supabase.from('grade_components').delete().eq('id', id);
+      await db.from('grade_entries').delete().eq('component_id', id).eq('user_id', user.id);
+      const { error } = await db.from('grade_components').delete().eq('id', id).eq('user_id', user.id);
       if (error) throw error;
       return res.status(200).json({ ok: true });
     }

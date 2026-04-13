@@ -63,17 +63,20 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
         </nav>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={onTogglePremium}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all duration-300 cursor-pointer ${
-              isPremium
-                ? 'bg-gradient-to-r from-amber-400/20 to-orange-500/20 text-amber-300 border border-amber-400/30 shadow-lg shadow-amber-500/10'
-                : 'bg-white/[0.04] text-white/50 border border-white/[0.08] hover:bg-white/[0.08] hover:text-white/70'
-            }`}
-          >
-            {isPremium ? <Crown className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
-            <span className="hidden sm:inline">{isPremium ? 'Premium' : 'Upgrade'}</span>
-          </button>
+          {isPremium ? (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-gradient-to-r from-amber-400/20 to-orange-500/20 text-amber-300 border border-amber-400/30 shadow-lg shadow-amber-500/10">
+              <Crown className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Premium</span>
+            </div>
+          ) : (
+            <button
+              onClick={onTogglePremium}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-white/[0.04] text-white/50 border border-white/[0.08] hover:bg-white/[0.08] hover:text-white/70 transition-all duration-300 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Upgrade</span>
+            </button>
+          )}
           <button
             onClick={onGoToLanding}
             className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-white/20 hover:text-white/40 hover:bg-white/[0.03] text-[11px] transition-colors cursor-pointer"
