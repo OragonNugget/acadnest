@@ -24,7 +24,8 @@ export default async function handler(req, res) {
       const { data, error } = await db
         .from('grade_entries')
         .insert({ user_id: user.id, component_id, score, max_score, label: label || '' })
-        .select().single();
+        .select()
+        .single();
       if (error) throw error;
       return res.status(201).json(data);
     }
@@ -39,7 +40,8 @@ export default async function handler(req, res) {
         .update(updates)
         .eq('id', id)
         .eq('user_id', user.id)
-        .select().single();
+        .select()
+        .single();
       if (error) throw error;
       return res.status(200).json(data);
     }
@@ -51,6 +53,7 @@ export default async function handler(req, res) {
     }
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
+    console.error('API error:', err);
     res.status(500).json({ error: err.message });
   }
 }

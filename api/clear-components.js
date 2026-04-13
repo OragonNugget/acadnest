@@ -12,7 +12,11 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'POST') {
-      const { data: comps } = await db.from('grade_components').select('id').eq('user_id', user.id);
+      const { data: comps } = await db
+        .from('grade_components')
+        .select('id')
+        .eq('user_id', user.id);
+
       if (comps?.length) {
         await db.from('grade_entries').delete().in('component_id', comps.map(c => c.id)).eq('user_id', user.id);
         await db.from('grade_components').delete().eq('user_id', user.id);
@@ -21,6 +25,7 @@ export default async function handler(req, res) {
     }
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
+    console.error('API error:', err);
     res.status(500).json({ error: err.message });
   }
 }

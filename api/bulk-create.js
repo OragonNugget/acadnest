@@ -20,7 +20,8 @@ export default async function handler(req, res) {
         const { data: newComp, error: compErr } = await db
           .from('grade_components')
           .insert({ user_id: user.id, name: comp.name, weight: comp.weight || 0, done: comp.done || false })
-          .select().single();
+          .select()
+          .single();
         if (compErr) throw compErr;
 
         if (comp.entries?.length > 0) {
@@ -40,6 +41,7 @@ export default async function handler(req, res) {
     }
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
+    console.error('API error:', err);
     res.status(500).json({ error: err.message });
   }
 }
