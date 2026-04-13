@@ -23,12 +23,19 @@ import { generateAllStrategies, type Strategy } from './lib/strategyEngine';
 import { generateCoachAnalysis, type CoachAnalysis } from './lib/coachEngine';
 import { generatePrediction, type GradePrediction } from './lib/predictionEngine';
 import PredictionPanel from './components/PredictionPanel';
+import { supabase } from './lib/supabaseClient';
+import { useAuth } from './hooks/useAuth';
 
 type AppView = 'landing' | 'app';
 
 export default function App() {
+  const { user, session, loading: authLoading } = useAuth();
   const [appView, setAppView] = useState<AppView>(() => {
     const saved = sessionStorage.getItem('gradeforge_view');
+    const authHeaders = () => ({
+  'Content-Type': 'application/json',
+  ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+});
     return (saved === 'app') ? 'app' : 'landing';
   });
   const [components, setComponents] = useState<GradeComponent[]>([]);
@@ -110,19 +117,22 @@ export default function App() {
 
   const targetPossible = gradeResult ? isTargetPossible(gradeResult.maxPossibleGrade, settings.target_grade) : true;
 
-  const enterApp = async (premium: boolean) => {
+const enterApp = async (premium: boolean) => {
+  // Trigger Google OAuth; Supabase redirects back and session is restored
+  await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin },
+  });
+  // After redirect the onAuthStateChange listener picks up the session
+  // and we transition to 'app' view from there
+};
+useEffect(() => {
+  if (!authLoading && user && appView === 'landing') {
     sessionStorage.setItem('gradeforge_view', 'app');
     setAppView('app');
-    setLoading(true);
-    await fetch('/api/settings', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ student_id: 'default', is_premium: premium }),
-    });
-    setSettings(s => ({ ...s, is_premium: premium }));
-    await fetchData();
-  };
-
+  }
+}, [authLoading, user, appView]);
+  
   const goToLanding = () => {
     sessionStorage.removeItem('gradeforge_view');
     setAppView('landing');
@@ -133,7 +143,7 @@ export default function App() {
     try {
       const res = await fetch('/api/components', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        fetch('/api/components', { headers: authHeaders() }),
         body: JSON.stringify({ student_id: 'default', name, weight }),
       });
       if (!res.ok) {
@@ -151,7 +161,7 @@ export default function App() {
     setSaving(true);
     await fetch('/api/components', {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ id }),
     });
     await fetchData();
@@ -162,7 +172,7 @@ export default function App() {
     setSaving(true);
     await fetch('/api/components', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ id, ...data }),
     });
     await fetchData();
@@ -173,7 +183,7 @@ export default function App() {
     setSaving(true);
     await fetch('/api/components', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ id, done }),
     });
     await fetchData();
@@ -184,7 +194,7 @@ export default function App() {
     setSaving(true);
     await fetch('/api/entries', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ component_id: componentId, score, max_score: maxScore, label }),
     });
     await fetchData();
@@ -195,7 +205,7 @@ export default function App() {
     setSaving(true);
     await fetch('/api/entries', {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ id: entryId }),
     });
     await fetchData();
@@ -206,7 +216,7 @@ export default function App() {
     setSettings(s => ({ ...s, target_grade: target }));
     await fetch('/api/settings', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ student_id: 'default', target_grade: target }),
     });
   };
@@ -216,7 +226,7 @@ export default function App() {
     setSettings(s => ({ ...s, is_premium: newPremium }));
     await fetch('/api/settings', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ student_id: 'default', is_premium: newPremium }),
     });
   };
@@ -226,7 +236,7 @@ export default function App() {
     setShowClearConfirm(false);
     await fetch('/api/clear-components', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ student_id: 'default' }),
     });
     setActiveGradeId(null);
@@ -244,7 +254,7 @@ export default function App() {
     }));
     const res = await fetch('/api/grades', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({
         student_id: 'default',
         name,
@@ -262,13 +272,13 @@ export default function App() {
     setSaving(true);
     await fetch('/api/clear-components', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ student_id: 'default' }),
     });
     const snapshot = grade.components_snapshot as any[];
     await fetch('/api/bulk-create', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ student_id: 'default', components: snapshot }),
     });
     setActiveGradeId(grade.id);
@@ -286,7 +296,7 @@ export default function App() {
     }));
     await fetch('/api/grades', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ id, components_snapshot: snapshot, current_grade: gradeResult?.currentGrade ?? 0 }),
     });
     await fetchData();
@@ -297,7 +307,7 @@ export default function App() {
     setSaving(true);
     await fetch('/api/grades', {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ id }),
     });
     if (activeGradeId === id) setActiveGradeId(null);
@@ -309,12 +319,12 @@ export default function App() {
     setSaving(true);
     await fetch('/api/clear-components', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({ student_id: 'default' }),
     });
     await fetch('/api/bulk-create', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      fetch('/api/components', { headers: authHeaders() }),
       body: JSON.stringify({
         student_id: 'default',
         components: templateComponents.map(tc => ({ name: tc.name, weight: tc.weight, done: false, entries: [] })),
@@ -335,7 +345,7 @@ export default function App() {
     );
   }
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
         <motion.div
