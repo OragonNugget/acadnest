@@ -1,11 +1,15 @@
-import supabase from './_supabase.js';
+import { getUserClient, getAuthUser } from './_supabase.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(204).end();
+const { user, error: authError } = await getAuthUser(req.headers.authorization);
+if (authError) return res.status(401).json({ error: authError });
 
+const db = getUserClient(req.headers.authorization);
+  
   try {
     if (req.method === 'GET') {
       const { student_id } = req.query;
