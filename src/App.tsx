@@ -44,6 +44,7 @@ export default function App() {
   const [activeGradeId, setActiveGradeId] = useState<number | null>(null);
   const [selectedStrategyId, setSelectedStrategyId] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   // Build auth headers from the live session token
   const authHeaders = useCallback((): Record<string, string> => ({
@@ -61,24 +62,44 @@ export default function App() {
         fetch('/api/settings', { headers: h }),
         fetch('/api/grades', { headers: h }),
       ]);
+      // Surface API errors visibly instead of silently failing
+      if (!compsRes.ok) {
+        const e = await compsRes.json().catch(() => ({}));
+        const msg = `GET /api/components ${compsRes.status}: ${e.error || JSON.stringify(e)}`;
+        console.error(msg);
+        setApiError(msg);
+        setLoading(false);
+        setSaving(false);
+        return;
+      }
       const comps = await compsRes.json();
       const entries = await entriesRes.json();
       const settingsData = await settingsRes.json();
       const gradesData = await gradesRes.json();
 
-      const merged = (comps || []).map((c: any) => ({
+      // Guard: API returns {error:...} objects on auth failure — don't .map() them
+      const compsArray = Array.isArray(comps) ? comps : [];
+      const entriesArray = Array.isArray(entries) ? entries : [];
+      const gradesArray = Array.isArray(gradesData) ? gradesData : [];
+
+      if (!Array.isArray(comps)) {
+        console.error('GET /api/components returned non-array:', comps);
+        setApiError(`GET /api/components failed: ${comps?.error || JSON.stringify(comps)}`);
+      }
+
+      const merged = compsArray.map((c: any) => ({
         ...c,
-        entries: (entries || []).filter((e: any) => e.component_id === c.id),
+        entries: entriesArray.filter((e: any) => e.component_id === c.id),
       }));
 
       setComponents(merged);
-      if (settingsData) {
+      if (settingsData && !settingsData.error) {
         setSettings({
           target_grade: settingsData.target_grade ?? 80,
           is_premium: settingsData.is_premium ?? false,
         });
       }
-      setSavedGrades(gradesData || []);
+      setSavedGrades(gradesArray);
     } catch (err) {
       console.error('Fetch error:', err);
     } finally {
@@ -86,28 +107,33 @@ export default function App() {
     }
   }, [session, authHeaders]);
 
-  // Auto-enter app when user is already signed in
+  // Auth state machine — runs once auth has fully resolved
   useEffect(() => {
-    if (!authLoading && user && appView === 'landing') {
-      sessionStorage.setItem('gradeforge_view', 'app');
-      setAppView('app');
-    }
-  }, [authLoading, user, appView]);
+    if (authLoading) return; // wait for Supabase to restore session from storage
 
-  // Only fetch once auth is fully resolved AND we have a session
-  useEffect(() => {
-    if (authLoading) return; // wait for auth to finish
-    if (appView === 'app' && session) {
-      fetchData();
-    } else if (appView === 'app' && !session) {
-      // Auth resolved but no session — redirect to landing
+    if (user && session) {
+      // Logged in: make sure we're in app view and fetch data
+      if (appView === 'landing') {
+        sessionStorage.setItem('gradeforge_view', 'app');
+        setAppView('app');
+      } else {
+        // Already in app view, fetch data now that we have a real session
+        fetchData();
+      }
+    } else {
+      // Auth resolved with no user — go to landing
       sessionStorage.removeItem('gradeforge_view');
       setAppView('landing');
       setLoading(false);
-    } else {
-      setLoading(false);
     }
-  }, [appView, session, authLoading, fetchData]);
+  }, [authLoading, user, session]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch data whenever appView switches to 'app' and we have a session
+  useEffect(() => {
+    if (appView === 'app' && session && !authLoading) {
+      fetchData();
+    }
+  }, [appView]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gradeResult: GradeResult | null = useMemo(() => {
     if (components.length === 0) return null;
@@ -160,7 +186,11 @@ export default function App() {
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        console.error('Add component failed:', res.status, err);
+        const msg = `POST /api/components ${res.status}: ${err.error || JSON.stringify(err)}`;
+        console.error(msg);
+        setApiError(msg);
+      } else {
+        setApiError(null);
       }
     } catch (err) {
       console.error('Add component error:', err);
@@ -403,6 +433,13 @@ export default function App() {
           <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20">
             <Loader2 className="w-3 h-3 text-amber-400 animate-spin" />
             <span className="text-[11px] text-amber-300">Saving...</span>
+          </div>
+        )}
+        {apiError && (
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 max-w-lg w-full mx-4 flex items-start gap-3 px-4 py-3 rounded-xl bg-red-500/20 border border-red-500/40 shadow-2xl">
+            <span className="text-red-400 text-xs font-bold mt-0.5">API ERROR</span>
+            <span className="text-red-300 text-xs font-mono break-all flex-1">{apiError}</span>
+            <button onClick={() => setApiError(null)} className="text-red-400/60 hover:text-red-300 text-xs cursor-pointer shrink-0">✕</button>
           </div>
         )}
 
