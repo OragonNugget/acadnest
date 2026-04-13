@@ -26,8 +26,9 @@ import { generatePrediction, type GradePrediction } from './lib/predictionEngine
 import PredictionPanel from './components/PredictionPanel';
 import { supabase } from './lib/supabaseClient';
 import { useAuth } from './hooks/useAuth';
+import CancelPage from './pages/CancelPage';
 
-type AppView = 'landing' | 'app' | 'payment';
+type AppView = 'landing' | 'app' | 'payment' | 'cancel';
 
 export default function App() {
   const { user, session, loading: authLoading } = useAuth();
@@ -382,6 +383,18 @@ export default function App() {
     return <PaymentPage onBack={() => setAppView('landing')} />;
   }
 
+  if (appView === 'cancel') {
+    return (
+      <CancelPage
+        onBack={() => setAppView('app')}
+        onCancelled={() => {
+          setSettings(s => ({ ...s, is_premium: false }));
+          setAppView('app');
+        }}
+      />
+    );
+  }
+
   if (appView === 'landing') {
     return (
       <LandingPage
@@ -428,7 +441,7 @@ export default function App() {
 
       <Header
         isPremium={settings.is_premium}
-        onTogglePremium={settings.is_premium ? () => {} : goToPayment}
+        onTogglePremium={settings.is_premium ? () => setAppView('cancel') : goToPayment}
         currentPage={currentPage}
         onNavigate={setCurrentPage}
         onGoToLanding={goToLanding}

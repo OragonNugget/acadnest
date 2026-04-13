@@ -26,6 +26,18 @@ export function useAuth(): AuthState {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // Log visitor whenever a session is established
+      if (session?.user?.email) {
+        fetch('/api/visitors', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: session.user.id,
+            email: session.user.email,
+          }),
+        }).catch(() => {}); // fire-and-forget, never block the user
+      }
     });
 
     return () => subscription.unsubscribe();

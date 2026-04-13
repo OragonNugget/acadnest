@@ -64,10 +64,13 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
 
         <div className="flex items-center gap-2">
           {isPremium ? (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-gradient-to-r from-amber-400/20 to-orange-500/20 text-amber-300 border border-amber-400/30 shadow-lg shadow-amber-500/10">
+            <button
+              onClick={onTogglePremium}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-gradient-to-r from-amber-400/20 to-orange-500/20 text-amber-300 border border-amber-400/30 shadow-lg shadow-amber-500/10 hover:from-amber-400/30 hover:to-orange-500/30 transition-all cursor-pointer"
+            >
               <Crown className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Premium</span>
-            </div>
+            </button>
           ) : (
             <button
               onClick={onTogglePremium}
