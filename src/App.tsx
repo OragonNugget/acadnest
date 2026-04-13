@@ -52,7 +52,7 @@ export default function App() {
   }), [session]);
 
   const fetchData = useCallback(async () => {
-    if (!session) return;
+    setLoading(true);
     try {
       const h = authHeaders();
       const [compsRes, entriesRes, settingsRes, gradesRes] = await Promise.all([
@@ -94,13 +94,20 @@ export default function App() {
     }
   }, [authLoading, user, appView]);
 
+  // Only fetch once auth is fully resolved AND we have a session
   useEffect(() => {
+    if (authLoading) return; // wait for auth to finish
     if (appView === 'app' && session) {
       fetchData();
-    } else if (appView !== 'app') {
+    } else if (appView === 'app' && !session) {
+      // Auth resolved but no session — redirect to landing
+      sessionStorage.removeItem('gradeforge_view');
+      setAppView('landing');
+      setLoading(false);
+    } else {
       setLoading(false);
     }
-  }, [appView, session, fetchData]);
+  }, [appView, session, authLoading, fetchData]);
 
   const gradeResult: GradeResult | null = useMemo(() => {
     if (components.length === 0) return null;
