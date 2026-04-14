@@ -27,17 +27,6 @@ export function useAuth(): AuthState {
       setUser(session?.user ?? null);
       setLoading(false);
 
-      // Log visitor whenever a session is established
-      if (session?.user?.email) {
-        fetch('/api/visitors', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({}),
-        }).catch(() => {}); // fire-and-forget, never block the user
-      }
     });
 
     return () => subscription.unsubscribe();
