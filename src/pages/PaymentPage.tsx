@@ -54,7 +54,7 @@ export default function PaymentPage({ onBack }: Props) {
               <Crown className="w-5 h-5 text-[#0a0a0f]" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white">Trackademic Premium</h1>
+              <h1 className="text-lg font-bold text-white">Acadnest Premium</h1>
               <p className="text-[11px] text-white/35">Unlock everything. Forge better grades.</p>
             </div>
           </div>
@@ -106,7 +106,7 @@ export default function PaymentPage({ onBack }: Props) {
         <p className="text-center text-[10px] text-white/15 mt-6">
           Questions? Reach us at{' '}
           {/* EDIT: replace with your support email */}
-          <span className="text-white/25">support@trackademic.app</span>
+          <span className="text-white/25">support@acadnest.app</span>
         </p>
       </div>
     </div>

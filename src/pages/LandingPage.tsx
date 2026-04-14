@@ -50,7 +50,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
             <GraduationCap className="w-5 h-5 text-[#0a0a0f]" />
           </div>
-          <span className="text-lg font-bold tracking-tight">Trackademic</span>
+          <span className="text-lg font-bold tracking-tight">Acadnest</span>
         </div>
         <button
           onClick={() => setShowLogin(true)}
@@ -93,15 +93,21 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                   </div>
                   <div>
                     <h2 className="text-sm font-bold text-white">Welcome back</h2>
-                    <p className="text-[10px] text-white/30">Sign in to continue</p>
+                    <p className="text-[10px] text-white/30">Sign in to your nest</p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => { setShowLogin(false); onEnterFree(); }}
-                  className="w-full py-2.5 rounded-lg bg-amber-400/20 border border-amber-400/25 text-sm font-medium text-amber-300 hover:bg-amber-400/30 transition-colors cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full py-2.5 rounded-lg bg-white/[0.06] border border-white/[0.12] text-sm font-medium text-white/80 hover:bg-white/[0.1] transition-colors cursor-pointer flex items-center justify-center gap-2.5"
                 >
-                  Continue with Google →
+                  <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+                    <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+                    <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+                    <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                  </svg>
+                  Continue with Google
                 </button>
               </div>
             </motion.div>
@@ -114,7 +120,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/[0.08] border border-amber-400/15 mb-8">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-[11px] text-amber-300/80 font-medium">Smart grade optimization for students</span>
+            <span className="text-[11px] text-amber-300/80 font-medium">Your personal grade strategy hub</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight">
@@ -194,8 +200,8 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       {/* Strategy showcase */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 py-20">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-3">5 Strategies. One Goal.</h2>
-          <p className="text-sm text-white/30">Each one is mathematically grounded — no guesswork.</p>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3">5 Strategies. One Nest.</h2>
+          <p className="text-sm text-white/30">Mathematically grounded — no guesswork, no surprises.</p>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {strategies.map((s, i) => {
@@ -216,8 +222,8 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       {/* Features grid */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 py-20">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-3">Everything You Need</h2>
-          <p className="text-sm text-white/30">Free gets you started. Premium gets you there.</p>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3">Everything in One Place</h2>
+          <p className="text-sm text-white/30">Free gets you settled. Premium makes it home.</p>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {features.map((f, i) => {
@@ -242,8 +248,8 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       {/* Bottom CTA */}
       <section className="relative z-10 max-w-3xl mx-auto px-6 py-20 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-2xl bg-gradient-to-br from-amber-400/[0.06] to-orange-500/[0.03] border border-amber-400/15 p-10">
-          <h2 className="text-2xl font-bold mb-3">Ready to forge better grades?</h2>
-          <p className="text-sm text-white/30 mb-8">Join thousands of students who stopped guessing and started strategizing.</p>
+          <h2 className="text-2xl font-bold mb-3">Ready to build your nest?</h2>
+          <p className="text-sm text-white/30 mb-8">Join students who stopped guessing and started owning their grades.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button onClick={onEnterFree} className="px-6 py-3 rounded-xl bg-white/[0.06] border border-white/[0.1] text-sm font-medium text-white/60 hover:bg-white/[0.1] hover:text-white/80 transition-colors cursor-pointer">
               Start Free
@@ -262,9 +268,9 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
             <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
               <GraduationCap className="w-3 h-3 text-[#0a0a0f]" />
             </div>
-            <span className="text-xs text-white/25">Trackademic</span>
+            <span className="text-xs text-white/25">Acadnest</span>
           </div>
-          <p className="text-[10px] text-white/15">Built for students, by students.</p>
+          <p className="text-[10px] text-white/15">Crafted for students, by students.</p>
         </div>
       </footer>
     </div>

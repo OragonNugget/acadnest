@@ -34,7 +34,7 @@ export default function App() {
   const { user, session, loading: authLoading } = useAuth();
 
   const [appView, setAppView] = useState<AppView>(() => {
-    const saved = sessionStorage.getItem('gradeforge_view');
+    const saved = sessionStorage.getItem('acadnest_view');
     return (saved === 'app') ? 'app' : 'landing';
   });
   const [components, setComponents] = useState<GradeComponent[]>([]);
@@ -116,7 +116,7 @@ export default function App() {
     if (user && session) {
       // Logged in: make sure we're in app view and fetch data
       if (appView === 'landing') {
-        sessionStorage.setItem('gradeforge_view', 'app');
+        sessionStorage.setItem('acadnest_view', 'app');
         setAppView('app');
       } else {
         // Already in app view, fetch data now that we have a real session
@@ -124,7 +124,7 @@ export default function App() {
       }
     } else {
       // Auth resolved with no user — go to landing
-      sessionStorage.removeItem('gradeforge_view');
+      sessionStorage.removeItem('acadnest_view');
       setAppView('landing');
       setLoading(false);
     }
@@ -413,7 +413,7 @@ export default function App() {
           className="flex flex-col items-center gap-4"
         >
           <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
-          <p className="text-sm text-white/30">Loading Trackademic...</p>
+          <p className="text-sm text-white/30">Loading Acadnest...</p>
         </motion.div>
       </div>
     );

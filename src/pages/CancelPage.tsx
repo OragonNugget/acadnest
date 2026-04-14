@@ -75,14 +75,14 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
                 <Crown className="w-5 h-5 text-[#0a0a0f]" />
               </div>
               <div>
-                <h1 className="text-base font-bold text-white">Before you go…</h1>
-                <p className="text-[11px] text-white/30">We'd hate to see you leave, truly.</p>
+                <h1 className="text-base font-bold text-white">Before you leave your nest…</h1>
+                <p className="text-[11px] text-white/30">We'd genuinely hate to see you go.</p>
               </div>
             </div>
 
             <p className="text-sm text-white/50 leading-relaxed mb-6">
               Cancelling your Premium subscription means losing access to everything that makes
-              Trackademic worth using. Here's what you'd be giving up:
+              Acadnest worth using. Here's what you'd be giving up:
             </p>
 
             <ul className="space-y-2.5 mb-8">

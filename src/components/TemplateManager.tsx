@@ -19,7 +19,7 @@ interface Props {
   onApplyTemplate: (components: TemplateComponent[]) => void;
 }
 
-const LS_KEY = 'gradeforge_templates';
+const LS_KEY = 'acadnest_templates';
 
 function getLocalTemplates(): LocalTemplate[] {
   try {
