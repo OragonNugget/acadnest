@@ -413,7 +413,7 @@ export default function App() {
           className="flex flex-col items-center gap-4"
         >
           <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
-          <p className="text-sm text-white/30">Loading Acadnest...</p>
+          <p className="text-sm text-white/30">Loading AcadNest...</p>
         </motion.div>
       </div>
     );
