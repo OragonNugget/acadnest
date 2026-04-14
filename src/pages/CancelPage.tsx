@@ -82,7 +82,7 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
 
             <p className="text-sm text-white/50 leading-relaxed mb-6">
               Cancelling your Premium subscription means losing access to everything that makes
-              Acadnest worth using. Here's what you'd be giving up:
+              AcadNest worth using. Here's what you'd be giving up:
             </p>
 
             <ul className="space-y-2.5 mb-8">
