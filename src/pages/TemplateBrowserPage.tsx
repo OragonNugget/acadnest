@@ -21,7 +21,6 @@ interface Props {
   onApplyTemplate: (components: { name: string; weight: number }[]) => void;
   session: Session | null;
 }
-}
 
 export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate, session }: Props) {
   const [templates, setTemplates] = useState<CommunityTemplate[]>([]);
@@ -33,6 +32,8 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
   const [uploadProf, setUploadProf] = useState('');
   const [uploadAuthor, setUploadAuthor] = useState('');
   const [uploadComponents, setUploadComponents] = useState<{ name: string; weight: string }[]>([{ name: '', weight: '' }]);
+  const [uploadError, setUploadError] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const fetchTemplates = async () => {
     try {
@@ -65,28 +66,40 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
       .filter(c => c.name.trim() && c.weight)
       .map(c => ({ name: c.name.trim(), weight: parseFloat(c.weight) || 0 }));
     if (comps.length === 0) return;
-
-    await fetch('/api/templates', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
-      },
-      body: JSON.stringify({
-        title: uploadTitle.trim(),
-        subject: uploadSubject.trim(),
-        professor: uploadProf.trim(),
-        components: comps,
-        author: uploadAuthor.trim() || 'Anonymous',
-      }),
-    });
-    setUploadTitle('');
-    setUploadSubject('');
-    setUploadProf('');
-    setUploadAuthor('');
-    setUploadComponents([{ name: '', weight: '' }]);
-    setShowUpload(false);
-    await fetchTemplates();
+    setUploading(true);
+    setUploadError('');
+    try {
+      const res = await fetch('/api/templates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({
+          title: uploadTitle.trim(),
+          subject: uploadSubject.trim(),
+          professor: uploadProf.trim(),
+          components: comps,
+          author: uploadAuthor.trim() || 'Anonymous',
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setUploadError(err.error || `Error ${res.status}`);
+        return;
+      }
+      setUploadTitle('');
+      setUploadSubject('');
+      setUploadProf('');
+      setUploadAuthor('');
+      setUploadComponents([{ name: '', weight: '' }]);
+      setShowUpload(false);
+      await fetchTemplates();
+    } catch (err: any) {
+      setUploadError(err.message || 'Failed to upload template');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const addUploadRow = () => {
@@ -203,7 +216,14 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
               ))}
               <button onClick={addUploadRow} className="text-[10px] text-white/25 hover:text-white/40 cursor-pointer">+ Add component</button>
             </div>
-            <button onClick={handleUpload} className="px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-300 text-sm font-medium hover:bg-emerald-400/30 transition-colors cursor-pointer">Share Template</button>
+            {uploadError && (
+              <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 mb-2">
+                {uploadError}
+              </p>
+            )}
+            <button onClick={handleUpload} disabled={uploading} className="px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-300 text-sm font-medium hover:bg-emerald-400/30 transition-colors cursor-pointer disabled:opacity-50">
+              {uploading ? 'Sharing...' : 'Share Template'}
+            </button>
           </motion.div>
         )}
 

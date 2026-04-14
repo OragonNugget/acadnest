@@ -150,7 +150,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                 <span className="text-xl font-bold text-white/70">₱0</span>
               </div>
               <ul className="space-y-2 mb-5">
-                {['Grade calculator', 'Add components & entries', 'Delete components', 'View results', 'Read forum posts'].map(f => (
+                {['Grade calculator', 'Add components & entries', 'View results', 'Browse & read forum posts', 'Browse template library'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-[11px] text-white/35">
                     <CheckCircle className="w-3 h-3 text-white/20 flex-shrink-0" />{f}
                   </li>
@@ -182,7 +182,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                   </div>
                 </div>
                 <ul className="space-y-2 mb-5">
-                  {['Everything in Free', 'AI Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Edit & toggle done', 'Scenario simulator', 'GWA Calculator', 'Template library', 'Post in community forum', 'No ads'].map(f => (
+                  {['Everything in Free', 'GWA Calculator', 'Full Template Library (share & apply)', 'Post in Community Forum', 'AI Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Scenario simulator', 'No ads'].map(f => (
                     <li key={f} className="flex items-center gap-2 text-[11px] text-amber-200/50">
                       <CheckCircle className="w-3 h-3 text-amber-400/50 flex-shrink-0" />{f}
                     </li>

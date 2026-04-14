@@ -40,6 +40,8 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
   const [newBody, setNewBody] = useState('');
   const [newCategory, setNewCategory] = useState('general');
   const [newAuthor, setNewAuthor] = useState('');
+  const [postError, setPostError] = useState('');
+  const [posting, setPosting] = useState(false);
 
   const fetchPosts = async () => {
     try {
@@ -57,25 +59,38 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
 
   const handleCreate = async () => {
     if (!newTitle.trim() || !newBody.trim() || !newAuthor.trim()) return;
-    await fetch('/api/forum', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
-      },
-      body: JSON.stringify({
-        author: newAuthor.trim(),
-        title: newTitle.trim(),
-        body: newBody.trim(),
-        category: newCategory,
-        is_premium_author: isPremium,
-      }),
-    });
-    setNewTitle('');
-    setNewBody('');
-    setNewAuthor('');
-    setShowCreate(false);
-    await fetchPosts();
+    setPosting(true);
+    setPostError('');
+    try {
+      const res = await fetch('/api/forum', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({
+          author: newAuthor.trim(),
+          title: newTitle.trim(),
+          body: newBody.trim(),
+          category: newCategory,
+          is_premium_author: isPremium,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setPostError(err.error || `Error ${res.status}`);
+        return;
+      }
+      setNewTitle('');
+      setNewBody('');
+      setNewAuthor('');
+      setShowCreate(false);
+      await fetchPosts();
+    } catch (err: any) {
+      setPostError(err.message || 'Failed to post');
+    } finally {
+      setPosting(false);
+    }
   };
 
   const handleLike = async (id: number) => {
@@ -194,11 +209,17 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
                       <option key={cat} value={cat} className="bg-[#12121f] capitalize">{cat.replace('-', ' ')}</option>
                     ))}
                   </select>
+                  {postError && (
+                    <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 w-full">
+                      {postError}
+                    </p>
+                  )}
                   <button
                     onClick={handleCreate}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-400/20 text-amber-300 text-sm font-medium hover:bg-amber-400/30 transition-colors cursor-pointer ml-auto"
+                    disabled={posting}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-400/20 text-amber-300 text-sm font-medium hover:bg-amber-400/30 transition-colors cursor-pointer ml-auto disabled:opacity-50"
                   >
-                    <Send className="w-3.5 h-3.5" /> Post
+                    <Send className="w-3.5 h-3.5" /> {posting ? 'Posting...' : 'Post'}
                   </button>
                 </div>
               </div>
@@ -219,15 +240,21 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
         ) : (
           <div className="space-y-3">
             {filtered.map((post, i) => (
-              <motion.div
-                key={post.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className={`rounded-xl bg-white/[0.02] border hover:border-white/[0.1] transition-colors p-5 ${
-                  post.pinned ? 'border-amber-500/20' : 'border-white/[0.06]'
-                }`}
-              >
+              <div key={post.id} className="relative group/post">
+                {!isPremium && (
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 bg-[#1a1a2e] border border-amber-400/20 rounded-lg text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover/post:opacity-100 transition-opacity pointer-events-none flex items-center gap-1.5">
+                    <Crown className="w-3 h-3 text-amber-400/50" />
+                    Upgrade to Premium to post your own
+                  </div>
+                )}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className={`rounded-xl bg-white/[0.02] border hover:border-white/[0.1] transition-colors p-5 ${
+                    post.pinned ? 'border-amber-500/20' : 'border-white/[0.06]'
+                  }`}
+                >
                 <div className="flex items-start gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -254,7 +281,8 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+                </motion.div>
+              </div>
             ))}
           </div>
         )}

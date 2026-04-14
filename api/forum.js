@@ -20,7 +20,10 @@ export default async function handler(req, res) {
 
     // All write operations require auth
     const { user, error: authError } = await getAuthUser(req.headers.authorization);
-    if (authError) return res.status(401).json({ error: authError });
+    if (authError) {
+      console.error('Forum auth error:', authError);
+      return res.status(401).json({ error: authError });
+    }
 
     if (req.method === 'POST') {
       const { author, title, body, category } = req.body;
@@ -29,12 +32,20 @@ export default async function handler(req, res) {
       }
 
       // Look up is_premium server-side — never trust the client
-      const { data: settings } = await supabase
+      const { data: settings, error: settingsError } = await supabase
         .from('user_settings')
         .select('is_premium')
         .eq('user_id', user.id)
         .maybeSingle();
+
+      if (settingsError) console.error('Settings lookup error:', settingsError);
+
       const is_premium_author = settings?.is_premium ?? false;
+
+      // Only premium users can post
+      if (!is_premium_author) {
+        return res.status(403).json({ error: 'Premium membership required to post in the forum.' });
+      }
 
       const { data, error } = await supabase
         .from('forum_posts')
@@ -49,7 +60,10 @@ export default async function handler(req, res) {
         })
         .select()
         .single();
-      if (error) throw error;
+      if (error) {
+        console.error('Insert forum post error:', error);
+        throw error;
+      }
       return res.status(201).json(data);
     }
 
@@ -62,7 +76,7 @@ export default async function handler(req, res) {
 
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
-    console.error('API error:', err);
+    console.error('Forum API error:', err);
     res.status(500).json({ error: err.message });
   }
 }
