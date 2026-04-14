@@ -421,11 +421,11 @@ export default function App() {
 
   // Page routing
   if (currentPage === 'forum') {
-    return <ForumPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} />;
+    return <ForumPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} session={session} />;
   }
   if (currentPage === 'templates') {
     if (!settings.is_premium) { setCurrentPage('dashboard'); return null; }
-    return <TemplateBrowserPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} onApplyTemplate={applyTemplate} />;
+    return <TemplateBrowserPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} onApplyTemplate={applyTemplate} session={session} />;
   }
   if (currentPage === 'gwa') {
     return <GWACalculatorPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} savedGrades={savedGrades} />;

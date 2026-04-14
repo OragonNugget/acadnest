@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Download, User, BookOpen, Search, X, Upload, Lock } from 'lucide-react';
+import type { Session } from '@supabase/supabase-js';
 
 interface CommunityTemplate {
   id: number;
@@ -18,9 +19,11 @@ interface Props {
   onBack: () => void;
   isPremium: boolean;
   onApplyTemplate: (components: { name: string; weight: number }[]) => void;
+  session: Session | null;
+}
 }
 
-export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate }: Props) {
+export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate, session }: Props) {
   const [templates, setTemplates] = useState<CommunityTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -65,7 +68,10 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
 
     await fetch('/api/templates', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+      },
       body: JSON.stringify({
         title: uploadTitle.trim(),
         subject: uploadSubject.trim(),

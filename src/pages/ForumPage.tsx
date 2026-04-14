@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Heart, MessageSquare, Crown, Send, Lock, Plus, X } from 'lucide-react';
+import type { Session } from '@supabase/supabase-js';
 
 interface ForumPost {
   id: number;
@@ -17,6 +18,7 @@ interface ForumPost {
 interface Props {
   onBack: () => void;
   isPremium: boolean;
+  session: Session | null;
 }
 
 const categories = ['general', 'study-tips', 'exam-prep', 'time-management', 'motivation', 'resources'];
@@ -29,7 +31,7 @@ const categoryColors: Record<string, string> = {
   'resources': 'bg-purple-500/10 text-purple-400',
 };
 
-export default function ForumPage({ onBack, isPremium }: Props) {
+export default function ForumPage({ onBack, isPremium, session }: Props) {
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -57,7 +59,10 @@ export default function ForumPage({ onBack, isPremium }: Props) {
     if (!newTitle.trim() || !newBody.trim() || !newAuthor.trim()) return;
     await fetch('/api/forum', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+      },
       body: JSON.stringify({
         author: newAuthor.trim(),
         title: newTitle.trim(),
