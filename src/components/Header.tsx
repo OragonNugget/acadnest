@@ -13,7 +13,7 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'gwa', label: 'GWA', icon: GraduationCap, premiumOnly: true },
     { id: 'forum', label: 'Forum', icon: MessageSquare },
-    { id: 'templates', label: 'Templates', icon: Library },
+    { id: 'templates', label: 'Templates', icon: Library, premiumOnly: true },
   ];
 
   return (
@@ -25,7 +25,7 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
               <GraduationCap className="w-4.5 h-4.5 text-[#0a0a0f]" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-base font-bold text-white tracking-tight leading-none">Acadnest</h1>
+              <h1 className="text-base font-bold text-white tracking-tight leading-none">AcadNest</h1>
               <p className="text-[10px] text-white/35">Plan Smarter · Score Better</p>
             </div>
           </button>

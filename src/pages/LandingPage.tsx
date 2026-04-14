@@ -18,8 +18,8 @@ const features = [
   { icon: Bot, title: 'AI Grade Coach', desc: 'Personalized coaching, weak point analysis, strategy picks', free: false },
   { icon: Zap, title: '5 Strategy Engines', desc: 'Weak Area Repair, High Impact, Survival, Optimal, Conservative', free: false },
   { icon: Save, title: 'Save & Load Grades', desc: 'Switch between subjects, snapshot your progress', free: false },
-  { icon: Library, title: 'Template Library', desc: 'Pre-made grading systems from real courses', free: true },
-  { icon: MessageSquare, title: 'Community Forum', desc: 'Tips, strategies & discussion from students', free: true },
+  { icon: Library, title: 'Template Library', desc: 'Pre-made grading systems from real courses', free: false },
+  { icon: MessageSquare, title: 'Community Forum', desc: 'Read free, post with Premium', free: false },
   { icon: Shield, title: 'Scenario Simulator', desc: 'Test "what if" scores before they happen', free: false },
 ];
 
@@ -50,7 +50,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
             <GraduationCap className="w-5 h-5 text-[#0a0a0f]" />
           </div>
-          <span className="text-lg font-bold tracking-tight">Acadnest</span>
+          <span className="text-lg font-bold tracking-tight">AcadNest</span>
         </div>
         <button
           onClick={() => setShowLogin(true)}
@@ -150,7 +150,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                 <span className="text-xl font-bold text-white/70">₱0</span>
               </div>
               <ul className="space-y-2 mb-5">
-                {['Grade calculator', 'Add components & entries', 'Delete components', 'View results', 'Browse forum', 'Browse templates'].map(f => (
+                {['Grade calculator', 'Add components & entries', 'Delete components', 'View results', 'Read forum posts'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-[11px] text-white/35">
                     <CheckCircle className="w-3 h-3 text-white/20 flex-shrink-0" />{f}
                   </li>
@@ -182,7 +182,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                   </div>
                 </div>
                 <ul className="space-y-2 mb-5">
-                  {['Everything in Free', 'AI Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Edit & toggle done', 'Scenario simulator', 'Save/load templates', 'Create forum posts', 'No ads'].map(f => (
+                  {['Everything in Free', 'AI Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Edit & toggle done', 'Scenario simulator', 'GWA Calculator', 'Template library', 'Post in community forum', 'No ads'].map(f => (
                     <li key={f} className="flex items-center gap-2 text-[11px] text-amber-200/50">
                       <CheckCircle className="w-3 h-3 text-amber-400/50 flex-shrink-0" />{f}
                     </li>
@@ -268,7 +268,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
             <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
               <GraduationCap className="w-3 h-3 text-[#0a0a0f]" />
             </div>
-            <span className="text-xs text-white/25">Acadnest</span>
+            <span className="text-xs text-white/25">AcadNest</span>
           </div>
           <p className="text-[10px] text-white/15">Crafted for students, by students.</p>
         </div>

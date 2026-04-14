@@ -16,11 +16,11 @@ const premiumFeatures = [
   'Save & load grades across subjects',
   'Scenario simulator — test scores before they happen',
   'Edit & toggle components as done',
-  'Save and apply course templates',
-  'Create & participate in forum posts',
+  'GWA Calculator — track your semester GPA',
+  'Full access to template library',
+  'Post & participate in community forum',
   'No ads',
 ];
-
 interface Props {
   onBack: () => void;
 }

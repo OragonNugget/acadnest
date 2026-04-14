@@ -380,7 +380,7 @@ export default function App() {
 
   // Landing page
   if (appView === 'payment') {
-    return <PaymentPage onBack={() => setAppView('landing')} />;
+    return <PaymentPage onBack={() => setAppView('app')} />;
   }
 
   if (appView === 'cancel') {
@@ -413,7 +413,7 @@ export default function App() {
           className="flex flex-col items-center gap-4"
         >
           <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
-          <p className="text-sm text-white/30">Loading Acadnest...</p>
+          <p className="text-sm text-white/30">Loading AcadNest...</p>
         </motion.div>
       </div>
     );
@@ -424,6 +424,7 @@ export default function App() {
     return <ForumPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} />;
   }
   if (currentPage === 'templates') {
+    if (!settings.is_premium) { setCurrentPage('dashboard'); return null; }
     return <TemplateBrowserPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} onApplyTemplate={applyTemplate} />;
   }
   if (currentPage === 'gwa') {

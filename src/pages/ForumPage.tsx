@@ -108,11 +108,12 @@ export default function ForumPage({ onBack, isPremium }: Props) {
             </button>
           ) : (
             <div className="relative group">
-              <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.02] text-white/20 text-xs cursor-not-allowed">
+              <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.02] text-white/20 text-xs cursor-not-allowed border border-white/[0.06]">
                 <Lock className="w-3 h-3" /> New Post
               </button>
-              <div className="absolute bottom-full right-0 mb-1 px-2 py-1 bg-[#1a1a2e] border border-white/[0.1] rounded text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                Premium members can create posts
+              <div className="absolute bottom-full right-0 mb-2 w-48 px-3 py-2 bg-[#1a1a2e] border border-amber-400/20 rounded-lg text-[10px] text-white/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
+                <Crown className="w-3 h-3 text-amber-400/50 mx-auto mb-1" />
+                Only Premium members can post. Upgrade to join the discussion.
               </div>
             </div>
           )}
