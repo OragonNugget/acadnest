@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Heart, MessageSquare, Crown, Send, Lock, Plus, X } from 'lucide-react';
+import { ArrowLeft, Heart, MessageSquare, Crown, Send, Lock, Plus, X, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
+
+interface ForumReply {
+  id: number;
+  post_id: number;
+  author: string;
+  body: string;
+  created_at: string;
+}
 
 interface ForumPost {
   id: number;
@@ -43,6 +51,18 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
   const [postError, setPostError] = useState('');
   const [posting, setPosting] = useState(false);
 
+  // Replies state — per post
+  const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
+  const [replies, setReplies] = useState<Record<number, ForumReply[]>>({});
+  const [repliesLoading, setRepliesLoading] = useState<Record<number, boolean>>({});
+  const [replyText, setReplyText] = useState<Record<number, string>>({});
+  const [replyAuthor, setReplyAuthor] = useState<Record<number, string>>({});
+  const [replyError, setReplyError] = useState<Record<number, string>>({});
+  const [replySending, setReplySending] = useState<Record<number, boolean>>({});
+  const [showReplyForm, setShowReplyForm] = useState<Record<number, boolean>>({});
+
+  const authHeader = session ? { Authorization: `Bearer ${session.access_token}` } : {};
+
   const fetchPosts = async () => {
     try {
       const res = await fetch('/api/forum');
@@ -64,10 +84,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
     try {
       const res = await fetch('/api/forum', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
-        },
+        headers: { 'Content-Type': 'application/json', ...authHeader },
         body: JSON.stringify({
           author: newAuthor.trim(),
           title: newTitle.trim(),
@@ -81,9 +98,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
         setPostError(err.error || `Error ${res.status}`);
         return;
       }
-      setNewTitle('');
-      setNewBody('');
-      setNewAuthor('');
+      setNewTitle(''); setNewBody(''); setNewAuthor('');
       setShowCreate(false);
       await fetchPosts();
     } catch (err: any) {
@@ -94,12 +109,67 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
   };
 
   const handleLike = async (id: number) => {
-    await fetch('/api/forum-like', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-    await fetchPosts();
+    try {
+      await fetch('/api/forum-like', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeader },
+        body: JSON.stringify({ id }),
+      });
+      await fetchPosts();
+    } catch (err) {
+      console.error('Like error:', err);
+    }
+  };
+
+  const fetchReplies = async (postId: number) => {
+    setRepliesLoading(r => ({ ...r, [postId]: true }));
+    try {
+      const res = await fetch(`/api/forum-replies?post_id=${postId}`);
+      const data = await res.json();
+      setReplies(r => ({ ...r, [postId]: data || [] }));
+    } catch (err) {
+      console.error('Fetch replies error:', err);
+    } finally {
+      setRepliesLoading(r => ({ ...r, [postId]: false }));
+    }
+  };
+
+  const toggleReplies = async (postId: number) => {
+    const next = new Set(expandedReplies);
+    if (next.has(postId)) {
+      next.delete(postId);
+    } else {
+      next.add(postId);
+      if (!replies[postId]) await fetchReplies(postId);
+    }
+    setExpandedReplies(next);
+  };
+
+  const handleReply = async (postId: number) => {
+    const body = (replyText[postId] || '').trim();
+    const author = (replyAuthor[postId] || '').trim();
+    if (!body || !author) return;
+    setReplySending(r => ({ ...r, [postId]: true }));
+    setReplyError(r => ({ ...r, [postId]: '' }));
+    try {
+      const res = await fetch('/api/forum-replies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeader },
+        body: JSON.stringify({ post_id: postId, author, body }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setReplyError(r => ({ ...r, [postId]: err.error || `Error ${res.status}` }));
+        return;
+      }
+      setReplyText(r => ({ ...r, [postId]: '' }));
+      setShowReplyForm(r => ({ ...r, [postId]: false }));
+      await fetchReplies(postId);
+    } catch (err: any) {
+      setReplyError(r => ({ ...r, [postId]: err.message || 'Failed to reply' }));
+    } finally {
+      setReplySending(r => ({ ...r, [postId]: false }));
+    }
   };
 
   const filtered = filter === 'all' ? posts : posts.filter(p => p.category === filter);
@@ -143,22 +213,11 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
       <main className="relative max-w-4xl mx-auto px-4 sm:px-6 py-6">
         {/* Category filter */}
         <div className="flex flex-wrap gap-2 mb-6">
-          <button
-            onClick={() => setFilter('all')}
-            className={`px-3 py-1 rounded-full text-[11px] cursor-pointer transition-colors ${
-              filter === 'all' ? 'bg-white/[0.1] text-white/70' : 'bg-white/[0.03] text-white/30 hover:bg-white/[0.06]'
-            }`}
-          >
+          <button onClick={() => setFilter('all')} className={`px-3 py-1 rounded-full text-[11px] cursor-pointer transition-colors ${filter === 'all' ? 'bg-white/[0.1] text-white/70' : 'bg-white/[0.03] text-white/30 hover:bg-white/[0.06]'}`}>
             All
           </button>
           {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-3 py-1 rounded-full text-[11px] cursor-pointer transition-colors capitalize ${
-                filter === cat ? 'bg-white/[0.1] text-white/70' : 'bg-white/[0.03] text-white/30 hover:bg-white/[0.06]'
-              }`}
-            >
+            <button key={cat} onClick={() => setFilter(cat)} className={`px-3 py-1 rounded-full text-[11px] cursor-pointer transition-colors capitalize ${filter === cat ? 'bg-white/[0.1] text-white/70' : 'bg-white/[0.03] text-white/30 hover:bg-white/[0.06]'}`}>
               {cat.replace('-', ' ')}
             </button>
           ))}
@@ -167,59 +226,23 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
         {/* Create post form */}
         <AnimatePresence>
           {showCreate && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-5 mb-6"
-            >
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-5 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-semibold text-white/60">Create Post</h3>
-                <button onClick={() => setShowCreate(false)} className="text-white/20 hover:text-white/40 cursor-pointer">
-                  <X className="w-4 h-4" />
-                </button>
+                <button onClick={() => setShowCreate(false)} className="text-white/20 hover:text-white/40 cursor-pointer"><X className="w-4 h-4" /></button>
               </div>
               <div className="space-y-3">
-                <input
-                  value={newAuthor}
-                  onChange={e => setNewAuthor(e.target.value)}
-                  placeholder="Your name"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
-                />
-                <input
-                  value={newTitle}
-                  onChange={e => setNewTitle(e.target.value)}
-                  placeholder="Post title"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
-                />
-                <textarea
-                  value={newBody}
-                  onChange={e => setNewBody(e.target.value)}
-                  placeholder="Share your tips, ask questions, or discuss strategies..."
-                  rows={4}
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40 resize-none"
-                />
-                <div className="flex items-center gap-3">
-                  <select
-                    value={newCategory}
-                    onChange={e => setNewCategory(e.target.value)}
-                    className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white/60 focus:outline-none focus:border-amber-400/40"
-                  >
-                    {categories.map(cat => (
-                      <option key={cat} value={cat} className="bg-[#12121f] capitalize">{cat.replace('-', ' ')}</option>
-                    ))}
+                <input value={newAuthor} onChange={e => setNewAuthor(e.target.value)} placeholder="Your name" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
+                <input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Post title" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
+                <textarea value={newBody} onChange={e => setNewBody(e.target.value)} placeholder="Share your tips, ask questions, or discuss strategies..." rows={4} className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40 resize-none" />
+                <div className="flex items-center gap-3 flex-wrap">
+                  <select value={newCategory} onChange={e => setNewCategory(e.target.value)} className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white/60 focus:outline-none focus:border-amber-400/40">
+                    {categories.map(cat => <option key={cat} value={cat} className="bg-[#12121f] capitalize">{cat.replace('-', ' ')}</option>)}
                   </select>
-                  {postError && (
-                    <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 w-full">
-                      {postError}
-                    </p>
-                  )}
-                  <button
-                    onClick={handleCreate}
-                    disabled={posting}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-400/20 text-amber-300 text-sm font-medium hover:bg-amber-400/30 transition-colors cursor-pointer ml-auto disabled:opacity-50"
-                  >
-                    <Send className="w-3.5 h-3.5" /> {posting ? 'Posting...' : 'Post'}
+                  {postError && <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 flex-1">{postError}</p>}
+                  <button onClick={handleCreate} disabled={posting} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-400/20 text-amber-300 text-sm font-medium hover:bg-amber-400/30 transition-colors cursor-pointer ml-auto disabled:opacity-50">
+                    {posting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    {posting ? 'Posting...' : 'Post'}
                   </button>
                 </div>
               </div>
@@ -229,58 +252,150 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
 
         {/* Posts list */}
         {loading ? (
-          <div className="text-center py-12">
-            <p className="text-sm text-white/30">Loading posts...</p>
-          </div>
+          <div className="text-center py-12"><p className="text-sm text-white/30">Loading posts...</p></div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-12">
             <MessageSquare className="w-8 h-8 text-white/10 mx-auto mb-3" />
-            <p className="text-sm text-white/30">No posts yet. {isPremium ? 'Be the first to share!' : 'Upgrade to Premium to start a discussion.'}</p>
+            <p className="text-sm text-white/30">{isPremium ? 'No posts yet. Be the first to share!' : 'No posts yet. Upgrade to Premium to start a discussion.'}</p>
           </div>
         ) : (
           <div className="space-y-3">
             {filtered.map((post, i) => (
               <div key={post.id} className="relative group/post">
+                {/* Hover tooltip for free users */}
                 {!isPremium && (
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 bg-[#1a1a2e] border border-amber-400/20 rounded-lg text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover/post:opacity-100 transition-opacity pointer-events-none flex items-center gap-1.5">
                     <Crown className="w-3 h-3 text-amber-400/50" />
-                    Upgrade to Premium to post your own
+                    Upgrade to Premium to post & reply
                   </div>
                 )}
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className={`rounded-xl bg-white/[0.02] border hover:border-white/[0.1] transition-colors p-5 ${
-                    post.pinned ? 'border-amber-500/20' : 'border-white/[0.06]'
-                  }`}
+                  className={`rounded-xl bg-white/[0.02] border transition-colors ${post.pinned ? 'border-amber-500/20' : 'border-white/[0.06] hover:border-white/[0.1]'}`}
                 >
-                <div className="flex items-start gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      {post.pinned && <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">📌 Pinned</span>}
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded capitalize ${categoryColors[post.category] || categoryColors.general}`}>
-                        {post.category.replace('-', ' ')}
-                      </span>
-                    </div>
-                    <h3 className="text-sm font-semibold text-white/80 mb-1">{post.title}</h3>
-                    <p className="text-xs text-white/35 leading-relaxed mb-3 whitespace-pre-wrap">{post.body}</p>
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] text-white/40">{post.author}</span>
-                        {post.is_premium_author && <Crown className="w-3 h-3 text-amber-400/50" />}
+                  {/* Post body */}
+                  <div className="p-5">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          {post.pinned && <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">📌 Pinned</span>}
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded capitalize ${categoryColors[post.category] || categoryColors.general}`}>
+                            {post.category.replace('-', ' ')}
+                          </span>
+                        </div>
+                        <h3 className="text-sm font-semibold text-white/80 mb-1">{post.title}</h3>
+                        <p className="text-xs text-white/35 leading-relaxed mb-3 whitespace-pre-wrap">{post.body}</p>
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[11px] text-white/40">{post.author}</span>
+                            {post.is_premium_author && <Crown className="w-3 h-3 text-amber-400/50" />}
+                          </div>
+                          <span className="text-[10px] text-white/20">{new Date(post.created_at).toLocaleDateString()}</span>
+
+                          {/* Reply toggle */}
+                          <button
+                            onClick={() => toggleReplies(post.id)}
+                            className="flex items-center gap-1 text-white/25 hover:text-white/50 transition-colors cursor-pointer text-[10px]"
+                          >
+                            <MessageSquare className="w-3 h-3" />
+                            {replies[post.id]?.length ?? ''}
+                            {expandedReplies.has(post.id) ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                          </button>
+
+                          {/* Like button */}
+                          <button
+                            onClick={() => handleLike(post.id)}
+                            className="flex items-center gap-1 text-white/20 hover:text-red-400 transition-colors cursor-pointer ml-auto"
+                          >
+                            <Heart className="w-3 h-3" />
+                            <span className="text-[10px]">{post.likes}</span>
+                          </button>
+                        </div>
                       </div>
-                      <span className="text-[10px] text-white/20">{new Date(post.created_at).toLocaleDateString()}</span>
-                      <button
-                        onClick={() => handleLike(post.id)}
-                        className="flex items-center gap-1 text-white/20 hover:text-red-400 transition-colors cursor-pointer ml-auto"
-                      >
-                        <Heart className="w-3 h-3" />
-                        <span className="text-[10px]">{post.likes}</span>
-                      </button>
                     </div>
                   </div>
-                </div>
+
+                  {/* Replies section */}
+                  <AnimatePresence>
+                    {expandedReplies.has(post.id) && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden border-t border-white/[0.05]"
+                      >
+                        <div className="px-5 py-4 space-y-3">
+                          {repliesLoading[post.id] ? (
+                            <p className="text-[11px] text-white/25 text-center py-2">Loading replies...</p>
+                          ) : (replies[post.id] || []).length === 0 ? (
+                            <p className="text-[11px] text-white/20 text-center py-2">No replies yet.{isPremium ? ' Be the first!' : ''}</p>
+                          ) : (
+                            (replies[post.id] || []).map(reply => (
+                              <div key={reply.id} className="flex gap-3 pl-3 border-l border-white/[0.06]">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-0.5">
+                                    <span className="text-[11px] font-medium text-white/50">{reply.author}</span>
+                                    <span className="text-[9px] text-white/15">{new Date(reply.created_at).toLocaleDateString()}</span>
+                                  </div>
+                                  <p className="text-[11px] text-white/30 leading-relaxed whitespace-pre-wrap">{reply.body}</p>
+                                </div>
+                              </div>
+                            ))
+                          )}
+
+                          {/* Reply form — premium only */}
+                          {isPremium ? (
+                            showReplyForm[post.id] ? (
+                              <div className="mt-2 space-y-2">
+                                <input
+                                  value={replyAuthor[post.id] || ''}
+                                  onChange={e => setReplyAuthor(r => ({ ...r, [post.id]: e.target.value }))}
+                                  placeholder="Your name"
+                                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
+                                />
+                                <div className="flex gap-2">
+                                  <input
+                                    value={replyText[post.id] || ''}
+                                    onChange={e => setReplyText(r => ({ ...r, [post.id]: e.target.value }))}
+                                    placeholder="Write a reply..."
+                                    className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
+                                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleReply(post.id); } }}
+                                  />
+                                  <button
+                                    onClick={() => handleReply(post.id)}
+                                    disabled={replySending[post.id]}
+                                    className="px-3 py-2 rounded-lg bg-amber-400/15 text-amber-300 text-xs hover:bg-amber-400/25 transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1"
+                                  >
+                                    {replySending[post.id] ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
+                                  </button>
+                                  <button onClick={() => setShowReplyForm(r => ({ ...r, [post.id]: false }))} className="px-2 text-white/20 hover:text-white/40 cursor-pointer">
+                                    <X className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                                {replyError[post.id] && (
+                                  <p className="text-[10px] text-red-400/80">{replyError[post.id]}</p>
+                                )}
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => setShowReplyForm(r => ({ ...r, [post.id]: true }))}
+                                className="text-[11px] text-amber-300/40 hover:text-amber-300/70 cursor-pointer transition-colors flex items-center gap-1"
+                              >
+                                <Plus className="w-3 h-3" /> Add a reply
+                              </button>
+                            )
+                          ) : (
+                            <div className="flex items-center gap-1.5 text-[10px] text-white/20">
+                              <Lock className="w-3 h-3" />
+                              <span>Upgrade to Premium to reply</span>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               </div>
             ))}

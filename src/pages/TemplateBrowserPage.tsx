@@ -66,6 +66,14 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
       .filter(c => c.name.trim() && c.weight)
       .map(c => ({ name: c.name.trim(), weight: parseFloat(c.weight) || 0 }));
     if (comps.length === 0) return;
+
+    // Validate total weight adds up to 100%
+    const totalWeight = comps.reduce((sum, c) => sum + c.weight, 0);
+    if (Math.abs(totalWeight - 100) > 0.01) {
+      setUploadError(`Component weights must add up to 100%. Currently: ${totalWeight.toFixed(1)}%`);
+      return;
+    }
+
     setUploading(true);
     setUploadError('');
     try {
@@ -215,6 +223,17 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
                 </div>
               ))}
               <button onClick={addUploadRow} className="text-[10px] text-white/25 hover:text-white/40 cursor-pointer">+ Add component</button>
+              {(() => {
+                const total = uploadComponents
+                  .filter(c => c.weight)
+                  .reduce((s, c) => s + (parseFloat(c.weight) || 0), 0);
+                const ok = Math.abs(total - 100) < 0.01;
+                return (
+                  <p className={`text-[10px] font-medium mt-1 ${ok ? 'text-emerald-400/60' : total > 100 ? 'text-red-400/70' : 'text-white/25'}`}>
+                    Total: {total.toFixed(1)}% {ok ? '✓' : `(needs ${(100 - total).toFixed(1)}% more)`}
+                  </p>
+                );
+              })()}
             </div>
             {uploadError && (
               <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 mb-2">
