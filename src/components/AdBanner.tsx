@@ -1,6 +1,4 @@
 import { motion } from 'framer-motion';
-import { X } from 'lucide-react';
-import { useState } from 'react';
 
 interface Props {
   variant: 'top' | 'sidebar' | 'inline';
@@ -23,9 +21,8 @@ const ads = {
 };
 
 export default function AdBanner({ variant, isPremium }: Props) {
-  const [dismissed, setDismissed] = useState(false);
 
-  if (isPremium || dismissed) return null;
+  if (isPremium) return null;
 
   const pool = ads[variant];
   const ad = pool[Math.floor(Date.now() / 60000) % pool.length]; // rotates every minute
@@ -39,12 +36,6 @@ export default function AdBanner({ variant, isPremium }: Props) {
             <span className="text-white/30 ml-2">· {ad.sub}</span>
           </p>
           <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/[0.06] text-white/25 uppercase tracking-wider">Ad</span>
-          <button
-            onClick={() => setDismissed(true)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/15 hover:text-white/30 cursor-pointer"
-          >
-            <X className="w-3 h-3" />
-          </button>
         </div>
       </div>
     );
@@ -57,12 +48,6 @@ export default function AdBanner({ variant, isPremium }: Props) {
         animate={{ opacity: 1 }}
         className={`rounded-xl bg-gradient-to-br ${ad.color} border ${ad.borderColor} p-4 relative`}
       >
-        <button
-          onClick={() => setDismissed(true)}
-          className="absolute top-2 right-2 text-white/15 hover:text-white/30 cursor-pointer"
-        >
-          <X className="w-3 h-3" />
-        </button>
         <p className="text-[11px] text-white/50 font-medium mb-1">{ad.text}</p>
         <p className="text-[10px] text-white/25">{ad.sub}</p>
         <span className="text-[8px] px-1 py-0.5 rounded bg-white/[0.04] text-white/15 uppercase tracking-wider mt-2 inline-block">Sponsored</span>
