@@ -61,7 +61,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
   const [replySending, setReplySending] = useState<Record<number, boolean>>({});
   const [showReplyForm, setShowReplyForm] = useState<Record<number, boolean>>({});
 
-  const authHeader = session ? { Authorization: `Bearer ${session.access_token}` } : {};
+  const authHeader: Record<string, string> = session ? { Authorization: `Bearer ${session.access_token}` } : {};
 
   const fetchPosts = async () => {
     try {
