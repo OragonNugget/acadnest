@@ -279,7 +279,7 @@ export default function App() {
   const clearAllComponents = async () => {
     setSaving(true);
     setShowClearConfirm(false);
-    await fetch('/api/clear-components', {
+    await fetch('/api/components?action=clear', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({}),
@@ -314,13 +314,13 @@ export default function App() {
 
   const loadGrade = async (grade: SavedGrade) => {
     setSaving(true);
-    await fetch('/api/clear-components', {
+    await fetch('/api/components?action=clear', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({}),
     });
     const snapshot = grade.components_snapshot as any[];
-    await fetch('/api/bulk-create', {
+    await fetch('/api/components?action=bulk-create', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({ components: snapshot }),
@@ -361,12 +361,12 @@ export default function App() {
 
   const applyTemplate = async (templateComponents: { name: string; weight: number }[]) => {
     setSaving(true);
-    await fetch('/api/clear-components', {
+    await fetch('/api/components?action=clear', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({}),
     });
-    await fetch('/api/bulk-create', {
+    await fetch('/api/components?action=bulk-create', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({

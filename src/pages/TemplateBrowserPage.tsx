@@ -51,7 +51,7 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
 
   const handleApply = async (tmpl: CommunityTemplate) => {
     // Increment download count
-    await fetch('/api/template-download', {
+    await fetch('/api/templates?action=download', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: tmpl.id }),

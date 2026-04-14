@@ -1,3 +1,4 @@
+import supabase from './_supabase.js';
 import { getUserClient, getAuthUser } from './_supabase.js';
 
 export default async function handler(req, res) {
@@ -18,8 +19,32 @@ export default async function handler(req, res) {
         .eq('user_id', user.id)
         .maybeSingle();
       if (error) throw error;
-      return res.status(200).json(data || { user_id: user.id, target_grade: 80, is_premium: false });
+
+      if (data) {
+        // Update email + last_seen on every login — this is how you track visitors
+        await supabase
+          .from('user_settings')
+          .update({ email: user.email, last_seen: new Date().toISOString() })
+          .eq('user_id', user.id);
+        return res.status(200).json(data);
+      } else {
+        // First time this user logs in — create their settings row
+        const { data: created, error: insertErr } = await supabase
+          .from('user_settings')
+          .insert({
+            user_id: user.id,
+            email: user.email,
+            target_grade: 80,
+            is_premium: false,
+            last_seen: new Date().toISOString(),
+          })
+          .select()
+          .single();
+        if (insertErr) throw insertErr;
+        return res.status(201).json(created);
+      }
     }
+
     if (req.method === 'POST' || req.method === 'PUT') {
       // is_premium is intentionally excluded — only settable via Supabase dashboard
       const { target_grade } = req.body;
@@ -40,18 +65,25 @@ export default async function handler(req, res) {
         if (error) throw error;
         return res.status(200).json(data);
       } else {
-        const { data, error } = await db
+        const { data, error } = await supabase
           .from('user_settings')
-          .insert({ user_id: user.id, target_grade: target_grade || 80, is_premium: false })
+          .insert({
+            user_id: user.id,
+            email: user.email,
+            target_grade: target_grade || 80,
+            is_premium: false,
+            last_seen: new Date().toISOString(),
+          })
           .select()
           .single();
         if (error) throw error;
         return res.status(201).json(data);
       }
     }
+
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
-    console.error('API error:', err);
+    console.error('Settings API error:', err);
     res.status(500).json({ error: err.message });
   }
 }

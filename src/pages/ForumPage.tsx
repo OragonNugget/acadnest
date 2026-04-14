@@ -110,7 +110,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
 
   const handleLike = async (id: number) => {
     try {
-      await fetch('/api/forum-like', {
+      await fetch('/api/forum?action=like', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeader },
         body: JSON.stringify({ id }),
@@ -124,7 +124,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
   const fetchReplies = async (postId: number) => {
     setRepliesLoading(r => ({ ...r, [postId]: true }));
     try {
-      const res = await fetch(`/api/forum-replies?post_id=${postId}`);
+      const res = await fetch(`/api/forum?action=replies&post_id=${postId}`);
       const data = await res.json();
       setReplies(r => ({ ...r, [postId]: data || [] }));
     } catch (err) {
@@ -152,7 +152,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
     setReplySending(r => ({ ...r, [postId]: true }));
     setReplyError(r => ({ ...r, [postId]: '' }));
     try {
-      const res = await fetch('/api/forum-replies', {
+      const res = await fetch('/api/forum?action=reply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeader },
         body: JSON.stringify({ post_id: postId, author, body }),
