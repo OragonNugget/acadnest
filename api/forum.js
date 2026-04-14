@@ -43,25 +43,31 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: authError });
     }
 
-    // POST /api/forum?action=like — like a post
+    // POST /api/forum?action=like — toggle like on a post
     if (req.method === 'POST' && action === 'like') {
       const { id } = req.body;
       if (!id) return res.status(400).json({ error: 'Post id is required' });
       const key = `${user.id}:${id}`;
       const now = Date.now();
       if (now - (likeCooldowns.get(key) || 0) < COOLDOWN_MS) {
-        return res.status(429).json({ error: 'Too many likes. Please wait before liking again.' });
+        return res.status(429).json({ error: 'Too many requests. Please wait.' });
       }
       likeCooldowns.set(key, now);
       const { data: post, error: getErr } = await supabase
-        .from('forum_posts').select('likes').eq('id', id).single();
+        .from('forum_posts').select('likes, liked_by').eq('id', id).single();
       if (getErr) throw getErr;
+      const likedBy = post.liked_by || [];
+      const alreadyLiked = likedBy.includes(user.id);
+      const newLikedBy = alreadyLiked
+        ? likedBy.filter((uid) => uid !== user.id)
+        : [...likedBy, user.id];
+      const newLikes = Math.max(0, (post.likes || 0) + (alreadyLiked ? -1 : 1));
       const { data, error } = await supabase
         .from('forum_posts')
-        .update({ likes: (post.likes || 0) + 1 })
+        .update({ likes: newLikes, liked_by: newLikedBy })
         .eq('id', id).select().single();
       if (error) throw error;
-      return res.status(200).json(data);
+      return res.status(200).json({ ...data, userLiked: !alreadyLiked });
     }
 
     // POST /api/forum?action=reply — add a reply (premium only)

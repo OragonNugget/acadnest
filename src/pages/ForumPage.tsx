@@ -19,6 +19,7 @@ interface ForumPost {
   category: string;
   is_premium_author: boolean;
   likes: number;
+  liked_by: string[];
   pinned: boolean;
   created_at: string;
 }
@@ -109,15 +110,26 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
   };
 
   const handleLike = async (id: number) => {
+    const userId = session?.user?.id ?? '';
+    // Optimistic update
+    setPosts(prev => prev.map(p => {
+      if (p.id !== id) return p;
+      const liked = p.liked_by?.includes(userId);
+      return {
+        ...p,
+        likes: Math.max(0, p.likes + (liked ? -1 : 1)),
+        liked_by: liked ? (p.liked_by || []).filter(u => u !== userId) : [...(p.liked_by || []), userId],
+      };
+    }));
     try {
       await fetch('/api/forum?action=like', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeader },
         body: JSON.stringify({ id }),
       });
-      await fetchPosts();
     } catch (err) {
       console.error('Like error:', err);
+      await fetchPosts(); // revert on error
     }
   };
 
@@ -307,9 +319,13 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
                           {/* Like button */}
                           <button
                             onClick={() => handleLike(post.id)}
-                            className="flex items-center gap-1 text-white/20 hover:text-red-400 transition-colors cursor-pointer ml-auto"
+                            className={`flex items-center gap-1 transition-colors cursor-pointer ml-auto ${
+                              post.liked_by?.includes(session?.user?.id ?? '')
+                                ? 'text-red-400 hover:text-red-300'
+                                : 'text-white/20 hover:text-red-400'
+                            }`}
                           >
-                            <Heart className="w-3 h-3" />
+                            <Heart className={`w-3 h-3 ${post.liked_by?.includes(session?.user?.id ?? '') ? 'fill-red-400' : ''}`} />
                             <span className="text-[10px]">{post.likes}</span>
                           </button>
                         </div>
