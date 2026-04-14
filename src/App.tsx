@@ -380,7 +380,7 @@ export default function App() {
 
   // Landing page
   if (appView === 'payment') {
-    return <PaymentPage onBack={() => setAppView('landing')} />;
+    return <PaymentPage onBack={() => setAppView('app')} />;
   }
 
   if (appView === 'cancel') {
