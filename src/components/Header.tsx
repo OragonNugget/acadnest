@@ -1,4 +1,5 @@
 import { Crown, Sparkles, MessageSquare, Library, LayoutDashboard, LogOut, GraduationCap } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 
 interface HeaderProps {
   isPremium: boolean;
@@ -6,26 +7,6 @@ interface HeaderProps {
   currentPage: string;
   onNavigate: (page: string) => void;
   onGoToLanding: () => void;
-}
-
-function AcadnestA() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <linearGradient id="acadnest-a-grad" x1="1" y1="0" x2="17" y2="18" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#F59E0B" />
-          <stop offset="50%" stopColor="#A855F7" />
-          <stop offset="100%" stopColor="#3B82F6" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M9.002 1.8c.33 0 .633.18.784.47l6.39 12.2a.86.86 0 0 1-.77 1.24H2.598a.86.86 0 0 1-.77-1.24l6.39-12.2c.151-.29.454-.47.784-.47Z"
-        fill="url(#acadnest-a-grad)"
-        opacity="0.95"
-      />
-      <path d="M6.85 11.8 9 7.95l2.15 3.85H6.85Z" fill="#0a0a0f" opacity="0.9" />
-    </svg>
-  );
 }
 
 export default function Header({ isPremium, onTogglePremium, currentPage, onNavigate, onGoToLanding }: HeaderProps) {
@@ -37,15 +18,15 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
   ];
 
   return (
-    <header className="w-full border-b border-white/[0.08] bg-black/15 backdrop-blur-xl sticky top-0 z-50">
+    <header className="w-full border-b border-white/[0.06] bg-[#0a0a0f]/80 backdrop-blur-xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2 sm:gap-4">
         <div className="flex items-center gap-3">
           <button onClick={() => onNavigate('dashboard')} className="flex items-center gap-3 cursor-pointer">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500/90 via-amber-400/90 to-sky-400/90 flex items-center justify-center shadow-lg shadow-black/40 border border-white/[0.10]">
-              <AcadnestA />
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+              <BrandLogo className="w-9 h-9" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-base font-bold text-white tracking-tight leading-none">Acadnest</h1>
+              <h1 className="text-base font-bold text-white tracking-tight leading-none">AcadNest</h1>
               <p className="text-[10px] text-white/35">Plan Smarter · Score Better</p>
             </div>
           </button>

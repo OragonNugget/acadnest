@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  GraduationCap, Crown, ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
+  Crown, ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
   Bot, BarChart3, Save, MessageSquare, Library, CheckCircle, Sparkles,
 } from 'lucide-react';
 import { PREMIUM_PRICE, PREMIUM_PRICE_PERIOD } from './PaymentPage';
+import BrandLogo from '../components/BrandLogo';
 
 interface Props {
   onEnterFree: () => void;
@@ -36,7 +37,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
 
 
   return (
-    <div className="acad-page text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden">
       {/* Ambient blurs */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-amber-500/[0.04] rounded-full blur-[150px]" />
@@ -47,10 +48,10 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       {/* Header */}
       <header className="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
-            <GraduationCap className="w-5 h-5 text-[#0a0a0f]" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/25">
+            <BrandLogo className="w-10 h-10" />
           </div>
-          <span className="text-lg font-bold tracking-tight">Acadnest</span>
+          <span className="text-lg font-bold tracking-tight">AcadNest</span>
         </div>
         <button
           onClick={() => setShowLogin(true)}
@@ -88,8 +89,8 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                 >✕</button>
 
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                    <GraduationCap className="w-4 h-4 text-[#0a0a0f]" />
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20">
+                    <BrandLogo className="w-8 h-8" />
                   </div>
                   <div>
                     <h2 className="text-sm font-bold text-white">Welcome back</h2>
@@ -265,10 +266,10 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       <footer className="relative z-10 border-t border-white/[0.04] py-8">
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-              <GraduationCap className="w-3 h-3 text-[#0a0a0f]" />
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20">
+              <BrandLogo className="w-6 h-6" />
             </div>
-            <span className="text-xs text-white/25">Acadnest</span>
+            <span className="text-xs text-white/25">AcadNest</span>
           </div>
           <p className="text-[10px] text-white/15">Crafted for students, by students.</p>
         </div>
