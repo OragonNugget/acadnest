@@ -37,28 +37,30 @@ export default function SavedGradesSidebar({
   };
 
   if (!isPremium) {
-      <div className="rounded-xl flex flex-col items-center justify-center text-center bg-surface border border-border p-6 shadow-sm">
-        <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center mb-3 border border-border">
-          <Lock className="w-4 h-4 text-muted/50" />
+    return (
+      <div className="acad-surface p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <Lock className="w-3.5 h-3.5 text-white/15" />
+          <h3 className="text-xs font-medium text-white/25">Saved Grades</h3>
         </div>
-        <h3 className="text-sm font-semibold text-muted font-sans mb-1">Saved Grades Locked</h3>
-        <p className="text-xs text-muted/60">Save & switch between multiple subjects</p>
+        <p className="text-[10px] text-white/15">Save & switch between multiple subjects</p>
       </div>
+    );
   }
 
   return (
     <motion.div
       layout
-      className="rounded-xl bg-surface border border-border overflow-hidden shadow-sm"
+      className="acad-surface-strong overflow-hidden"
     >
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full p-4 flex items-center gap-3 text-left cursor-pointer hover:bg-surface-hover transition-colors"
+        className="w-full p-4 flex items-center gap-2 text-left cursor-pointer"
       >
-        <BookMarked className="w-4 h-4 text-primary" />
-        <h3 className="text-sm font-semibold text-foreground flex-1">Saved Grades</h3>
-        <span className="text-[10px] font-mono text-muted bg-background border border-border px-1.5 py-0.5 rounded-md">{savedGrades.length}</span>
-        {collapsed ? <ChevronRight className="w-4 h-4 text-muted" /> : <ChevronLeft className="w-4 h-4 text-muted" />}
+        <BookMarked className="w-4 h-4 text-amber-400/60" />
+        <h3 className="text-xs font-semibold text-white/60 flex-1">Saved Grades</h3>
+        <span className="text-[10px] text-white/20">{savedGrades.length}</span>
+        {collapsed ? <ChevronRight className="w-3.5 h-3.5 text-white/20" /> : <ChevronLeft className="w-3.5 h-3.5 text-white/20" />}
       </button>
 
       <AnimatePresence>
@@ -73,58 +75,58 @@ export default function SavedGradesSidebar({
               {savedGrades.map(grade => (
                 <div
                   key={grade.id}
-                  className={`flex items-center gap-2 px-3 py-2.5 rounded-md transition-colors group ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors group ${
                     activeGradeId === grade.id
-                      ? 'bg-primary/10 border border-primary/20'
-                      : 'bg-background/50 border border-transparent hover:bg-surface-hover'
+                      ? 'bg-amber-400/10 border border-amber-400/20'
+                      : 'bg-white/[0.02] border border-transparent hover:bg-white/[0.04]'
                   }`}
                 >
                   <button
                     onClick={() => onLoad(grade)}
                     className="flex-1 text-left min-w-0 cursor-pointer"
                   >
-                    <p className="text-sm font-medium text-foreground truncate">{grade.name}</p>
-                    <p className="text-[11px] text-muted font-mono mt-0.5">
-                      {grade.current_grade.toFixed(1)}% · <span className="opacity-60">{new Date(grade.created_at).toLocaleDateString()}</span>
+                    <p className="text-[11px] font-medium text-white/60 truncate">{grade.name}</p>
+                    <p className="text-[10px] text-white/25">
+                      {grade.current_grade.toFixed(1)}% · {new Date(grade.created_at).toLocaleDateString()}
                     </p>
                   </button>
                   {activeGradeId === grade.id && (
                     <button
                       onClick={() => onUpdate(grade.id)}
-                      className="text-muted hover:text-primary cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                      className="text-white/20 hover:text-amber-400 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                       title="Update save"
                     >
-                      <Save className="w-3.5 h-3.5" />
+                      <Save className="w-3 h-3" />
                     </button>
                   )}
                   <button
                     onClick={() => onDelete(grade.id)}
-                    className="text-muted hover:text-destructive cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                    className="text-white/15 hover:text-red-400 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-3 h-3" />
                   </button>
                 </div>
               ))}
 
               {showSaveForm ? (
-                <div className="flex gap-2 items-center bg-background rounded-md p-2 border border-border">
+                <div className="flex gap-2 items-center acad-surface rounded-lg p-2">
                   <input
                     value={saveName}
                     onChange={e => setSaveName(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSave()}
                     placeholder="e.g. Calculus II"
-                    className="flex-1 bg-surface border border-border rounded px-2 py-1 text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors"
+                    className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1 text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
                     autoFocus
                   />
-                  <button onClick={handleSave} className="text-[11px] font-medium text-primary hover:text-primary-hover cursor-pointer px-1">Save</button>
-                  <button onClick={() => setShowSaveForm(false)} className="text-[11px] text-muted hover:text-foreground cursor-pointer px-1">✕</button>
+                  <button onClick={handleSave} className="text-[10px] text-amber-300 hover:text-amber-200 cursor-pointer">Save</button>
+                  <button onClick={() => setShowSaveForm(false)} className="text-[10px] text-white/25 hover:text-white/40 cursor-pointer">✕</button>
                 </div>
               ) : (
                 <button
                   onClick={() => setShowSaveForm(true)}
-                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-md bg-background border border-dashed border-border hover:border-border-hover hover:bg-surface-hover text-muted hover:text-foreground text-xs transition-colors cursor-pointer shadow-sm"
+                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-white/[0.02] hover:bg-white/[0.04] text-white/25 hover:text-white/40 text-[11px] transition-colors cursor-pointer"
                 >
-                  <Plus className="w-3 h-3" /> Save Current Model
+                  <Plus className="w-3 h-3" /> Save Current
                 </button>
               )}
             </div>

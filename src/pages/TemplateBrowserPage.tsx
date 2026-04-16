@@ -134,33 +134,33 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
     : templates;
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans">
-      <div className="fixed inset-0 pointer-events-none z-[-1]">
-        <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-primary/5 rounded-full blur-[150px]" />
+    <div className="acad-page text-white">
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-emerald-500/[0.02] rounded-full blur-[120px]" />
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl shadow-sm">
+      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-black/15 backdrop-blur-xl">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
-          <button onClick={onBack} className="flex items-center gap-1.5 text-muted hover:text-foreground text-sm cursor-pointer font-medium transition-colors">
+          <button onClick={onBack} className="flex items-center gap-1.5 text-white/40 hover:text-white/60 text-sm cursor-pointer">
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
-          <div className="flex-1 border-l border-border pl-4">
-            <h1 className="text-lg font-bold text-foreground">Template Library</h1>
-            <p className="text-[11px] text-muted font-medium mt-0.5">Pre-made grading systems from teachers & students</p>
+          <div className="flex-1">
+            <h1 className="text-lg font-bold text-white">Template Library</h1>
+            <p className="text-[11px] text-white/30">Pre-made grading systems from teachers & students</p>
           </div>
           {isPremium ? (
             <button
               onClick={() => setShowUpload(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-success border border-success/20 text-success-foreground text-xs font-semibold hover:opacity-90 cursor-pointer transition-opacity shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-400/15 text-emerald-300 text-xs font-medium hover:bg-emerald-400/25 cursor-pointer transition-colors"
             >
               <Upload className="w-3.5 h-3.5" /> Share Template
             </button>
           ) : (
             <div className="relative group">
-              <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface border border-border text-muted text-xs cursor-not-allowed shadow-sm font-semibold">
-                <Lock className="w-3 h-3 text-muted/50" /> Share
+              <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.02] text-white/20 text-xs cursor-not-allowed">
+                <Lock className="w-3 h-3" /> Share
               </button>
-              <div className="absolute bottom-full right-0 mb-2 px-2.5 py-1.5 bg-background border border-border rounded-md text-[10px] font-semibold text-muted whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">
+              <div className="absolute bottom-full right-0 mb-1 px-2 py-1 bg-[#1a1a2e] border border-white/[0.1] rounded text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                 Premium members can share templates
               </div>
             </div>
@@ -171,12 +171,12 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
       <main className="relative max-w-4xl mx-auto px-4 sm:px-6 py-6">
         {/* Search */}
         <div className="relative mb-6">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted/50" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by title, subject, or professor..."
-            className="w-full bg-surface border border-border rounded-xl pl-11 pr-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 shadow-sm transition-colors"
+            className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
           />
         </div>
 
@@ -185,64 +185,62 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl bg-surface border border-border p-6 mb-8 shadow-sm"
+            className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-5 mb-6"
           >
-            <div className="flex items-center justify-between mb-5 border-b border-border pb-3">
-              <h3 className="text-sm font-bold text-foreground">Share Your Grading System</h3>
-              <button onClick={() => setShowUpload(false)} className="text-muted hover:text-foreground cursor-pointer transition-colors p-1 bg-background border border-border rounded-md shadow-sm">
-                <X className="w-3.5 h-3.5" />
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-white/60">Share Your Grading System</h3>
+              <button onClick={() => setShowUpload(false)} className="text-white/20 hover:text-white/40 cursor-pointer">
+                <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-4 mb-5">
+            <div className="grid grid-cols-2 gap-3 mb-3">
               <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-muted block mb-1">Title *</label>
-                <input value={uploadTitle} onChange={e => setUploadTitle(e.target.value)} placeholder="e.g. Intro to Psychology" className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm" />
+                <label className="text-[10px] text-white/30 block mb-1">Title *</label>
+                <input value={uploadTitle} onChange={e => setUploadTitle(e.target.value)} placeholder="e.g. Intro to Psychology" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
               </div>
               <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-muted block mb-1">Subject / Course</label>
-                <input value={uploadSubject} onChange={e => setUploadSubject(e.target.value)} placeholder="e.g. PSY 101" className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm" />
+                <label className="text-[10px] text-white/30 block mb-1">Subject / Course</label>
+                <input value={uploadSubject} onChange={e => setUploadSubject(e.target.value)} placeholder="e.g. PSY 101" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
               </div>
               <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-muted block mb-1">Professor</label>
-                <input value={uploadProf} onChange={e => setUploadProf(e.target.value)} placeholder="e.g. Dr. Smith" className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm" />
+                <label className="text-[10px] text-white/30 block mb-1">Professor</label>
+                <input value={uploadProf} onChange={e => setUploadProf(e.target.value)} placeholder="e.g. Dr. Smith" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
               </div>
               <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-muted block mb-1">Your Name</label>
-                <input value={uploadAuthor} onChange={e => setUploadAuthor(e.target.value)} placeholder="Anonymous" className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm" />
+                <label className="text-[10px] text-white/30 block mb-1">Your Name</label>
+                <input value={uploadAuthor} onChange={e => setUploadAuthor(e.target.value)} placeholder="Anonymous" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
               </div>
             </div>
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-2">Components</p>
-            <div className="space-y-3 mb-5 p-4 rounded-lg border border-dashed border-border bg-background">
+            <p className="text-[10px] text-white/30 mb-2">Components</p>
+            <div className="space-y-2 mb-3">
               {uploadComponents.map((comp, i) => (
-                <div key={i} className="flex gap-3 items-center">
-                  <input value={comp.name} onChange={e => updateUploadRow(i, 'name', e.target.value)} placeholder="Component name" className="flex-1 bg-surface border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm font-medium" />
-                  <input value={comp.weight} onChange={e => updateUploadRow(i, 'weight', e.target.value)} placeholder="%" type="number" className="w-20 bg-surface border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm font-mono" />
+                <div key={i} className="flex gap-2 items-center">
+                  <input value={comp.name} onChange={e => updateUploadRow(i, 'name', e.target.value)} placeholder="Component name" className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1.5 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
+                  <input value={comp.weight} onChange={e => updateUploadRow(i, 'weight', e.target.value)} placeholder="%" type="number" className="w-16 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1.5 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
                   {uploadComponents.length > 1 && (
-                    <button onClick={() => removeUploadRow(i)} className="text-muted hover:text-destructive cursor-pointer transition-colors p-1"><X className="w-4 h-4" /></button>
+                    <button onClick={() => removeUploadRow(i)} className="text-white/15 hover:text-red-400 cursor-pointer"><X className="w-3 h-3" /></button>
                   )}
                 </div>
               ))}
-              <div className="flex items-center justify-between mt-2">
-                <button onClick={addUploadRow} className="text-xs font-semibold text-primary hover:text-primary-hover cursor-pointer transition-colors">+ Add component</button>
-                {(() => {
-                  const total = uploadComponents
-                    .filter(c => c.weight)
-                    .reduce((s, c) => s + (parseFloat(c.weight) || 0), 0);
-                  const ok = Math.abs(total - 100) < 0.01;
-                  return (
-                    <p className={`text-[11px] font-bold font-mono tracking-tight ${ok ? 'text-success' : total > 100 ? 'text-destructive' : 'text-muted'}`}>
-                      Total: {total.toFixed(1)}% {ok ? '✓' : `(needs ${(100 - total).toFixed(1)}% more)`}
-                    </p>
-                  );
-                })()}
-              </div>
+              <button onClick={addUploadRow} className="text-[10px] text-white/25 hover:text-white/40 cursor-pointer">+ Add component</button>
+              {(() => {
+                const total = uploadComponents
+                  .filter(c => c.weight)
+                  .reduce((s, c) => s + (parseFloat(c.weight) || 0), 0);
+                const ok = Math.abs(total - 100) < 0.01;
+                return (
+                  <p className={`text-[10px] font-medium mt-1 ${ok ? 'text-emerald-400/60' : total > 100 ? 'text-red-400/70' : 'text-white/25'}`}>
+                    Total: {total.toFixed(1)}% {ok ? '✓' : `(needs ${(100 - total).toFixed(1)}% more)`}
+                  </p>
+                );
+              })()}
             </div>
             {uploadError && (
-              <p className="text-[11px] font-semibold text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2 mb-4">
+              <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 mb-2">
                 {uploadError}
               </p>
             )}
-            <button onClick={handleUpload} disabled={uploading} className="px-5 py-2.5 rounded-md bg-success border border-success/20 text-success-foreground text-xs font-semibold uppercase tracking-wider hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-50 shadow-sm w-full sm:w-auto">
+            <button onClick={handleUpload} disabled={uploading} className="px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-300 text-sm font-medium hover:bg-emerald-400/30 transition-colors cursor-pointer disabled:opacity-50">
               {uploading ? 'Sharing...' : 'Share Template'}
             </button>
           </motion.div>
@@ -250,53 +248,53 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
 
         {/* Templates grid */}
         {loading ? (
-          <div className="text-center py-12"><p className="text-sm text-muted font-medium">Loading templates...</p></div>
+          <div className="text-center py-12"><p className="text-sm text-white/30">Loading templates...</p></div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-12 rounded-xl bg-surface border border-dashed border-border shadow-sm">
-            <BookOpen className="w-8 h-8 text-muted/50 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-muted">{search ? 'No templates match your search.' : 'No templates available yet.'}</p>
+          <div className="text-center py-12">
+            <BookOpen className="w-8 h-8 text-white/10 mx-auto mb-3" />
+            <p className="text-sm text-white/30">{search ? 'No templates match your search.' : 'No templates available yet.'}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filtered.map((tmpl, i) => (
               <motion.div
                 key={tmpl.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="rounded-xl bg-surface border border-border hover:border-border-hover transition-colors p-6 shadow-sm flex flex-col"
+                className="rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.1] transition-colors p-5"
               >
-                <div className="mb-4">
-                  <h3 className="text-sm font-bold text-foreground line-clamp-1">{tmpl.title}</h3>
+                <div className="mb-3">
+                  <h3 className="text-sm font-semibold text-white/80">{tmpl.title}</h3>
                   {(tmpl.subject || tmpl.professor) && (
-                    <p className="text-xs font-semibold text-muted mt-1 truncate">
+                    <p className="text-[11px] text-white/30 mt-0.5">
                       {tmpl.subject}{tmpl.subject && tmpl.professor ? ' · ' : ''}{tmpl.professor}
                     </p>
                   )}
                 </div>
-                <div className="flex flex-wrap gap-2 mb-5 flex-1">
+                <div className="flex flex-wrap gap-1.5 mb-3">
                   {tmpl.components.map((comp, j) => (
-                    <span key={j} className="text-[10px] px-2.5 py-1 rounded bg-background border border-border text-foreground font-medium shadow-sm">
-                      {comp.name} <span className="text-muted font-mono ml-0.5">({comp.weight}%)</span>
+                    <span key={j} className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.04] text-white/35">
+                      {comp.name} ({comp.weight}%)
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5" title="Author">
-                      <User className="w-3.5 h-3.5 text-muted" />
-                      <span className="text-[11px] font-semibold text-muted truncate max-w-[80px]">{tmpl.author}</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
+                      <User className="w-3 h-3 text-white/20" />
+                      <span className="text-[10px] text-white/25">{tmpl.author}</span>
                     </div>
-                    <div className="flex items-center gap-1.5" title="Downloads">
-                      <Download className="w-3.5 h-3.5 text-muted" />
-                      <span className="text-[11px] font-mono font-semibold text-muted">{tmpl.downloads}</span>
+                    <div className="flex items-center gap-1">
+                      <Download className="w-3 h-3 text-white/20" />
+                      <span className="text-[10px] text-white/25">{tmpl.downloads}</span>
                     </div>
                   </div>
                   <button
                     onClick={() => handleApply(tmpl)}
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-transparent border border-primary/20 hover:bg-primary/5 hover:border-primary/50 text-primary text-[11px] font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-sm"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-400/15 text-amber-300 text-[11px] font-medium hover:bg-amber-400/25 transition-colors cursor-pointer"
                   >
-                    <Download className="w-3.5 h-3.5" /> Use
+                    <Download className="w-3 h-3" /> Use Template
                   </button>
                 </div>
               </motion.div>

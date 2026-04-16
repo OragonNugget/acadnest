@@ -36,25 +36,25 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
 
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden font-sans">
+    <div className="acad-page text-white overflow-x-hidden">
       {/* Ambient blurs */}
-      <div className="fixed inset-0 pointer-events-none z-[-1]">
-        <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[180px]" />
-        <div className="absolute top-[40%] right-[30%] w-[300px] h-[300px] bg-primary/5 rounded-full blur-[120px]" />
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-amber-500/[0.04] rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-orange-600/[0.03] rounded-full blur-[180px]" />
+        <div className="absolute top-[40%] right-[30%] w-[300px] h-[300px] bg-cyan-500/[0.02] rounded-full blur-[120px]" />
       </div>
 
       {/* Header */}
       <header className="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-            <GraduationCap className="w-5 h-5 text-primary-foreground" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
+            <GraduationCap className="w-5 h-5 text-[#0a0a0f]" />
           </div>
-          <span className="text-xl font-black tracking-tight text-foreground">AcadNest</span>
+          <span className="text-lg font-bold tracking-tight">Acadnest</span>
         </div>
         <button
           onClick={() => setShowLogin(true)}
-          className="flex items-center gap-1.5 text-xs font-bold text-muted hover:text-foreground cursor-pointer transition-colors px-3 py-1.5 rounded bg-surface border border-border shadow-sm"
+          className="flex items-center gap-1.5 text-[11px] text-white/30 hover:text-white/60 cursor-pointer transition-colors"
         >
           Have an account? Log in
         </button>
@@ -79,27 +79,27 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
               className="fixed inset-0 z-50 flex items-center justify-center px-4 pointer-events-none"
             >
               <div
-                className="w-full max-w-sm rounded-2xl bg-background border border-border p-8 shadow-2xl pointer-events-auto relative"
+                className="w-full max-w-sm rounded-2xl bg-[#111118] border border-white/[0.1] p-7 shadow-2xl shadow-black/60 pointer-events-auto relative"
                 onClick={e => e.stopPropagation()}
               >
                 <button
                   onClick={() => setShowLogin(false)}
-                  className="absolute top-4 right-4 text-muted hover:text-foreground cursor-pointer text-xs transition-colors p-1"
+                  className="absolute top-4 right-4 text-white/20 hover:text-white/50 cursor-pointer text-xs"
                 >✕</button>
 
-                <div className="flex items-center gap-4 mb-8 border-b border-border pb-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-sm">
-                    <GraduationCap className="w-6 h-6 text-primary-foreground" />
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                    <GraduationCap className="w-4 h-4 text-[#0a0a0f]" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-black text-foreground">Welcome back</h2>
-                    <p className="text-xs font-semibold text-muted">Sign in to your nest</p>
+                    <h2 className="text-sm font-bold text-white">Welcome back</h2>
+                    <p className="text-[10px] text-white/30">Sign in to your nest</p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => { setShowLogin(false); onEnterFree(); }}
-                  className="w-full py-3 rounded-lg bg-surface border border-border text-sm font-bold text-foreground hover:bg-surface-hover hover:border-border-hover transition-colors cursor-pointer flex items-center justify-center gap-3 shadow-sm"
+                  className="w-full py-2.5 rounded-lg bg-white/[0.06] border border-white/[0.12] text-sm font-medium text-white/80 hover:bg-white/[0.1] transition-colors cursor-pointer flex items-center justify-center gap-2.5"
                 >
                   <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
@@ -116,48 +116,48 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       </AnimatePresence>
 
       {/* Hero */}
-      <section className="relative z-10 max-w-6xl mx-auto px-6 pt-20 pb-28 text-center">
+      <section className="relative z-10 max-w-6xl mx-auto px-6 pt-16 pb-24 text-center">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-8 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span className="text-[11px] text-primary font-bold uppercase tracking-wider">Your personal grade strategy hub</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/[0.08] border border-amber-400/15 mb-8">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-[11px] text-amber-300/80 font-medium">Your personal grade strategy hub</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black leading-[1.05] mb-6 tracking-tighter">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight">
             Know your grade.
             <br />
-            <span className="text-primary drop-shadow-md">
+            <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500 bg-clip-text text-transparent">
               Own your strategy.
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-muted max-w-2xl mx-auto mb-14 leading-relaxed font-medium">
+          <p className="text-base sm:text-lg text-white/35 max-w-2xl mx-auto mb-12 leading-relaxed">
             Calculate weighted grades, detect weak areas, and get AI-powered strategies
             to hit your target. Stop guessing — start forging.
           </p>
 
           {/* CTA Cards */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-stretch max-w-2xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch max-w-xl mx-auto">
             {/* Free card */}
             <motion.button
               onClick={onEnterFree}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="flex-1 rounded-2xl bg-surface border border-border p-8 text-left cursor-pointer transition-colors hover:border-primary/50 group shadow-sm flex flex-col"
+              className="flex-1 rounded-2xl bg-white/[0.03] border border-white/[0.08] p-6 text-left cursor-pointer transition-colors hover:bg-white/[0.05] hover:border-white/[0.12] group"
             >
-              <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
-                <span className="text-xs font-bold text-muted uppercase tracking-widest">Free</span>
-                <span className="text-2xl font-black text-foreground">₱0</span>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs font-semibold text-white/50 uppercase tracking-wider">Free</span>
+                <span className="text-xl font-bold text-white/70">₱0</span>
               </div>
-              <ul className="space-y-3 mb-8 flex-1">
+              <ul className="space-y-2 mb-5">
                 {['Grade calculator', 'Add components & entries', 'View results', 'Browse & read forum posts', 'Browse template library'].map(f => (
-                  <li key={f} className="flex items-center gap-2.5 text-xs text-muted font-medium">
-                    <CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0" />{f}
+                  <li key={f} className="flex items-center gap-2 text-[11px] text-white/35">
+                    <CheckCircle className="w-3 h-3 text-white/20 flex-shrink-0" />{f}
                   </li>
                 ))}
               </ul>
-              <div className="flex items-center gap-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors mt-auto">
-                Enter Free <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <div className="flex items-center gap-2 text-sm font-medium text-white/50 group-hover:text-white/70 transition-colors">
+                Enter Free <ArrowRight className="w-4 h-4" />
               </div>
             </motion.button>
 
@@ -166,30 +166,30 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
               onClick={onGoToPayment}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="flex-1 rounded-2xl bg-accent/5 border-2 border-accent/20 p-8 text-left cursor-pointer transition-all hover:border-accent/40 hover:bg-accent/10 group relative overflow-hidden flex flex-col shadow-md shadow-accent/5"
+              className="flex-1 rounded-2xl bg-gradient-to-br from-amber-400/[0.08] to-orange-500/[0.04] border border-amber-400/20 p-6 text-left cursor-pointer transition-colors hover:border-amber-400/35 group relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-[50px] pointer-events-none" />
-              <div className="relative flex-1 flex flex-col">
-                <div className="flex items-center justify-between mb-6 border-b border-accent/20 pb-4">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400/[0.06] rounded-full blur-[40px]" />
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <Crown className="w-5 h-5 text-accent" />
-                    <span className="text-xs font-bold text-accent uppercase tracking-widest">Premium</span>
+                    <Crown className="w-4 h-4 text-amber-400" />
+                    <span className="text-xs font-semibold text-amber-300/80 uppercase tracking-wider">Premium</span>
                   </div>
                   {/* Edit price in PaymentPage.tsx → PREMIUM_PRICE / PREMIUM_PRICE_PERIOD */}
                   <div className="text-right">
-                    <span className="text-2xl font-black text-foreground">{PREMIUM_PRICE}</span>
-                    <span className="text-[10px] font-bold text-muted ml-1 uppercase tracking-wider">{PREMIUM_PRICE_PERIOD}</span>
+                    <span className="text-xl font-bold text-amber-300">{PREMIUM_PRICE}</span>
+                    <span className="text-[10px] text-amber-300/40 ml-1">{PREMIUM_PRICE_PERIOD}</span>
                   </div>
                 </div>
-                <ul className="space-y-3 mb-8 flex-1">
+                <ul className="space-y-2 mb-5">
                   {['Everything in Free', 'GWA Calculator', 'Full Template Library (share & apply)', 'Post in Community Forum', 'AI Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Scenario simulator', 'No ads'].map(f => (
-                    <li key={f} className="flex items-start gap-2.5 text-xs text-foreground font-medium">
-                      <CheckCircle className="w-3.5 h-3.5 text-accent flex-shrink-0 mt-0.5" />{f}
+                    <li key={f} className="flex items-center gap-2 text-[11px] text-amber-200/50">
+                      <CheckCircle className="w-3 h-3 text-amber-400/50 flex-shrink-0" />{f}
                     </li>
                   ))}
                 </ul>
-                <div className="flex items-center gap-2 text-sm font-bold text-accent group-hover:text-accent-foreground transition-colors mt-auto">
-                  Get Premium <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <div className="flex items-center gap-2 text-sm font-medium text-amber-300 group-hover:text-amber-200 transition-colors">
+                  Get Premium <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
             </motion.button>
@@ -198,21 +198,21 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       </section>
 
       {/* Strategy showcase */}
-      <section className="relative z-10 max-w-6xl mx-auto px-6 py-24">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-black mb-4 tracking-tight">5 Strategies. One Nest.</h2>
-          <p className="text-sm font-medium text-muted">Mathematically grounded — no guesswork, no surprises.</p>
+      <section className="relative z-10 max-w-6xl mx-auto px-6 py-20">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3">5 Strategies. One Nest.</h2>
+          <p className="text-sm text-white/30">Mathematically grounded — no guesswork, no surprises.</p>
         </motion.div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {strategies.map((s, i) => {
             const Icon = s.icon;
             return (
-              <motion.div key={s.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className="rounded-2xl bg-surface border border-border p-6 hover:border-border-hover transition-colors shadow-sm flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border border-border/50 shadow-sm" style={{ backgroundColor: `${s.color}10`, borderColor: `${s.color}20` }}>
-                  <Icon className="w-5 h-5" style={{ color: s.color }} />
+              <motion.div key={s.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-4 hover:border-white/[0.1] transition-colors">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-3" style={{ backgroundColor: `${s.color}15` }}>
+                  <Icon className="w-4 h-4" style={{ color: s.color }} />
                 </div>
-                <h3 className="text-sm font-bold text-foreground mb-2">{s.name}</h3>
-                <p className="text-[11px] font-medium text-muted leading-relaxed">{s.desc}</p>
+                <h3 className="text-xs font-semibold text-white/70 mb-1">{s.name}</h3>
+                <p className="text-[10px] text-white/25 leading-relaxed">{s.desc}</p>
               </motion.div>
             );
           })}
@@ -220,27 +220,25 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       </section>
 
       {/* Features grid */}
-      <section className="relative z-10 max-w-6xl mx-auto px-6 py-24">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-black mb-4 tracking-tight">Everything in One Place</h2>
-          <p className="text-sm font-medium text-muted">Free gets you settled. Premium makes it home.</p>
+      <section className="relative z-10 max-w-6xl mx-auto px-6 py-20">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3">Everything in One Place</h2>
+          <p className="text-sm text-white/30">Free gets you settled. Premium makes it home.</p>
         </motion.div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {features.map((f, i) => {
             const Icon = f.icon;
             return (
-              <motion.div key={f.title} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} className="rounded-2xl bg-surface border border-border p-6 hover:border-primary/30 transition-colors shadow-sm">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-background border border-border rounded-lg shadow-sm">
-                    <Icon className="w-4 h-4 text-foreground/70" />
-                  </div>
-                  <h3 className="text-xs font-bold text-foreground">{f.title}</h3>
+              <motion.div key={f.title} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-4 hover:border-white/[0.1] transition-colors">
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon className="w-4 h-4 text-white/30" />
+                  <h3 className="text-xs font-semibold text-white/60">{f.title}</h3>
                   {f.free
-                    ? <span className="text-[9px] font-bold px-2 py-0.5 rounded-sm bg-background border border-border text-muted uppercase tracking-wider ml-auto">Free</span>
-                    : <span className="text-[9px] font-bold px-2 py-0.5 rounded-sm bg-accent/10 border border-accent/20 text-accent uppercase tracking-wider ml-auto">Pro</span>
+                    ? <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-white/[0.06] text-white/30 ml-auto">Free</span>
+                    : <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-amber-400/10 text-amber-400/60 ml-auto">Pro</span>
                   }
                 </div>
-                <p className="text-xs font-medium text-muted leading-relaxed">{f.desc}</p>
+                <p className="text-[10px] text-white/20 leading-relaxed">{f.desc}</p>
               </motion.div>
             );
           })}
@@ -248,15 +246,15 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       </section>
 
       {/* Bottom CTA */}
-      <section className="relative z-10 max-w-3xl mx-auto px-6 py-24 text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-3xl bg-surface border-2 border-border p-12 shadow-lg shadow-black/5">
-          <h2 className="text-3xl font-black mb-4 tracking-tight">Ready to build your nest?</h2>
-          <p className="text-sm font-medium text-muted mb-10">Join students who stopped guessing and started owning their grades.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onClick={onEnterFree} className="px-8 py-3.5 rounded-xl bg-background border border-border text-sm font-bold text-foreground hover:bg-surface-hover transition-colors cursor-pointer shadow-sm">
+      <section className="relative z-10 max-w-3xl mx-auto px-6 py-20 text-center">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-2xl bg-gradient-to-br from-amber-400/[0.06] to-orange-500/[0.03] border border-amber-400/15 p-10">
+          <h2 className="text-2xl font-bold mb-3">Ready to build your nest?</h2>
+          <p className="text-sm text-white/30 mb-8">Join students who stopped guessing and started owning their grades.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button onClick={onEnterFree} className="px-6 py-3 rounded-xl bg-white/[0.06] border border-white/[0.1] text-sm font-medium text-white/60 hover:bg-white/[0.1] hover:text-white/80 transition-colors cursor-pointer">
               Start Free
             </button>
-            <button onClick={onGoToPayment} className="px-8 py-3.5 rounded-xl bg-accent text-accent-foreground border border-accent/20 text-sm font-bold hover:brightness-110 transition-all cursor-pointer flex items-center gap-2 justify-center shadow-md">
+            <button onClick={onGoToPayment} className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400/25 to-orange-500/20 border border-amber-400/25 text-sm font-medium text-amber-300 hover:from-amber-400/35 hover:to-orange-500/30 transition-all cursor-pointer flex items-center gap-2 justify-center">
               <Crown className="w-4 h-4" /> Go Premium
             </button>
           </div>
@@ -264,15 +262,15 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-border py-10 bg-background text-center">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col items-center gap-4">
-          <div className="flex items-center gap-2 opacity-80">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-sm">
-              <GraduationCap className="w-4 h-4 text-primary-foreground" />
+      <footer className="relative z-10 border-t border-white/[0.04] py-8">
+        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+              <GraduationCap className="w-3 h-3 text-[#0a0a0f]" />
             </div>
-            <span className="text-sm font-black tracking-tight text-foreground">AcadNest</span>
+            <span className="text-xs text-white/25">Acadnest</span>
           </div>
-          <p className="text-xs font-semibold text-muted uppercase tracking-widest">Crafted for students, by students.</p>
+          <p className="text-[10px] text-white/15">Crafted for students, by students.</p>
         </div>
       </footer>
     </div>

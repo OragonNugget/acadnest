@@ -33,12 +33,12 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
 
   if (!isPremium) {
     return (
-      <div className="rounded-xl flex flex-col items-center justify-center text-center bg-surface border border-border p-6 shadow-sm">
-        <div className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center mb-3">
-          <Lock className="w-4 h-4 text-muted/50" />
+      <div className="acad-surface-soft p-5">
+        <div className="flex items-center gap-2 mb-2">
+          <Lock className="w-4 h-4 text-white/15" />
+          <h2 className="text-sm font-medium text-white/25">Scenario Simulator</h2>
         </div>
-        <h2 className="text-sm font-semibold text-muted font-sans mb-1">Scenario Simulator Locked</h2>
-        <p className="text-xs text-muted/60">Premium feature — test "what if" scenarios</p>
+        <p className="text-[11px] text-white/15">Premium feature — test "what if" scenarios</p>
       </div>
     );
   }
@@ -49,26 +49,26 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-xl bg-surface border border-border overflow-hidden shadow-sm"
+      className="acad-surface-glass-strong bg-gradient-to-br from-purple-500/[0.03] to-blue-500/[0.02] p-5"
     >
-      <div className="flex items-center justify-between p-5 border-b border-border bg-background/50">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Beaker className="w-4 h-4 text-accent" />
-          <h2 className="text-sm font-semibold text-foreground">Scenario Simulator</h2>
+          <Beaker className="w-4 h-4 text-purple-400/70" />
+          <h2 className="text-sm font-semibold text-white/70">Scenario Simulator</h2>
         </div>
         <div className="flex gap-2">
           {active && (
             <button
               onClick={() => { setScenarios({}); setActive(false); }}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-transparent text-muted text-[11px] font-medium hover:text-foreground hover:bg-surface-hover cursor-pointer transition-colors"
+              className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/[0.04] text-white/30 text-[11px] hover:bg-white/[0.08] cursor-pointer"
             >
-              <RotateCcw className="w-3.5 h-3.5" /> Reset
+              <RotateCcw className="w-3 h-3" /> Reset
             </button>
           )}
           <button
             onClick={() => setActive(!active)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-semibold tracking-wide uppercase cursor-pointer transition-colors ${
-              active ? 'bg-accent/10 border border-accent/20 text-accent' : 'bg-surface border border-border text-muted hover:text-foreground hover:bg-surface-hover hover:border-border-hover'
+            className={`flex items-center gap-1 px-3 py-1 rounded-md text-[11px] font-medium cursor-pointer transition-colors ${
+              active ? 'bg-purple-500/20 text-purple-300' : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
             }`}
           >
             <Play className="w-3 h-3" /> {active ? 'Active' : 'Simulate'}
@@ -77,14 +77,14 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
       </div>
 
       {active && (
-        <div className="p-5 space-y-3">
-          <p className="text-[11px] text-muted mb-4 uppercase tracking-wider font-medium">Enter hypothetical scores (0–100) for incomplete components:</p>
+        <div className="space-y-2">
+          <p className="text-[11px] text-white/30 mb-3">Enter hypothetical scores (0–100) for incomplete components:</p>
           {incompleteComponents.length === 0 ? (
-            <p className="text-xs text-muted text-center py-4 border border-dashed border-border rounded-lg">All components are marked as done.</p>
+            <p className="text-xs text-white/20 text-center py-2">All components are marked as done.</p>
           ) : (
             incompleteComponents.map(comp => (
-              <div key={comp.id} className="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-background border border-border">
-                <span className="text-xs font-medium text-foreground flex-1">{comp.name}</span>
+              <div key={comp.id} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.02]">
+                <span className="text-xs text-white/50 flex-1">{comp.name}</span>
                 <input
                   type="number"
                   min={0}
@@ -101,18 +101,18 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
                     }
                   }}
                   placeholder="—"
-                  className="w-16 bg-surface border border-border rounded px-2 py-1.5 text-xs text-foreground font-mono text-center focus:outline-none focus:border-accent/50 transition-colors shadow-sm"
+                  className="w-16 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1 text-xs text-white text-center focus:outline-none focus:border-purple-400/40"
                 />
               </div>
             ))
           )}
 
           {simulatedResult && (
-            <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted uppercase tracking-wider">Simulated Grade</span>
-              <span className={`text-xl font-bold font-mono tracking-tight ${
-                simulatedResult.currentGrade >= 80 ? 'text-success' :
-                simulatedResult.currentGrade >= 60 ? 'text-amber-500' : 'text-destructive'
+            <div className="mt-3 pt-3 border-t border-white/[0.04] flex items-center justify-between">
+              <span className="text-[11px] text-white/30">Simulated Grade</span>
+              <span className={`text-lg font-bold ${
+                simulatedResult.currentGrade >= 80 ? 'text-emerald-400' :
+                simulatedResult.currentGrade >= 60 ? 'text-amber-400' : 'text-red-400'
               }`}>
                 {simulatedResult.currentGrade.toFixed(1)}%
               </span>

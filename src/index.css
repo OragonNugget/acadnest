@@ -1,44 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #09090b;
-  --color-foreground: #fafafa;
-  --color-muted: #a1a1aa;
-  --color-muted-foreground: #a1a1aa;
-  --color-surface: #18181b;
-  --color-surface-hover: #27272a;
-  --color-border: #27272a;
-  --color-border-hover: #3f3f46;
-  --color-primary: #6366f1;
-  --color-primary-hover: #4f46e5;
-  --color-primary-light: #818cf8;
-  --color-accent: #8b5cf6;
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #fef2f2;
-  --color-success: #10b981;
-  --color-success-foreground: #ecfdf5;
-
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --color-background: #0a0a0f;
+  --color-foreground: #ffffff;
+  --color-primary: #f59e0b;
+  --color-primary-light: #fbbf24;
+  --color-surface: rgba(255, 255, 255, 0.02);
+  --color-border: rgba(255, 255, 255, 0.06);
+  --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: 'DM Sans';
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyeMZhrib2Bg-4.ttf) format('truetype');
+  src: url(https://fonts.gstatic.com/s/dmsans/v15/rP2tp2ywxg089UriI5-g4vlH9VoD8CmcqZG40F9JadbnoEwAopxhS23bUA.woff2) format('woff2');
 }
 
 html {
@@ -47,13 +25,173 @@ html {
 }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+  background-color: #0a0a0f;
+  color: #ffffff;
+  font-family: var(--font-sans);
 }
 
-::selection {
-  background: var(--color-primary);
-  color: #fff;
+/* Make the entire app look intentional (grid + soft glow + subtle grain). */
+.acad-page {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  background:
+    radial-gradient(900px 520px at 16% 8%, rgba(245, 158, 11, 0.18), transparent 56%),
+    radial-gradient(1000px 600px at 86% 24%, rgba(59, 130, 246, 0.14), transparent 60%),
+    radial-gradient(900px 520px at 58% 92%, rgba(168, 85, 247, 0.10), transparent 55%),
+    linear-gradient(180deg, #0a0a0f 0%, #0a0a0f 100%);
+}
+
+.acad-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.18;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(circle at 50% 25%, black 0%, transparent 70%);
+}
+
+.acad-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.10;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  mix-blend-mode: overlay;
+}
+
+.acad-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Shared UI primitives */
+.acad-surface {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.40);
+  backdrop-filter: blur(14px);
+}
+
+.acad-surface-glass {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.40);
+  backdrop-filter: blur(14px);
+}
+
+.acad-surface-glass-strong {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow: 0 28px 96px rgba(0, 0, 0, 0.46);
+  backdrop-filter: blur(16px);
+}
+
+.acad-surface-soft {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(12px);
+}
+
+.acad-surface-strong {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow: 0 28px 96px rgba(0, 0, 0, 0.46);
+  backdrop-filter: blur(16px);
+}
+
+.acad-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 12px;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.70);
+  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease, color 140ms ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.acad-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.acad-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.acad-btn-primary {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(234, 88, 12, 0.12));
+  border-color: rgba(245, 158, 11, 0.35);
+  color: rgba(255, 214, 120, 0.95);
+}
+
+.acad-btn-primary:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.30), rgba(234, 88, 12, 0.18));
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.acad-btn-danger {
+  background: rgba(239, 68, 68, 0.10);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: rgba(255, 165, 165, 0.95);
+}
+
+.acad-btn-danger:hover {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.32);
+}
+
+.acad-input {
+  width: 100%;
+  border-radius: 12px;
+  padding: 0.6rem 0.8rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.90);
+  outline: none;
+}
+
+.acad-input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.acad-input:focus {
+  border-color: rgba(245, 158, 11, 0.40);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.10);
+}
+
+/* Better typography defaults */
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+}
+
+.acad-title {
+  font-weight: 800;
+}
+
+.acad-muted {
+  color: rgba(255, 255, 255, 0.40);
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -63,7 +201,6 @@ input[type="number"]::-webkit-outer-spin-button {
 
 ::-webkit-scrollbar {
   width: 6px;
-  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -71,10 +208,10 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-border-hover);
+  background: rgba(255, 255, 255, 0.15);
 }

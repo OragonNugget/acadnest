@@ -404,16 +404,16 @@ export default function App() {
     );
   }
 
-    if (authLoading || loading) {
+  if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="acad-page flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="flex flex-col items-center gap-4"
         >
-          <Loader2 className="w-8 h-8 text-primary animate-spin" />
-          <p className="text-sm font-semibold text-muted">Loading AcadNest...</p>
+          <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+          <p className="text-sm text-white/30">Loading Acadnest...</p>
         </motion.div>
       </div>
     );
@@ -432,12 +432,12 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans">
+    <div className="acad-page text-white">
       <AdBanner variant="top" isPremium={settings.is_premium} />
 
-      <div className="fixed inset-0 pointer-events-none z-[-1]">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-accent/5 rounded-full blur-[150px]" />
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/[0.015] rounded-full blur-[130px]" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/[0.015] rounded-full blur-[130px]" />
       </div>
 
       <Header
@@ -448,7 +448,7 @@ export default function App() {
         onGoToLanding={goToLanding}
       />
 
-      <main className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <main className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {saving && (
           <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20">
             <Loader2 className="w-3 h-3 text-amber-400 animate-spin" />
@@ -488,22 +488,21 @@ export default function App() {
 
             <AdBanner variant="inline" isPremium={settings.is_premium} />
 
-
             <div>
-              <div className="flex items-center justify-between mb-4 border-b border-border pb-3">
-                <h2 className="text-sm font-bold text-foreground tracking-wide">Components</h2>
-                <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-xs font-semibold text-white/40 uppercase tracking-wider">Components</h2>
+                <div className="flex items-center gap-2">
                   {components.length > 0 && (
                     <div className="relative">
                       {showClearConfirm ? (
-                        <div className="flex items-center gap-2 bg-destructive/10 border border-destructive/20 rounded-md px-2.5 py-1.5 shadow-sm">
-                          <span className="text-xs font-semibold text-destructive">Clear all?</span>
-                          <button onClick={clearAllComponents} className="text-xs text-destructive hover:text-destructive-foreground hover:bg-destructive rounded px-2 py-0.5 cursor-pointer transition-colors font-medium">Yes</button>
-                          <button onClick={() => setShowClearConfirm(false)} className="text-xs text-muted hover:text-foreground cursor-pointer transition-colors font-medium">No</button>
+                        <div className="flex items-center gap-1.5 bg-red-500/10 border border-red-500/20 rounded-lg px-2 py-1">
+                          <span className="text-[10px] text-red-300">Clear all?</span>
+                          <button onClick={clearAllComponents} className="text-[10px] text-red-400 font-medium hover:text-red-300 cursor-pointer px-1">Yes</button>
+                          <button onClick={() => setShowClearConfirm(false)} className="text-[10px] text-white/30 hover:text-white/50 cursor-pointer px-1">No</button>
                         </div>
                       ) : (
-                        <button onClick={() => setShowClearConfirm(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface border border-border hover:border-destructive/30 hover:bg-destructive/10 text-muted hover:text-destructive text-[11px] font-semibold transition-colors cursor-pointer shadow-sm">
-                          <Trash2 className="w-3.5 h-3.5" /> Clear All
+                        <button onClick={() => setShowClearConfirm(true)} className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-red-500/10 text-white/25 hover:text-red-400 text-[10px] transition-colors cursor-pointer">
+                          <Trash2 className="w-3 h-3" /> Clear All
                         </button>
                       )}
                     </div>
@@ -513,13 +512,12 @@ export default function App() {
                     currentComponents={components.map(c => ({ name: c.name, weight: c.weight }))}
                     onApplyTemplate={applyTemplate}
                   />
-                  <div className="h-4 w-[1px] bg-border" />
-                  <span className="text-xs font-mono font-medium text-muted bg-surface border border-border px-2 py-1 rounded-md shadow-sm">
+                  <span className="text-[10px] text-white/20">
                     {components.reduce((s, c) => s + c.weight, 0)}% total
                   </span>
                 </div>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <AnimatePresence initial={false}>
                   {components.map(comp => (
                     <ComponentCard
@@ -568,22 +566,22 @@ export default function App() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-12 rounded-xl bg-surface border border-border p-6 shadow-sm"
+            className="mt-10 acad-surface-soft p-6"
           >
-            <h3 className="text-sm font-semibold text-foreground mb-4">Mathematical Model</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-[11px] text-muted leading-relaxed font-mono">
-              <div className="bg-background rounded-lg border border-border p-4">
-                <p className="text-foreground font-sans font-semibold mb-2">Component Average</p>
-                <p className="text-primary">avg = (Σ(score÷max) ÷ n) × 100</p>
+            <h3 className="text-sm font-semibold text-white/40 mb-3">Mathematical Model</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-[11px] text-white/25 leading-relaxed font-mono">
+              <div>
+                <p className="text-white/40 font-sans font-medium mb-1">Component Average</p>
+                <p>avg = (Σ(score÷max) ÷ n) × 100</p>
               </div>
-              <div className="bg-background rounded-lg border border-border p-4">
-                <p className="text-foreground font-sans font-semibold mb-2">Weighted Final Grade</p>
-                <p className="text-accent">grade = Σ(avgᵢ × weightᵢ) ÷ Σ(weights)</p>
+              <div>
+                <p className="text-white/40 font-sans font-medium mb-1">Weighted Final Grade</p>
+                <p>grade = Σ(avgᵢ × weightᵢ) ÷ Σ(weights)</p>
               </div>
-              <div className="bg-background rounded-lg border border-border p-4">
-                <p className="text-foreground font-sans font-semibold mb-2">Potential Range</p>
-                <p className="text-success">max = current + remaining×100</p>
-                <p className="text-destructive">min = current + remaining×0</p>
+              <div>
+                <p className="text-white/40 font-sans font-medium mb-1">Potential Range</p>
+                <p>max = current + remaining×100</p>
+                <p>min = current + remaining×0</p>
               </div>
             </div>
           </motion.div>

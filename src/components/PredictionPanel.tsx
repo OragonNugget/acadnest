@@ -51,24 +51,24 @@ export default function PredictionPanel({ prediction, isPremium, currentGrade }:
 
   if (!isPremium) {
     return (
-      <div className="rounded-xl flex flex-col items-center justify-center text-center bg-surface border border-border p-6 shadow-sm">
-        <div className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center mb-3">
-          <Lock className="w-4 h-4 text-muted/50" />
+      <div className="acad-surface-soft p-5">
+        <div className="flex items-center gap-2 mb-2">
+          <Lock className="w-3.5 h-3.5 text-white/15" />
+          <h3 className="text-xs font-medium text-white/25">Grade Prediction</h3>
         </div>
-        <h3 className="text-sm font-semibold text-muted font-sans mb-1">Grade Prediction Locked</h3>
-        <p className="text-xs text-muted/60 mb-2">Premium feature — AI trend analysis & forecasting</p>
+        <p className="text-[10px] text-white/15">Premium feature — AI trend analysis & forecasting</p>
       </div>
     );
   }
 
   if (!prediction || prediction.componentTrends.length === 0) {
     return (
-      <div className="rounded-xl flex flex-col items-center justify-center text-center bg-surface border border-border p-6 shadow-sm">
-        <div className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center mb-3">
-          <Activity className="w-4 h-4 text-primary" />
+      <div className="acad-surface-soft p-5">
+        <div className="flex items-center gap-2 mb-2">
+          <Activity className="w-4 h-4 text-white/20" />
+          <h3 className="text-xs font-medium text-white/40">Grade Prediction</h3>
         </div>
-        <h3 className="text-sm font-semibold text-muted font-sans mb-1">Need More Data</h3>
-        <p className="text-xs text-muted/60">Add more entries (2+ per component) to see trend predictions.</p>
+        <p className="text-[10px] text-white/25">Add more entries (2+ per component) to see trend predictions.</p>
       </div>
     );
   }
@@ -82,36 +82,36 @@ export default function PredictionPanel({ prediction, isPremium, currentGrade }:
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`rounded-xl bg-surface border border-border overflow-hidden shadow-sm`}
+      className={`acad-surface-glass-strong bg-gradient-to-br ${dir.bg} ${dir.border} overflow-hidden`}
     >
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full p-5 flex items-center gap-4 text-left cursor-pointer hover:bg-surface-hover transition-colors"
+        className="w-full p-5 flex items-center gap-3 text-left cursor-pointer"
       >
-        <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${dir.color}15` }}>
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${dir.color}15` }}>
           <Eye className="w-4 h-4" style={{ color: dir.color }} />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-foreground">Grade Prediction</h3>
+            <h3 className="text-sm font-semibold text-white/80">Grade Prediction</h3>
             <DirIcon className="w-3.5 h-3.5" style={{ color: dir.color }} />
           </div>
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-lg font-bold font-mono" style={{ color: dir.color }}>
+            <span className="text-lg font-bold" style={{ color: dir.color }}>
               {prediction.predictedFinalGrade.toFixed(1)}%
             </span>
             {Math.abs(diff) >= 0.1 && (
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium ${diff > 0 ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${diff > 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
                 {diff > 0 ? '+' : ''}{diff.toFixed(1)}%
               </span>
             )}
-            <span className="text-[9px] px-1.5 py-0.5 rounded-md font-medium uppercase" style={{ backgroundColor: `${conf.color}12`, color: conf.color }}>
+            <span className="text-[9px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: `${conf.color}12`, color: conf.color }}>
               {conf.label}
             </span>
           </div>
         </div>
-        {expanded ? <ChevronUp className="w-4 h-4 text-muted" /> : <ChevronDown className="w-4 h-4 text-muted" />}
+        {expanded ? <ChevronUp className="w-4 h-4 text-white/20" /> : <ChevronDown className="w-4 h-4 text-white/20" />}
       </button>
 
       <AnimatePresence>
@@ -124,48 +124,46 @@ export default function PredictionPanel({ prediction, isPremium, currentGrade }:
           >
             <div className="px-5 pb-5 space-y-4">
               {/* Summary */}
-              <div className="rounded-lg bg-background p-4 border border-border">
-                <p className="text-sm font-medium text-foreground leading-relaxed">{prediction.summary}</p>
+              <div className="rounded-lg bg-black/20 p-3">
+                <p className="text-[11px] text-white/45 leading-relaxed">{prediction.summary}</p>
               </div>
 
               {/* Component trends */}
-              <div className="space-y-2 mt-4">
-                <p className="text-[10px] text-muted uppercase tracking-wider font-bold mb-2">Component Trends</p>
+              <div className="space-y-1.5">
+                <p className="text-[10px] text-white/25 uppercase tracking-wider font-medium">Component Trends</p>
                 {prediction.componentTrends.map(trend => {
                   const tDir = directionConfig[trend.direction];
                   const TIcon = tDir.icon;
                   return (
-                    <div key={trend.componentId} className="flex items-center gap-3 px-3 py-2.5 rounded-md bg-background border border-border group">
-                      <TIcon className="w-4 h-4 flex-shrink-0" style={{ color: tDir.color }} />
+                    <div key={trend.componentId} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.02]">
+                      <TIcon className="w-3 h-3 flex-shrink-0" style={{ color: tDir.color }} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold text-foreground truncate">{trend.componentName}</span>
-                          <span className="text-[9px] text-muted font-mono">({trend.weight}%)</span>
+                          <span className="text-[11px] font-medium text-white/55 truncate">{trend.componentName}</span>
+                          <span className="text-[9px] text-white/20">({trend.weight}%)</span>
                         </div>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[10px] text-muted">
-                            Next predicted: <span className="font-bold font-mono" style={{ color: tDir.color }}>{trend.predictedNext.toFixed(0)}%</span>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[10px] text-white/30">
+                            Next predicted: <span className="font-medium" style={{ color: tDir.color }}>{trend.predictedNext.toFixed(0)}%</span>
                           </span>
-                          <span className="text-[9px] text-muted/60 font-mono bg-surface px-1 py-0.5 rounded border border-border/50">
+                          <span className="text-[9px] text-white/15">
                             {trend.slope > 0 ? '+' : ''}{trend.slope.toFixed(1)}/entry
                           </span>
                         </div>
                       </div>
-                      <div className="opacity-70 group-hover:opacity-100 transition-opacity">
-                        <MiniSparkline points={trend.points.map(p => p.percent)} color={tDir.color} />
-                      </div>
+                      <MiniSparkline points={trend.points.map(p => p.percent)} color={tDir.color} />
                     </div>
                   );
                 })}
               </div>
 
               {/* Confidence bar */}
-              <div className="pt-4 mt-2 border-t border-border">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] text-muted font-medium">Prediction Confidence</span>
-                  <span className="text-[11px] font-bold font-mono" style={{ color: conf.color }}>{prediction.confidencePercent.toFixed(0)}%</span>
+              <div className="pt-2">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] text-white/25">Prediction Confidence</span>
+                  <span className="text-[10px] font-medium" style={{ color: conf.color }}>{prediction.confidencePercent.toFixed(0)}%</span>
                 </div>
-                <div className="h-2 rounded-full bg-background border border-border overflow-hidden">
+                <div className="h-1.5 rounded-full bg-white/[0.04] overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${prediction.confidencePercent}%` }}
@@ -174,7 +172,7 @@ export default function PredictionPanel({ prediction, isPremium, currentGrade }:
                     style={{ backgroundColor: conf.color }}
                   />
                 </div>
-                <p className="text-[10px] text-muted/60 mt-2 text-center">Based on {prediction.componentTrends.reduce((s, t) => s + t.points.length, 0)} data points across {prediction.componentTrends.length} components</p>
+                <p className="text-[9px] text-white/15 mt-1">Based on {prediction.componentTrends.reduce((s, t) => s + t.points.length, 0)} data points across {prediction.componentTrends.length} components</p>
               </div>
             </div>
           </motion.div>
