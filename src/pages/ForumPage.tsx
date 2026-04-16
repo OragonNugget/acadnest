@@ -25,7 +25,7 @@ interface Props {
 
 const categories = ['general', 'study-tips', 'exam-prep', 'time-management', 'motivation', 'resources'];
 const categoryColors: Record<string, string> = {
-  'general': 'bg-white/[0.06] text-white/40',
+  'general': 'bg-surface border border-border text-muted',
   'study-tips': 'bg-blue-500/10 text-blue-400',
   'exam-prep': 'bg-red-500/10 text-red-400',
   'time-management': 'bg-emerald-500/10 text-emerald-400',
@@ -135,34 +135,34 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
   const filtered = filter === 'all' ? posts : posts.filter(p => p.category === filter);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-1/3 w-96 h-96 bg-blue-500/[0.02] rounded-full blur-[120px]" />
+    <div className="min-h-screen bg-background text-foreground font-sans">
+      <div className="fixed inset-0 pointer-events-none z-[-1]">
+        <div className="absolute top-0 right-1/3 w-96 h-96 bg-primary/5 rounded-full blur-[150px]" />
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#0a0a0f]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
-          <button onClick={onBack} className="flex items-center gap-1.5 text-white/40 hover:text-white/60 text-sm cursor-pointer">
+          <button onClick={onBack} className="flex items-center gap-1.5 text-muted hover:text-foreground text-sm cursor-pointer font-medium transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
-          <div className="flex-1">
-            <h1 className="text-lg font-bold text-white">Community Forum</h1>
-            <p className="text-[11px] text-white/30">Tips, strategies & discussion from fellow students</p>
+          <div className="flex-1 border-l border-border pl-4">
+            <h1 className="text-lg font-bold text-foreground">Community Forum</h1>
+            <p className="text-[11px] text-muted font-medium mt-0.5">Tips, strategies & discussion from fellow students</p>
           </div>
           {isPremium ? (
             <button
               onClick={() => setShowCreate(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-400/15 text-amber-300 text-xs font-medium hover:bg-amber-400/25 cursor-pointer transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-accent/20 border border-accent/30 text-accent text-xs font-semibold hover:bg-accent/30 cursor-pointer transition-colors shadow-sm"
             >
               <Plus className="w-3.5 h-3.5" /> New Post
             </button>
           ) : (
             <div className="relative group">
-              <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.02] text-white/20 text-xs cursor-not-allowed border border-white/[0.06]">
-                <Lock className="w-3 h-3" /> New Post
+              <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface border border-border text-muted text-xs cursor-not-allowed shadow-sm font-semibold">
+                <Lock className="w-3 h-3 text-muted/50" /> New Post
               </button>
-              <div className="absolute bottom-full right-0 mb-2 w-48 px-3 py-2 bg-[#1a1a2e] border border-amber-400/20 rounded-lg text-[10px] text-white/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
-                <Crown className="w-3 h-3 text-amber-400/50 mx-auto mb-1" />
+              <div className="absolute bottom-full right-0 mb-2 w-48 px-3 py-2 bg-background border border-accent/20 shadow-lg rounded-md text-[10px] text-muted font-semibold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
+                <Crown className="w-3 h-3 text-accent mx-auto mb-1" />
                 Only Premium members can post. Upgrade to join the discussion.
               </div>
             </div>
@@ -172,11 +172,11 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
 
       <main className="relative max-w-4xl mx-auto px-4 sm:px-6 py-6">
         <div className="flex flex-wrap gap-2 mb-6">
-          <button onClick={() => setFilter('all')} className={`px-3 py-1 rounded-full text-[11px] cursor-pointer transition-colors ${filter === 'all' ? 'bg-white/[0.1] text-white/70' : 'bg-white/[0.03] text-white/30 hover:bg-white/[0.06]'}`}>
+          <button onClick={() => setFilter('all')} className={`px-4 py-1.5 rounded-md text-[11px] cursor-pointer transition-colors font-semibold shadow-sm border ${filter === 'all' ? 'bg-primary border-primary text-primary-foreground' : 'bg-surface border-border text-muted hover:text-foreground hover:bg-surface-hover'}`}>
             All
           </button>
           {categories.map(cat => (
-            <button key={cat} onClick={() => setFilter(cat)} className={`px-3 py-1 rounded-full text-[11px] cursor-pointer transition-colors capitalize ${filter === cat ? 'bg-white/[0.1] text-white/70' : 'bg-white/[0.03] text-white/30 hover:bg-white/[0.06]'}`}>
+            <button key={cat} onClick={() => setFilter(cat)} className={`px-4 py-1.5 rounded-md text-[11px] cursor-pointer transition-colors capitalize font-semibold shadow-sm border ${filter === cat ? 'bg-primary border-primary text-primary-foreground' : 'bg-surface border-border text-muted hover:text-foreground hover:bg-surface-hover'}`}>
               {cat.replace('-', ' ')}
             </button>
           ))}
@@ -184,22 +184,22 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
 
         <AnimatePresence>
           {showCreate && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-5 mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-white/60">Create Post</h3>
-                <button onClick={() => setShowCreate(false)} className="text-white/20 hover:text-white/40 cursor-pointer"><X className="w-4 h-4" /></button>
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="rounded-xl bg-surface border border-border p-6 mb-8 shadow-sm">
+              <div className="flex items-center justify-between mb-5 border-b border-border pb-3">
+                <h3 className="text-sm font-bold text-foreground">Create Post</h3>
+                <button onClick={() => setShowCreate(false)} className="text-muted hover:text-foreground cursor-pointer transition-colors p-1 bg-background border border-border rounded-md shadow-sm"><X className="w-3.5 h-3.5" /></button>
               </div>
-              <div className="space-y-3">
-                <input value={newAuthor} onChange={e => setNewAuthor(e.target.value)} placeholder="Your name" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
-                <input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Post title" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
-                <textarea value={newBody} onChange={e => setNewBody(e.target.value)} placeholder="Share your tips, ask questions, or discuss strategies..." rows={4} className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40 resize-none" />
-                <div className="flex items-center gap-3 flex-wrap">
-                  <select value={newCategory} onChange={e => setNewCategory(e.target.value)} className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white/60 focus:outline-none focus:border-amber-400/40">
-                    {categories.map(cat => <option key={cat} value={cat} className="bg-[#12121f] capitalize">{cat.replace('-', ' ')}</option>)}
+              <div className="space-y-4">
+                <input value={newAuthor} onChange={e => setNewAuthor(e.target.value)} placeholder="Your name" className="w-full bg-background border border-border rounded-md px-4 py-2.5 text-sm font-medium text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm" />
+                <input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Post title" className="w-full bg-background border border-border rounded-md px-4 py-2.5 text-sm font-medium text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm" />
+                <textarea value={newBody} onChange={e => setNewBody(e.target.value)} placeholder="Share your tips, ask questions, or discuss strategies..." rows={4} className="w-full bg-background border border-border rounded-md px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm resize-none" />
+                <div className="flex items-center gap-4 flex-wrap">
+                  <select value={newCategory} onChange={e => setNewCategory(e.target.value)} className="bg-background border border-border rounded-md px-3 py-2 text-sm text-foreground font-medium focus:outline-none focus:border-primary/50 shadow-sm cursor-pointer">
+                    {categories.map(cat => <option key={cat} value={cat} className="capitalize">{cat.replace('-', ' ')}</option>)}
                   </select>
-                  {postError && <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 flex-1">{postError}</p>}
-                  <button onClick={handleCreate} disabled={posting} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-400/20 text-amber-300 text-sm font-medium hover:bg-amber-400/30 transition-colors cursor-pointer ml-auto disabled:opacity-50">
-                    {posting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                  {postError && <p className="text-[11px] font-semibold text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2 flex-1">{postError}</p>}
+                  <button onClick={handleCreate} disabled={posting} className="flex items-center gap-1.5 px-5 py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-hover shadow-sm transition-colors cursor-pointer ml-auto disabled:opacity-50">
+                    {posting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                     {posting ? 'Posting...' : 'Post'}
                   </button>
                 </div>
@@ -209,21 +209,21 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
         </AnimatePresence>
 
         {loading ? (
-          <div className="text-center py-12"><p className="text-sm text-white/30">Loading posts...</p></div>
+          <div className="text-center py-12"><p className="text-sm font-medium text-muted">Loading posts...</p></div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-12">
-            <MessageSquare className="w-8 h-8 text-white/10 mx-auto mb-3" />
-            <p className="text-sm text-white/30">{isPremium ? 'No posts yet. Be the first to share!' : 'No posts yet. Upgrade to Premium to start a discussion.'}</p>
+          <div className="text-center py-12 rounded-xl bg-surface border border-dashed border-border shadow-sm">
+            <MessageSquare className="w-8 h-8 text-muted/50 mx-auto mb-3" />
+            <p className="text-sm font-semibold text-muted">{isPremium ? 'No posts yet. Be the first to share!' : 'No posts yet. Upgrade to Premium to start a discussion.'}</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {filtered.map((post, i) => {
               const userLiked = post.liked_by?.includes(userId);
               return (
                 <div key={post.id} className="relative group/post">
                   {!isPremium && (
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 bg-[#1a1a2e] border border-amber-400/20 rounded-lg text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover/post:opacity-100 transition-opacity pointer-events-none flex items-center gap-1.5">
-                      <Crown className="w-3 h-3 text-amber-400/50" />
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 bg-background border border-accent/20 shadow-lg rounded-md text-[10px] font-semibold text-muted whitespace-nowrap opacity-0 group-hover/post:opacity-100 transition-opacity pointer-events-none flex items-center gap-1.5">
+                      <Crown className="w-3 h-3 text-accent" />
                       Upgrade to Premium to post & reply
                     </div>
                   )}
@@ -232,31 +232,38 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     onClick={() => setSelectedPostId(post.id)}
-                    className={`rounded-xl bg-white/[0.02] border transition-colors cursor-pointer ${post.pinned ? 'border-amber-500/20' : 'border-white/[0.06] hover:border-white/[0.1]'} p-5`}
+                    className={`rounded-xl bg-surface border transition-colors cursor-pointer ${post.pinned ? 'border-accent/40 bg-accent/5' : 'border-border hover:border-border-hover'} p-6 shadow-sm`}
                   >
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      {post.pinned && <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">📌 Pinned</span>}
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded capitalize ${categoryColors[post.category] || categoryColors.general}`}>
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      {post.pinned && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-sm bg-accent/20 text-accent uppercase tracking-wider">📌 Pinned</span>}
+                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm uppercase tracking-wider ${
+                        post.category === 'general' ? 'bg-background border border-border text-muted font-bold' : 
+                        post.category === 'study-tips' ? 'bg-blue-500/10 text-blue-500' : 
+                        post.category === 'exam-prep' ? 'bg-red-500/10 text-red-500' : 
+                        post.category === 'time-management' ? 'bg-emerald-500/10 text-emerald-500' : 
+                        post.category === 'motivation' ? 'bg-amber-500/10 text-amber-500' : 
+                        'bg-purple-500/10 text-purple-500'
+                      }`}>
                         {post.category.replace('-', ' ')}
                       </span>
                     </div>
-                    <h3 className="text-sm font-semibold text-white/80 mb-1">{post.title}</h3>
-                    <p className="text-xs text-white/35 leading-relaxed mb-3 line-clamp-2">{post.body}</p>
-                    <div className="flex items-center gap-4">
+                    <h3 className="text-base font-bold text-foreground mb-1.5 leading-snug">{post.title}</h3>
+                    <p className="text-sm font-medium text-muted leading-relaxed mb-4 line-clamp-2">{post.body}</p>
+                    <div className="flex items-center gap-4 border-t border-border pt-4">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] text-white/40">{post.author}</span>
-                        {post.is_premium_author && <Crown className="w-3 h-3 text-amber-400/50" />}
+                        <span className="text-xs font-semibold text-muted">{post.author}</span>
+                        {post.is_premium_author && <Crown className="w-3.5 h-3.5 text-accent" />}
                       </div>
-                      <span className="text-[10px] text-white/20">{new Date(post.created_at).toLocaleDateString()}</span>
-                      <span className="text-[10px] text-white/20 flex items-center gap-1 ml-auto">
-                        <MessageSquare className="w-3 h-3" /> View replies
+                      <span className="text-[11px] font-medium text-muted/60">{new Date(post.created_at).toLocaleDateString()}</span>
+                      <span className="text-[11px] font-semibold text-muted hover:text-foreground transition-colors flex items-center gap-1 ml-auto">
+                        <MessageSquare className="w-3.5 h-3.5" /> View replies
                       </span>
                       <button
                         onClick={e => handleLike(e, post.id)}
-                        className={`flex items-center gap-1 transition-colors cursor-pointer ${userLiked ? 'text-red-400 hover:text-red-300' : 'text-white/20 hover:text-red-400'}`}
+                        className={`flex items-center gap-1 transition-colors cursor-pointer px-2 py-1 rounded hover:bg-surface-hover ${userLiked ? 'text-destructive hover:text-destructive/80' : 'text-muted hover:text-destructive'}`}
                       >
-                        <Heart className={`w-3 h-3 ${userLiked ? 'fill-red-400' : ''}`} />
-                        <span className="text-[10px]">{post.likes}</span>
+                        <Heart className={`w-3.5 h-3.5 ${userLiked ? 'fill-destructive' : ''}`} />
+                        <span className="text-[11px] font-bold font-mono">{post.likes}</span>
                       </button>
                     </div>
                   </motion.div>

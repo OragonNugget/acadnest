@@ -19,14 +19,14 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
   return (
     <header className="w-full border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-2 sm:gap-4">
-        <div className="flex items-center gap-3">
-          <button onClick={() => onNavigate('dashboard')} className="flex items-center gap-3 cursor-pointer">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <GraduationCap className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-4">
+          <button onClick={() => onNavigate('dashboard')} className="flex items-center gap-3 cursor-pointer group">
+            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shadow-md shadow-primary/20 group-hover:shadow-primary/40 transition-shadow">
+              <GraduationCap className="w-5 h-5 text-primary-foreground" />
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-lg font-bold text-white tracking-tight leading-none">AcadNest</h1>
-              <p className="text-xs text-white/40 mt-1">Plan Smarter · Score Better</p>
+            <div className="hidden sm:block text-left">
+              <h1 className="text-base font-bold text-foreground tracking-tight leading-none">AcadNest</h1>
+              <p className="text-[11px] font-medium text-muted mt-1 uppercase tracking-wider">Plan Smarter</p>
             </div>
           </button>
         </div>
@@ -41,19 +41,19 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
               <div key={item.id} className="relative group">
                 <button
                   onClick={() => !locked && onNavigate(item.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                     locked
-                      ? 'text-white/15 cursor-not-allowed'
+                      ? 'text-muted/30 cursor-not-allowed'
                       : active
-                        ? 'bg-white/[0.08] text-white/80 cursor-pointer'
-                        : 'text-white/30 hover:text-white/50 hover:bg-white/[0.03] cursor-pointer'
+                        ? 'bg-surface-hover text-foreground cursor-pointer shadow-sm'
+                        : 'text-muted hover:text-foreground hover:bg-surface cursor-pointer'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{item.label}</span>
                 </button>
                 {locked && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-slate-900 border border-white/[0.1] rounded text-xs text-white/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-background border border-border rounded-md text-[10px] font-semibold text-muted whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">
                     Premium feature
                   </div>
                 )}
@@ -66,23 +66,23 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
           {isPremium ? (
             <button
               onClick={onTogglePremium}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-indigo-500/20 to-violet-600/20 text-indigo-300 border border-indigo-500/30 shadow-lg shadow-indigo-500/10 hover:from-indigo-500/30 hover:to-violet-600/30 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-primary/10 text-primary border border-primary/20 shadow-sm hover:bg-primary/20 transition-all cursor-pointer"
             >
-              <Crown className="w-4 h-4" />
-              <span className="hidden sm:inline">Premium</span>
+              <Crown className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Premium Active</span>
             </button>
           ) : (
             <button
               onClick={onTogglePremium}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-white/[0.04] text-white/60 border border-white/[0.08] hover:bg-white/[0.08] hover:text-white transition-all duration-300 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-surface text-foreground border border-border hover:bg-surface-hover hover:border-border-hover transition-all duration-200 cursor-pointer shadow-sm"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5 text-accent" />
               <span className="hidden sm:inline">Upgrade</span>
             </button>
           )}
           <button
             onClick={onGoToLanding}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/[0.03] text-sm transition-colors cursor-pointer"
+            className="flex items-center justify-center w-8 h-8 rounded-md text-muted hover:text-foreground hover:bg-surface transition-colors cursor-pointer ml-1"
             title="Back to home"
           >
             <LogOut className="w-4 h-4" />

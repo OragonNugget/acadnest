@@ -66,11 +66,11 @@ export default function TemplateManager({ isPremium, currentComponents, onApplyT
   if (!isPremium) {
     return (
       <div className="relative group inline-block">
-        <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.02] text-white/20 text-[11px] cursor-not-allowed">
+        <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-muted bg-surface/50 text-[11px] font-medium cursor-not-allowed border border-transparent">
           <Lock className="w-3 h-3" /> Templates
         </button>
-        <div className="absolute bottom-full left-0 mb-1 px-2 py-1 bg-[#1a1a2e] border border-white/[0.1] rounded text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-          Premium feature — save/load grading templates
+        <div className="absolute bottom-full left-0 mb-1 px-2 py-1 bg-surface border border-border rounded text-[10px] text-muted whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-lg">
+          Premium feature — save/load templates
         </div>
       </div>
     );
@@ -80,7 +80,7 @@ export default function TemplateManager({ isPremium, currentComponents, onApplyT
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/40 hover:text-white/60 text-[11px] transition-colors cursor-pointer"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface border border-border hover:bg-surface-hover hover:border-border-hover text-muted hover:text-foreground text-[11px] font-medium transition-colors cursor-pointer shadow-sm"
       >
         <FolderOpen className="w-3 h-3" /> Templates
       </button>
@@ -91,31 +91,31 @@ export default function TemplateManager({ isPremium, currentComponents, onApplyT
             initial={{ opacity: 0, y: -5, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -5, scale: 0.95 }}
-            className="absolute top-full right-0 mt-2 w-72 rounded-xl bg-[#12121f] border border-white/[0.08] shadow-2xl shadow-black/40 z-50 overflow-hidden"
+            className="absolute top-full right-0 mt-2 w-72 rounded-xl bg-surface border border-border shadow-xl z-50 overflow-hidden"
           >
-            <div className="p-3 border-b border-white/[0.06] flex items-center justify-between">
-              <h3 className="text-xs font-semibold text-white/60">Local Templates</h3>
-              <button onClick={() => setOpen(false)} className="text-white/20 hover:text-white/40 cursor-pointer">
+            <div className="p-3 border-b border-border flex items-center justify-between bg-background/50">
+              <h3 className="text-xs font-semibold text-foreground">Local Templates</h3>
+              <button onClick={() => setOpen(false)} className="text-muted hover:text-foreground cursor-pointer transition-colors p-1">
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            <div className="max-h-64 overflow-y-auto p-2 space-y-1.5">
+            <div className="max-h-64 overflow-y-auto p-2 space-y-1.5 bg-background">
               {templates.length === 0 ? (
-                <p className="text-[11px] text-white/20 text-center py-4">No saved templates yet</p>
+                <p className="text-[11px] text-muted text-center py-6 font-medium">No saved templates yet</p>
               ) : (
                 templates.map((tmpl, i) => (
-                  <div key={i} className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-white/[0.02] hover:bg-white/[0.04] group">
+                  <div key={i} className="flex items-center gap-2 px-2.5 py-2 rounded-md bg-surface border border-transparent hover:border-border transition-colors group">
                     <button
                       onClick={() => handleLoad(tmpl)}
                       className="flex-1 text-left min-w-0 cursor-pointer"
                     >
-                      <p className="text-[11px] font-medium text-white/50 truncate">{tmpl.name}</p>
-                      <p className="text-[9px] text-white/20">{tmpl.components.length} components · {new Date(tmpl.savedAt).toLocaleDateString()}</p>
+                      <p className="text-[11px] font-semibold text-foreground truncate">{tmpl.name}</p>
+                      <p className="text-[9px] text-muted mt-0.5 font-mono">{tmpl.components.length} components · {new Date(tmpl.savedAt).toLocaleDateString()}</p>
                     </button>
                     <button
                       onClick={() => handleDelete(i)}
-                      className="text-white/10 hover:text-red-400 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="text-muted hover:text-destructive cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity p-1"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -124,7 +124,7 @@ export default function TemplateManager({ isPremium, currentComponents, onApplyT
               )}
             </div>
 
-            <div className="p-2 border-t border-white/[0.06]">
+            <div className="p-2 border-t border-border bg-background/50">
               {showSave ? (
                 <div className="flex gap-1.5 items-center">
                   <input
@@ -132,13 +132,13 @@ export default function TemplateManager({ isPremium, currentComponents, onApplyT
                     onChange={e => setSaveName(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSave()}
                     placeholder="Template name..."
-                    className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1 text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
+                    className="flex-1 bg-background border border-border rounded-md px-2 py-1.5 text-[11px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm"
                     autoFocus
                   />
-                  <button onClick={handleSave} className="px-2 py-1 rounded bg-amber-400/15 text-amber-300 text-[10px] hover:bg-amber-400/25 cursor-pointer">
-                    <Download className="w-3 h-3" />
+                  <button onClick={handleSave} className="p-1.5 rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors cursor-pointer border border-primary/20">
+                    <Download className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={() => setShowSave(false)} className="text-white/20 hover:text-white/40 cursor-pointer">
+                  <button onClick={() => setShowSave(false)} className="p-1.5 rounded-md text-muted hover:text-foreground hover:bg-surface transition-colors cursor-pointer">
                     <X className="w-3 h-3" />
                   </button>
                 </div>
@@ -146,9 +146,9 @@ export default function TemplateManager({ isPremium, currentComponents, onApplyT
                 <div className="flex gap-1.5">
                   <button
                     onClick={() => setShowSave(true)}
-                    className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-md bg-white/[0.03] hover:bg-white/[0.06] text-white/30 text-[10px] cursor-pointer transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md bg-surface border border-dashed border-border hover:border-border-hover hover:bg-surface-hover text-muted hover:text-foreground text-[10px] uppercase tracking-wider font-medium cursor-pointer transition-colors"
                   >
-                    <FileDown className="w-3 h-3" /> Save Current
+                    <FileDown className="w-3.5 h-3.5" /> Save Current
                   </button>
                 </div>
               )}

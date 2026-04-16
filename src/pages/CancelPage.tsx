@@ -46,19 +46,19 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-4 py-16 font-sans">
       {/* Ambient */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-red-500/[0.03] rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-orange-600/[0.02] rounded-full blur-[180px]" />
+      <div className="fixed inset-0 pointer-events-none z-[-1]">
+        <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-destructive/5 rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-destructive/10 rounded-full blur-[180px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-lg">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-white/30 hover:text-white/60 text-sm mb-8 cursor-pointer transition-colors"
+          className="flex items-center gap-1.5 text-muted hover:text-foreground text-sm font-medium mb-8 cursor-pointer transition-colors shadow-sm px-3 py-1.5 rounded-md bg-surface border border-border w-fit"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
+          <ArrowLeft className="w-4 h-4" />
           Keep my Premium
         </button>
 
@@ -67,50 +67,50 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="rounded-2xl bg-[#111118] border border-white/[0.08] p-8"
+            className="rounded-3xl bg-surface border border-border p-10 shadow-lg shadow-black/5"
           >
             {/* Header */}
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
-                <Crown className="w-5 h-5 text-[#0a0a0f]" />
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 rounded-xl bg-accent flex items-center justify-center shadow-md shadow-accent/20">
+                <Crown className="w-6 h-6 text-accent-foreground" />
               </div>
               <div>
-                <h1 className="text-base font-bold text-white">Before you leave your nest…</h1>
-                <p className="text-[11px] text-white/30">We'd genuinely hate to see you go.</p>
+                <h1 className="text-xl font-black text-foreground">Before you leave your nest…</h1>
+                <p className="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">We'd genuinely hate to see you go.</p>
               </div>
             </div>
 
-            <p className="text-sm text-white/50 leading-relaxed mb-6">
+            <p className="text-sm font-medium text-foreground/80 leading-relaxed mb-8">
               Cancelling your Premium subscription means losing access to everything that makes
               Acadnest worth using. Here's what you'd be giving up:
             </p>
 
-            <ul className="space-y-2.5 mb-8">
+            <ul className="space-y-3 mb-8">
               {lostPerks.map(perk => (
-                <li key={perk} className="flex items-start gap-2.5 text-[12px] text-white/40">
-                  <CheckCircle className="w-3.5 h-3.5 text-amber-400/40 flex-shrink-0 mt-0.5" />
+                <li key={perk} className="flex items-start gap-3 text-sm font-medium text-foreground">
+                  <CheckCircle className="w-4 h-4 text-accent/50 flex-shrink-0 mt-0.5" />
                   {perk}
                 </li>
               ))}
             </ul>
 
-            <div className="rounded-xl bg-amber-500/[0.06] border border-amber-400/15 px-4 py-3 mb-6">
-              <p className="text-[11px] text-amber-300/60 leading-relaxed">
+            <div className="rounded-xl bg-accent/5 border border-accent/20 px-5 py-4 mb-8 shadow-sm">
+              <p className="text-xs font-semibold text-accent leading-relaxed">
                 Your data and saved grades will remain intact — but you won't be able to access
                 them until you resubscribe.
               </p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={onBack}
-                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-amber-400/20 to-orange-500/15 border border-amber-400/25 text-sm font-semibold text-amber-300 hover:from-amber-400/30 hover:to-orange-500/25 transition-all cursor-pointer"
+                className="flex-1 py-3 rounded-lg bg-accent border border-accent/20 text-sm font-bold text-accent-foreground hover:brightness-110 transition-all cursor-pointer shadow-sm text-center"
               >
                 Keep Premium
               </button>
               <button
                 onClick={() => setConfirming(true)}
-                className="px-4 py-2.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[11px] text-white/25 hover:text-white/40 hover:bg-white/[0.06] transition-all cursor-pointer"
+                className="flex-1 py-3 rounded-lg bg-background border border-border text-xs font-bold text-muted hover:text-foreground hover:bg-surface-hover transition-all cursor-pointer shadow-sm"
               >
                 Cancel anyway
               </button>
@@ -121,42 +121,42 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="rounded-2xl bg-[#111118] border border-red-500/20 p-8"
+            className="rounded-3xl bg-surface border-2 border-destructive/20 p-10 shadow-lg shadow-black/5"
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/20 flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-red-400/70" />
+            <div className="flex items-center gap-4 mb-8 border-b border-border pb-6">
+              <div className="w-12 h-12 rounded-xl bg-destructive/10 border border-destructive/20 flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-destructive" />
               </div>
               <div>
-                <h1 className="text-base font-bold text-white">Are you certain?</h1>
-                <p className="text-[11px] text-white/30">This will revert your account to the free tier.</p>
+                <h1 className="text-xl font-black text-foreground">Are you certain?</h1>
+                <p className="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">This will revert your account to the free tier.</p>
               </div>
             </div>
 
-            <p className="text-sm text-white/40 leading-relaxed mb-8">
+            <p className="text-sm font-medium text-foreground/80 leading-relaxed mb-8">
               Your Premium access will be removed immediately upon confirmation.
               You can always resubscribe — but your streak ends here.
             </p>
 
             {error && (
-              <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 mb-4">
+              <p className="text-xs font-semibold text-destructive bg-destructive/10 border border-destructive/20 rounded-lg px-4 py-3 mb-6">
                 {error}
               </p>
             )}
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={onBack}
-                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-amber-400/20 to-orange-500/15 border border-amber-400/25 text-sm font-semibold text-amber-300 hover:from-amber-400/30 transition-all cursor-pointer"
+                className="flex-1 py-3 rounded-lg bg-accent border border-accent/20 text-sm font-bold text-accent-foreground hover:brightness-110 transition-all cursor-pointer shadow-sm text-center"
               >
                 Actually, keep it
               </button>
               <button
                 onClick={handleCancel}
                 disabled={loading}
-                className="px-4 py-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-[11px] text-red-400/60 hover:text-red-400/80 hover:bg-red-500/15 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
+                className="flex-[0.5] py-3 rounded-lg bg-destructive/10 border border-destructive/20 text-xs font-bold text-destructive hover:bg-destructive/20 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
               >
-                {loading ? <><Loader2 className="w-3 h-3 animate-spin" /> Processing…</> : 'Yes, cancel'}
+                {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing…</> : 'Yes, cancel'}
               </button>
             </div>
           </motion.div>

@@ -32,7 +32,7 @@ interface Props {
 }
 
 const categoryColors: Record<string, string> = {
-  'general': 'bg-white/[0.06] text-white/40',
+  'general': 'bg-surface border border-border text-muted',
   'study-tips': 'bg-blue-500/10 text-blue-400',
   'exam-prep': 'bg-red-500/10 text-red-400',
   'time-management': 'bg-emerald-500/10 text-emerald-400',
@@ -135,17 +135,17 @@ export default function ForumPostPage({ postId, onBack, isPremium, session }: Pr
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] text-white flex items-center justify-center">
-        <p className="text-sm text-white/30">Loading...</p>
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center font-sans tracking-tight">
+        <p className="text-sm font-medium text-muted">Loading...</p>
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col items-center justify-center gap-4">
-        <p className="text-sm text-white/30">Post not found.</p>
-        <button onClick={onBack} className="text-amber-300/60 text-sm cursor-pointer hover:text-amber-300">
+      <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center gap-4 font-sans tracking-tight">
+        <p className="text-sm font-medium text-muted">Post not found.</p>
+        <button onClick={onBack} className="text-primary text-sm font-semibold cursor-pointer hover:text-primary-hover transition-colors">
           ← Go back
         </button>
       </div>
@@ -155,15 +155,15 @@ export default function ForumPostPage({ postId, onBack, isPremium, session }: Pr
   const userLiked = post.liked_by?.includes(userId);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-1/3 w-96 h-96 bg-blue-500/[0.02] rounded-full blur-[120px]" />
+    <div className="min-h-screen bg-background text-foreground font-sans">
+      <div className="fixed inset-0 pointer-events-none z-[-1]">
+        <div className="absolute top-0 right-1/3 w-96 h-96 bg-primary/5 rounded-full blur-[150px]" />
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#0a0a0f]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl shadow-sm">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
-          <button onClick={onBack} className="flex items-center gap-1.5 text-white/40 hover:text-white/60 text-sm cursor-pointer">
+          <button onClick={onBack} className="flex items-center gap-1.5 text-muted hover:text-foreground text-sm font-medium cursor-pointer transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Forum
           </button>
         </div>
@@ -174,69 +174,76 @@ export default function ForumPostPage({ postId, onBack, isPremium, session }: Pr
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl bg-white/[0.02] border border-white/[0.08] p-6 mb-6"
+          className="rounded-xl bg-surface border border-border p-8 mb-8 shadow-sm"
         >
-          <div className="flex items-center gap-2 mb-3 flex-wrap">
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
             {post.pinned && (
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">📌 Pinned</span>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-sm bg-accent/20 text-accent uppercase tracking-wider">📌 Pinned</span>
             )}
-            <span className={`text-[9px] px-1.5 py-0.5 rounded capitalize ${categoryColors[post.category] || categoryColors.general}`}>
+            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm uppercase tracking-wider ${
+              post.category === 'general' ? 'bg-background border border-border text-muted font-bold' : 
+              post.category === 'study-tips' ? 'bg-blue-500/10 text-blue-500' : 
+              post.category === 'exam-prep' ? 'bg-red-500/10 text-red-500' : 
+              post.category === 'time-management' ? 'bg-emerald-500/10 text-emerald-500' : 
+              post.category === 'motivation' ? 'bg-amber-500/10 text-amber-500' : 
+              'bg-purple-500/10 text-purple-500'
+            }`}>
               {post.category.replace('-', ' ')}
             </span>
           </div>
 
-          <h1 className="text-lg font-bold text-white/90 mb-3">{post.title}</h1>
-          <p className="text-sm text-white/45 leading-relaxed whitespace-pre-wrap mb-6">{post.body}</p>
+          <h1 className="text-xl font-black text-foreground mb-4 leading-tight">{post.title}</h1>
+          <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap mb-8 font-medium">{post.body}</p>
 
-          <div className="flex items-center gap-4 pt-4 border-t border-white/[0.05]">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[11px] text-white/40">{post.author}</span>
-              {post.is_premium_author && <Crown className="w-3 h-3 text-amber-400/50" />}
+          <div className="flex items-center gap-4 pt-5 border-t border-border">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-muted">{post.author}</span>
+              {post.is_premium_author && <Crown className="w-4 h-4 text-accent" />}
             </div>
-            <span className="text-[10px] text-white/20">
+            <span className="text-[11px] font-semibold text-muted/60">
               {new Date(post.created_at).toLocaleDateString()}
             </span>
             <button
               onClick={handleLike}
-              className={`flex items-center gap-1.5 ml-auto transition-colors cursor-pointer ${
-                userLiked ? 'text-red-400 hover:text-red-300' : 'text-white/25 hover:text-red-400'
+              className={`flex items-center gap-1.5 ml-auto transition-colors cursor-pointer px-3 py-1.5 rounded-md hover:bg-surface-hover border border-transparent hover:border-border shadow-sm ${
+                userLiked ? 'text-destructive hover:text-destructive/80' : 'text-muted hover:text-destructive'
               }`}
             >
-              <Heart className={`w-4 h-4 ${userLiked ? 'fill-red-400' : ''}`} />
-              <span className="text-xs">{post.likes}</span>
+              <Heart className={`w-4 h-4 ${userLiked ? 'fill-destructive' : ''}`} />
+              <span className="text-xs font-bold font-mono">{post.likes}</span>
             </button>
           </div>
         </motion.div>
 
         {/* Replies */}
-        <div className="mb-6">
-          <h2 className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <div className="mb-8">
+          <h2 className="text-[11px] font-bold text-muted uppercase tracking-widest mb-5 flex items-center gap-2 border-b border-border pb-2">
             <MessageSquare className="w-3.5 h-3.5" />
             {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
           </h2>
 
           {replies.length === 0 ? (
-            <p className="text-[11px] text-white/20 text-center py-6">
+            <p className="text-xs font-semibold text-muted text-center py-8 border border-dashed border-border rounded-xl bg-surface">
               No replies yet.{isPremium ? ' Be the first to reply below.' : ''}
             </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {replies.map((reply, i) => (
                 <motion.div
                   key={reply.id}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.04 }}
-                  className="flex gap-3 pl-4 border-l-2 border-white/[0.06]"
+                  className="flex gap-4 pl-4 border-l-2 border-primary/20"
                 >
-                  <div className="flex-1 bg-white/[0.02] rounded-lg px-4 py-3">
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className="text-[11px] font-semibold text-white/50">{reply.author}</span>
-                      <span className="text-[9px] text-white/15">
+                  <div className="flex-1 bg-surface border border-border rounded-xl px-5 py-4 shadow-sm">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-foreground">{reply.author}</span>
+                      <span className="text-[10px] font-semibold text-muted/60">
                         {new Date(reply.created_at).toLocaleDateString()}
                       </span>
                     </div>
-                    <p className="text-[11px] text-white/35 leading-relaxed whitespace-pre-wrap">{reply.body}</p>
+                    <p className="text-xs font-medium text-muted leading-relaxed whitespace-pre-wrap">{reply.body}</p>
                   </div>
                 </motion.div>
               ))}
@@ -246,24 +253,24 @@ export default function ForumPostPage({ postId, onBack, isPremium, session }: Pr
 
         {/* Reply form */}
         {isPremium ? (
-          <div className="rounded-xl bg-white/[0.02] border border-white/[0.07] p-5">
-            <h3 className="text-xs font-semibold text-white/40 mb-3">Write a Reply</h3>
-            <div className="space-y-3">
+          <div className="rounded-xl bg-surface border border-border p-6 shadow-sm">
+            <h3 className="text-sm font-bold text-foreground mb-4">Write a Reply</h3>
+            <div className="space-y-4">
               <input
                 value={replyAuthor}
                 onChange={e => setReplyAuthor(e.target.value)}
                 placeholder="Your name"
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
+                className="w-full bg-background border border-border rounded-md px-4 py-2.5 text-sm font-medium text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm"
               />
               <textarea
                 value={replyBody}
                 onChange={e => setReplyBody(e.target.value)}
                 placeholder="Share your thoughts..."
                 rows={4}
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40 resize-none"
+                className="w-full bg-background border border-border rounded-md px-4 py-3 text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors shadow-sm resize-none"
               />
               {replyError && (
-                <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                <p className="text-[11px] font-semibold text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2">
                   {replyError}
                 </p>
               )}
@@ -271,24 +278,26 @@ export default function ForumPostPage({ postId, onBack, isPremium, session }: Pr
                 <button
                   onClick={handleReply}
                   disabled={replySending || !replyBody.trim() || !replyAuthor.trim()}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-400/20 text-amber-300 text-sm font-medium hover:bg-amber-400/30 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-6 py-3 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-hover transition-colors cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {replySending
-                    ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending...</>
-                    : <><Send className="w-3.5 h-3.5" /> Send Reply</>
+                    ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
+                    : <><Send className="w-4 h-4" /> Send Reply</>
                   }
                 </button>
               </div>
             </div>
           </div>
         ) : (
-          <div className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-5 flex items-center gap-3">
-            <Lock className="w-4 h-4 text-white/20 flex-shrink-0" />
-            <div>
-              <p className="text-xs text-white/30">Premium members can reply to posts.</p>
-              <p className="text-[10px] text-white/15 mt-0.5">Upgrade to join the discussion.</p>
+          <div className="rounded-xl bg-surface border border-border p-5 flex items-center gap-4 shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-background border border-border flex flex-shrink-0 items-center justify-center">
+              <Lock className="w-4 h-4 text-muted/50" />
             </div>
-            <Crown className="w-4 h-4 text-amber-400/30 ml-auto flex-shrink-0" />
+            <div>
+              <p className="text-sm font-bold text-foreground">Premium members can reply to posts.</p>
+              <p className="text-[11px] font-semibold text-muted mt-0.5">Upgrade to join the discussion.</p>
+            </div>
+            <Crown className="w-6 h-6 text-accent ml-auto flex-shrink-0" />
           </div>
         )}
       </main>

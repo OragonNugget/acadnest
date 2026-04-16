@@ -42,37 +42,34 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
 
   if (!isPremium) {
     return (
-      <div className="rounded-2xl bg-gradient-to-br from-amber-400/[0.03] to-orange-500/[0.02] border border-amber-400/[0.1] p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center">
-            <Crown className="w-5 h-5 text-amber-400" />
-          </div>
-          <div>
-            <h2 className="text-base font-semibold text-white/80">Strategy Engine</h2>
-            <p className="text-[11px] text-white/30">Unlock 5 AI-powered grade strategies</p>
-          </div>
+      <div className="rounded-xl flex flex-col items-center justify-center text-center bg-surface border border-border p-6 shadow-sm">
+        <div className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center mb-3 text-primary">
+          <Crown className="w-4 h-4" />
         </div>
-        <div className="space-y-2">
+        <h2 className="text-sm font-semibold text-muted font-sans mb-1">Strategy Engine Locked</h2>
+        <p className="text-xs text-muted/60 mb-4">Unlock 5 AI-powered grade strategies</p>
+        
+        <div className="space-y-2 w-full mb-4 opacity-50 pointer-events-none">
           {['Weak Area Repair', 'High Impact Optimization', 'Survival Strategy', 'Optimal Strategy', 'Conservative Strategy'].map(name => (
-            <div key={name} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.02]">
-              <Lock className="w-3 h-3 text-white/15" />
-              <span className="text-xs text-white/20">{name}</span>
+            <div key={name} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-background border border-border">
+              <Lock className="w-3.5 h-3.5 text-muted" />
+              <span className="text-xs font-medium text-muted">{name}</span>
             </div>
           ))}
         </div>
-        <p className="text-[11px] text-amber-400/40 mt-4 text-center">Upgrade to Premium to access strategies</p>
+        <p className="text-[11px] font-medium text-primary bg-primary/10 px-3 py-1 rounded-md">Upgrade to Premium</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.06] p-6">
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="text-base font-semibold text-white/80">Strategy Engine</h2>
+    <div className="rounded-xl bg-surface border border-border p-6 shadow-sm">
+      <div className="flex items-center justify-between mb-5 border-b border-border pb-4">
+        <h2 className="text-base font-semibold text-foreground">Strategy Engine</h2>
         {!targetPossible && (
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-500/10 border border-red-500/20">
-            <AlertTriangle className="w-3 h-3 text-red-400" />
-            <span className="text-[10px] text-red-300">Target impossible</span>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-destructive/10 border border-destructive/20">
+            <AlertTriangle className="w-3.5 h-3.5 text-destructive" />
+            <span className="text-[10px] text-destructive font-medium uppercase tracking-wider">Target impossible</span>
           </div>
         )}
       </div>
@@ -90,22 +87,22 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
               onClick={() => setSelected(isActive ? null : strategy.id)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-white/[0.06] border border-white/[0.12]'
-                  : 'bg-white/[0.02] border border-transparent hover:bg-white/[0.04] hover:border-white/[0.06]'
+                  ? 'bg-background border border-border shadow-sm'
+                  : 'bg-transparent border border-transparent hover:bg-surface-hover hover:border-border'
               }`}
             >
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}15` }}>
-                <Icon className="w-3.5 h-3.5" style={{ color }} />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}15` }}>
+                <Icon className="w-4 h-4" style={{ color }} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-white/70">{strategy.name}</span>
+                  <span className="text-sm font-medium text-foreground">{strategy.name}</span>
                   {!strategy.feasible && (
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-400">Infeasible</span>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-destructive/10 text-destructive font-medium uppercase">Infeasible</span>
                   )}
                 </div>
               </div>
-              <ChevronRight className={`w-3.5 h-3.5 text-white/15 transition-transform ${isActive ? 'rotate-90' : ''}`} />
+              <ChevronRight className={`w-4 h-4 text-muted transition-transform ${isActive ? 'rotate-90' : ''}`} />
             </button>
           );
         })}
@@ -119,50 +116,50 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-4"
+            className="rounded-xl bg-background border border-border p-5 shadow-sm mt-2"
           >
-            <p className="text-xs text-white/40 mb-4 leading-relaxed">{activeStrategy.description}</p>
+            <p className="text-xs text-muted mb-5 leading-relaxed">{activeStrategy.description}</p>
 
             {!activeStrategy.feasible && activeStrategy.infeasibleReason && (
-              <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-red-500/5 border border-red-500/10 mb-4">
-                <AlertTriangle className="w-3.5 h-3.5 text-red-400 mt-0.5 flex-shrink-0" />
-                <p className="text-[11px] text-red-300/80 leading-relaxed">{activeStrategy.infeasibleReason}</p>
+              <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-destructive/5 border border-destructive/10 mb-4">
+                <AlertTriangle className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
+                <p className="text-[11px] text-destructive/80 leading-relaxed font-medium">{activeStrategy.infeasibleReason}</p>
               </div>
             )}
 
             {activeStrategy.steps.length > 0 ? (
               <div className="space-y-2">
                 {activeStrategy.steps.map((step, i) => (
-                  <div key={i} className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/[0.02]">
+                  <div key={i} className="flex items-center gap-3 px-3.5 py-3 rounded-lg bg-surface border border-border/50">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-medium text-white/60">{step.componentName}</span>
-                        <span className="text-[10px] text-white/20">({step.weight}%)</span>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-xs font-semibold text-foreground">{step.componentName}</span>
+                        <span className="text-[10px] text-muted font-mono">({step.weight}%)</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-white/30">{step.currentAvg.toFixed(1)}%</span>
-                        <ArrowUpRight className="w-3 h-3 text-amber-400/50" />
-                        <span className="text-[11px] font-medium" style={{ color: strategyColors[activeStrategy.id] }}>
+                        <span className="text-xs text-muted font-mono bg-background px-1.5 py-0.5 rounded">{step.currentAvg.toFixed(1)}%</span>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-muted" />
+                        <span className="text-xs font-bold font-mono px-1.5 py-0.5 rounded" style={{ color: strategyColors[activeStrategy.id], backgroundColor: `${strategyColors[activeStrategy.id]}10` }}>
                           {step.requiredAvg.toFixed(1)}%
                         </span>
                         {step.improvement > 0 && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/[0.04] text-white/30">
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-success/10 text-success font-medium">
                             +{step.improvement.toFixed(1)}%
                           </span>
                         )}
                       </div>
-                      <p className="text-[10px] text-white/20 mt-1">{step.note}</p>
+                      <p className="text-[11px] text-muted mt-2 pl-1 border-l-2 border-border/50">{step.note}</p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-white/20 text-center py-3">No actionable steps available.</p>
+              <p className="text-xs text-muted text-center py-4 border border-dashed border-border rounded-lg">No actionable steps available.</p>
             )}
 
-            <div className="mt-4 pt-3 border-t border-white/[0.04] flex items-center justify-between">
-              <span className="text-[11px] text-white/30">Projected Grade</span>
-              <span className="text-sm font-bold" style={{ color: strategyColors[activeStrategy.id] }}>
+            <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
+              <span className="text-xs font-medium text-muted uppercase tracking-wider">Projected Grade</span>
+              <span className="text-base font-bold font-mono" style={{ color: strategyColors[activeStrategy.id] }}>
                 {activeStrategy.projectedGrade.toFixed(1)}%
               </span>
             </div>

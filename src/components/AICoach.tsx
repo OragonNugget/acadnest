@@ -28,36 +28,24 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
 
   if (!isPremium) {
     return (
-      <div className="rounded-2xl bg-gradient-to-br from-cyan-500/[0.03] to-blue-500/[0.02] border border-cyan-500/[0.08] p-5">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center">
-            <Bot className="w-4.5 h-4.5 text-cyan-400" />
-          </div>
-          <div>
-            <h2 className="text-sm font-semibold text-white/70">AI Grade Coach</h2>
-            <p className="text-[10px] text-white/25">Personalized coaching & strategy picks</p>
-          </div>
-          <Lock className="w-3.5 h-3.5 text-white/15 ml-auto" />
+      <div className="rounded-xl bg-surface border border-border p-6 shadow-sm flex flex-col items-center justify-center text-center">
+        <div className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center mb-3">
+          <Bot className="w-4 h-4 text-primary" />
         </div>
-        <div className="space-y-2 mb-3">
-          <div className="h-3 rounded bg-white/[0.03] w-full" />
-          <div className="h-3 rounded bg-white/[0.03] w-4/5" />
-          <div className="h-3 rounded bg-white/[0.03] w-3/5" />
-        </div>
-        <p className="text-[11px] text-cyan-400/30 text-center">Upgrade to Premium for AI coaching</p>
+        <h2 className="text-sm font-semibold text-muted font-sans mb-1">AI Grade Coach Locked</h2>
+        <p className="text-xs text-muted/60 mb-4">Personalized coaching & strategy picks</p>
+        <p className="text-[11px] font-medium text-primary bg-primary/10 px-3 py-1 rounded-md">Upgrade to Premium</p>
       </div>
     );
   }
 
   if (!analysis) {
     return (
-      <div className="rounded-2xl bg-gradient-to-br from-cyan-500/[0.03] to-blue-500/[0.02] border border-cyan-500/[0.08] p-5">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center">
-            <Bot className="w-4.5 h-4.5 text-cyan-400" />
-          </div>
-          <p className="text-xs text-white/30">Add components and entries so I can coach you.</p>
+      <div className="rounded-xl bg-surface border border-border p-6 shadow-sm flex items-center gap-4">
+        <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center border border-border">
+          <Bot className="w-4 h-4 text-primary" />
         </div>
+        <p className="text-sm text-muted">Add components and entries to receive AI coaching.</p>
       </div>
     );
   }
@@ -68,25 +56,25 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`rounded-2xl bg-gradient-to-br ${colors.bg} border ${colors.border} overflow-hidden`}
+      className={`rounded-xl bg-surface border border-border overflow-hidden shadow-sm`}
     >
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full p-5 flex items-center gap-3 text-left cursor-pointer"
+        className="w-full p-5 flex items-center gap-4 text-left cursor-pointer hover:bg-surface-hover transition-colors"
       >
-        <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center flex-shrink-0">
-          <Bot className="w-4.5 h-4.5 text-cyan-400" />
+        <div className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center flex-shrink-0">
+          <Bot className="w-4 h-4 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold text-white/80">AI Grade Coach</h2>
-            <Sparkles className="w-3 h-3 text-amber-400/60" />
+            <h2 className="text-sm font-semibold text-foreground">AI Grade Coach</h2>
+            <Sparkles className="w-3.5 h-3.5 text-accent" />
           </div>
-          <p className={`text-xs ${colors.text} mt-0.5`}>{analysis.greeting}</p>
+          <p className={`text-xs text-muted font-medium mt-0.5`}>{analysis.greeting}</p>
         </div>
-        <div className={`w-2.5 h-2.5 rounded-full ${colors.dot} animate-pulse flex-shrink-0`} />
-        {expanded ? <ChevronUp className="w-4 h-4 text-white/20" /> : <ChevronDown className="w-4 h-4 text-white/20" />}
+        <div className={`w-2.5 h-2.5 rounded-full ${colors.dot} flex-shrink-0 shadow-sm`} />
+        {expanded ? <ChevronUp className="w-4 h-4 text-muted" /> : <ChevronDown className="w-4 h-4 text-muted" />}
       </button>
 
       <AnimatePresence>
@@ -99,29 +87,29 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
           >
             <div className="px-5 pb-5 space-y-4">
               {/* Overall verdict */}
-              <div className="rounded-lg bg-black/20 p-3.5">
-                <div className="flex items-start gap-2">
-                  <MessageCircle className="w-3.5 h-3.5 text-cyan-400/50 mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-white/50 leading-relaxed">{analysis.overallVerdict}</p>
+              <div className="rounded-lg bg-background p-4 border border-border shadow-sm">
+                <div className="flex items-start gap-3">
+                  <MessageCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-foreground leading-relaxed">{analysis.overallVerdict}</p>
                 </div>
               </div>
 
               {/* Insights */}
               {analysis.insights.length > 0 && (
-                <div className="space-y-2">
+                <div className="space-y-3 mt-4">
                   {analysis.insights.map((insight, i) => (
                     <motion.div
                       key={i}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.1 }}
-                      className={`rounded-lg border p-3 ${insightTypeColors[insight.type]}`}
+                      className={`rounded-lg border p-3.5 bg-background shadow-sm`}
                     >
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm">{insight.icon}</span>
-                        <span className="text-[11px] font-semibold text-white/60">{insight.title}</span>
+                      <div className="flex items-center gap-2.5 mb-1.5">
+                        <span className="text-base">{insight.icon}</span>
+                        <span className="text-xs font-semibold text-foreground tracking-wide">{insight.title}</span>
                       </div>
-                      <p className="text-[11px] text-white/35 leading-relaxed pl-6">{insight.message}</p>
+                      <p className="text-[11px] text-muted leading-relaxed pl-7">{insight.message}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -129,21 +117,21 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
 
               {/* Best strategy recommendation */}
               {analysis.bestStrategy && (
-                <div className="rounded-lg bg-cyan-500/[0.06] border border-cyan-500/10 p-3.5">
-                  <p className="text-[10px] text-cyan-400/50 uppercase tracking-wider font-medium mb-2">Recommended Strategy</p>
-                  <p className="text-[11px] text-white/45 leading-relaxed mb-3">{analysis.bestStrategy.reason}</p>
+                <div className="rounded-lg bg-primary/5 border border-primary/20 p-4 mt-4 shadow-sm">
+                  <p className="text-[10px] text-primary uppercase tracking-wider font-bold mb-2">Recommended Strategy</p>
+                  <p className="text-[11px] text-foreground leading-relaxed mb-4">{analysis.bestStrategy.reason}</p>
                   <button
                     onClick={() => onSelectStrategy(analysis.bestStrategy!.id)}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-cyan-400/10 text-cyan-300 text-[11px] font-medium hover:bg-cyan-400/20 transition-colors cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-[11px] font-medium hover:bg-primary-hover shadow-sm transition-colors cursor-pointer"
                   >
-                    View Strategy <ArrowRight className="w-3 h-3" />
+                    View Strategy <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}
 
               {/* Motivational quote */}
-              <div className="pt-2 border-t border-white/[0.04]">
-                <p className="text-[10px] text-white/15 italic text-center">"{analysis.motivationalQuote}"</p>
+              <div className="mt-6 pt-4 border-t border-border">
+                <p className="text-xs text-muted/60 italic text-center font-serif">"{analysis.motivationalQuote}"</p>
               </div>
             </div>
           </motion.div>
