@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0a0a0f;
-  --color-foreground: #ffffff;
-  --color-primary: #f59e0b;
-  --color-primary-light: #fbbf24;
-  --color-surface: rgba(255, 255, 255, 0.02);
-  --color-border: rgba(255, 255, 255, 0.06);
-  --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --color-background: #0f172a;
+  --color-foreground: #f8fafc;
+  --color-primary: #6366f1;
+  --color-primary-light: #818cf8;
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 @font-face {
-  font-family: 'DM Sans';
+  font-family: 'Inter';
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url(https://fonts.gstatic.com/s/dmsans/v15/rP2tp2ywxg089UriI5-g4vlH9VoD8CmcqZG40F9JadbnoEwAopxhS23bUA.woff2) format('woff2');
+  src: url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyeMZhrib2Bg-4.ttf) format('truetype');
 }
 
 html {
@@ -25,8 +25,8 @@ html {
 }
 
 body {
-  background-color: #0a0a0f;
-  color: #ffffff;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -43,10 +43,10 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.2);
 }

@@ -40,8 +40,8 @@ function GradeRing({ value, label, color, size = 120, displayMode }: { value: nu
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-white">{displayValue}</span>
-          <span className="text-[10px] text-white/40 uppercase tracking-wider">{displayUnit}</span>
+          <span className="text-3xl font-bold text-white tracking-tight">{displayValue}</span>
+          <span className="text-xs text-white/40 uppercase tracking-wider mt-1">{displayUnit}</span>
         </div>
       </div>
       <span className="text-xs text-white/50 font-medium">{label}</span>
@@ -59,8 +59,8 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
 
   if (!gradeResult) {
     return (
-      <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 text-center">
-        <p className="text-white/30">Add components and entries to see your grade overview.</p>
+      <div className="rounded-2xl bg-slate-900/50 backdrop-blur-md border border-slate-800 p-8 text-center shadow-xl">
+        <p className="text-white/40">Add components and entries to see your grade overview.</p>
       </div>
     );
   }
@@ -73,16 +73,16 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.06] p-6"
+      className="rounded-2xl bg-slate-900/50 backdrop-blur-md border border-slate-800 p-6 sm:p-8 shadow-xl"
     >
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <h2 className="text-base font-semibold text-white/80">Grade Overview</h2>
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+        <h2 className="text-lg font-semibold text-white/90 tracking-tight">Grade Overview</h2>
+        <div className="flex items-center gap-4">
           {/* GPA toggle — Premium only */}
           {isPremium && (
             <button
               onClick={() => setDisplayMode(displayMode === 'percent' ? 'gpa' : 'percent')}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.06] text-[11px] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface hover:bg-white/[0.06] text-xs text-white/50 hover:text-white/70 transition-colors cursor-pointer"
             >
               {displayMode === 'percent' ? (
                 <><ToggleLeft className="w-4 h-4" /> Percentage</>
@@ -93,24 +93,24 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
           )}
           {isPremium && (
             <div className="flex items-center gap-2">
-              <Target className="w-4 h-4 text-amber-400/70" />
-              <label className="text-xs text-white/40">Target:</label>
+              <Target className="w-4 h-4 text-indigo-400/80" />
+              <label className="text-sm text-white/50">Target:</label>
               <input
                 type="number"
                 min={0}
                 max={100}
                 value={target}
                 onChange={e => onTargetChange(Math.min(100, Math.max(0, Number(e.target.value))))}
-                className="w-16 bg-white/[0.04] border border-white/[0.08] rounded-md px-2 py-1 text-sm text-white text-center focus:outline-none focus:border-amber-400/40"
+                className="w-16 bg-surface border border-border rounded-md px-2 py-1 text-sm text-white text-center focus:outline-none focus:border-indigo-500/50 transition-colors"
               />
-              <span className="text-xs text-white/30">%</span>
+              <span className="text-sm text-white/30">%</span>
             </div>
           )}
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-8 mb-6">
-        <GradeRing value={currentGrade} label="Current Grade" color="#f59e0b" size={130} displayMode={displayMode} />
+      <div className="flex flex-wrap items-center justify-center gap-10 mb-8">
+        <GradeRing value={currentGrade} label="Current Grade" color="#6366f1" size={140} displayMode={displayMode} />
         {!isComplete && (
           <>
             <GradeRing value={maxPossibleGrade} label="Best Case" color="#22c55e" size={100} displayMode={displayMode} />
