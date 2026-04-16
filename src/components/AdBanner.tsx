@@ -32,18 +32,18 @@ export default function AdBanner({ variant, isPremium }: Props) {
 
   if (variant === 'top') {
     return (
-      <div className={`relative bg-surface border-b border-border shadow-sm`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-center gap-4">
-          <p className="text-[11px] text-muted font-medium">
-            <span className="text-foreground font-semibold">{ad.text}</span>
-            <span className="text-muted/60 ml-2">· {ad.sub}</span>
+      <div className={`relative bg-gradient-to-r ${ad.color} border-b ${ad.borderColor}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-center gap-3">
+          <p className="text-[11px] text-white/50">
+            <span className="font-medium text-white/60">{ad.text}</span>
+            <span className="text-white/30 ml-2">· {ad.sub}</span>
           </p>
-          <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-background border border-border text-muted uppercase tracking-wider font-semibold shadow-sm">Ad</span>
+          <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/[0.06] text-white/25 uppercase tracking-wider">Ad</span>
           <button
             onClick={() => setDismissed(true)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-colors p-1"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/15 hover:text-white/30 cursor-pointer"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-3 h-3" />
           </button>
         </div>
       </div>
@@ -55,29 +55,29 @@ export default function AdBanner({ variant, isPremium }: Props) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className={`rounded-xl bg-surface border border-border p-4 relative shadow-sm hover:border-border-hover transition-colors`}
+        className={`rounded-xl bg-gradient-to-br ${ad.color} border ${ad.borderColor} p-4 relative`}
       >
         <button
           onClick={() => setDismissed(true)}
-          className="absolute top-2 right-2 text-muted hover:text-foreground cursor-pointer transition-colors p-1"
+          className="absolute top-2 right-2 text-white/15 hover:text-white/30 cursor-pointer"
         >
-          <X className="w-3.5 h-3.5" />
+          <X className="w-3 h-3" />
         </button>
-        <p className="text-xs text-foreground font-semibold mb-1 pr-6">{ad.text}</p>
-        <p className="text-[11px] text-muted font-medium">{ad.sub}</p>
-        <span className="text-[8px] px-1.5 py-0.5 rounded bg-background border border-border text-muted uppercase tracking-wider font-semibold mt-3 inline-block">Sponsored</span>
+        <p className="text-[11px] text-white/50 font-medium mb-1">{ad.text}</p>
+        <p className="text-[10px] text-white/25">{ad.sub}</p>
+        <span className="text-[8px] px-1 py-0.5 rounded bg-white/[0.04] text-white/15 uppercase tracking-wider mt-2 inline-block">Sponsored</span>
       </motion.div>
     );
   }
 
   // inline
   return (
-    <div className={`rounded-xl bg-surface border border-border px-5 py-3 flex items-center justify-between shadow-sm`}>
+    <div className={`rounded-lg bg-gradient-to-r ${ad.color} border ${ad.borderColor} px-4 py-2.5 flex items-center justify-between`}>
       <div>
-        <p className="text-xs text-foreground font-semibold mb-0.5">{ad.text}</p>
-        <p className="text-[11px] text-muted font-medium">{ad.sub}</p>
+        <p className="text-[11px] text-white/50 font-medium">{ad.text}</p>
+        <p className="text-[10px] text-white/25">{ad.sub}</p>
       </div>
-      <span className="text-[8px] px-1.5 py-0.5 rounded bg-background border border-border text-muted uppercase tracking-wider font-semibold flex-shrink-0">Ad</span>
+      <span className="text-[8px] px-1 py-0.5 rounded bg-white/[0.04] text-white/15 uppercase tracking-wider flex-shrink-0">Ad</span>
     </div>
   );
 }
