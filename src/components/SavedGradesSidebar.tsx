@@ -38,7 +38,7 @@ export default function SavedGradesSidebar({
 
   if (!isPremium) {
     return (
-      <div className="acad-surface p-4">
+      <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-4">
         <div className="flex items-center gap-2 mb-2">
           <Lock className="w-3.5 h-3.5 text-white/15" />
           <h3 className="text-xs font-medium text-white/25">Saved Grades</h3>
@@ -51,7 +51,7 @@ export default function SavedGradesSidebar({
   return (
     <motion.div
       layout
-      className="acad-surface-strong overflow-hidden"
+      className="rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.06] overflow-hidden"
     >
       <button
         onClick={() => setCollapsed(!collapsed)}
@@ -109,7 +109,7 @@ export default function SavedGradesSidebar({
               ))}
 
               {showSaveForm ? (
-                <div className="flex gap-2 items-center acad-surface rounded-lg p-2">
+                <div className="flex gap-2 items-center bg-white/[0.02] rounded-lg p-2">
                   <input
                     value={saveName}
                     onChange={e => setSaveName(e.target.value)}

@@ -51,7 +51,7 @@ export default function PredictionPanel({ prediction, isPremium, currentGrade }:
 
   if (!isPremium) {
     return (
-      <div className="acad-surface-soft p-5">
+      <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5">
         <div className="flex items-center gap-2 mb-2">
           <Lock className="w-3.5 h-3.5 text-white/15" />
           <h3 className="text-xs font-medium text-white/25">Grade Prediction</h3>
@@ -63,7 +63,7 @@ export default function PredictionPanel({ prediction, isPremium, currentGrade }:
 
   if (!prediction || prediction.componentTrends.length === 0) {
     return (
-      <div className="acad-surface-soft p-5">
+      <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5">
         <div className="flex items-center gap-2 mb-2">
           <Activity className="w-4 h-4 text-white/20" />
           <h3 className="text-xs font-medium text-white/40">Grade Prediction</h3>
@@ -82,7 +82,7 @@ export default function PredictionPanel({ prediction, isPremium, currentGrade }:
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`acad-surface-glass-strong bg-gradient-to-br ${dir.bg} ${dir.border} overflow-hidden`}
+      className={`rounded-2xl bg-gradient-to-br ${dir.bg} border ${dir.border} overflow-hidden`}
     >
       {/* Header */}
       <button

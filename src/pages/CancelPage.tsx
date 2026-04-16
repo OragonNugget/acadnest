@@ -46,7 +46,7 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
   };
 
   return (
-    <div className="acad-page text-white flex flex-col items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col items-center justify-center px-4 py-16">
       {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-red-500/[0.03] rounded-full blur-[150px]" />

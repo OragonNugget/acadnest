@@ -33,7 +33,7 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
 
   if (!isPremium) {
     return (
-      <div className="acad-surface-soft p-5">
+      <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5">
         <div className="flex items-center gap-2 mb-2">
           <Lock className="w-4 h-4 text-white/15" />
           <h2 className="text-sm font-medium text-white/25">Scenario Simulator</h2>
@@ -49,7 +49,7 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="acad-surface-glass-strong bg-gradient-to-br from-purple-500/[0.03] to-blue-500/[0.02] p-5"
+      className="rounded-2xl bg-gradient-to-br from-purple-500/[0.03] to-blue-500/[0.02] border border-purple-500/[0.08] p-5"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">

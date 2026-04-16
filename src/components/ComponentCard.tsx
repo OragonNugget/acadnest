@@ -50,7 +50,7 @@ export default function ComponentCard({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="acad-surface-soft overflow-hidden hover:border-white/[0.12] transition-colors"
+      className="rounded-xl bg-white/[0.02] border border-white/[0.06] overflow-hidden hover:border-white/[0.1] transition-colors"
     >
       {/* Header */}
       <div className="p-4 flex items-center gap-3">
@@ -192,7 +192,7 @@ export default function ComponentCard({
               )}
 
               {showAddEntry ? (
-                <div className="flex flex-wrap gap-2 items-end acad-surface-soft p-3">
+                <div className="flex flex-wrap gap-2 items-end bg-white/[0.02] rounded-lg p-3">
                   <div>
                     <label className="text-[10px] text-white/30 block mb-1">Label</label>
                     <input

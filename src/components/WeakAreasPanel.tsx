@@ -14,7 +14,7 @@ export default function WeakAreasPanel({ weakAreas, isPremium }: Props) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="acad-surface-glass-strong bg-gradient-to-br from-red-500/[0.03] to-orange-500/[0.02] p-5"
+      className="rounded-2xl bg-gradient-to-br from-red-500/[0.03] to-orange-500/[0.02] border border-red-500/[0.08] p-5"
     >
       <div className="flex items-center gap-2 mb-4">
         <AlertCircle className="w-4 h-4 text-red-400/70" />

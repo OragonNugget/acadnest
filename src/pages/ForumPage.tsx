@@ -135,12 +135,12 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
   const filtered = filter === 'all' ? posts : posts.filter(p => p.category === filter);
 
   return (
-    <div className="acad-page text-white">
+    <div className="min-h-screen bg-[#0a0a0f] text-white">
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 right-1/3 w-96 h-96 bg-blue-500/[0.02] rounded-full blur-[120px]" />
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-black/15 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#0a0a0f]/80 backdrop-blur-xl">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
           <button onClick={onBack} className="flex items-center gap-1.5 text-white/40 hover:text-white/60 text-sm cursor-pointer">
             <ArrowLeft className="w-4 h-4" /> Back

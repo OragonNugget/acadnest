@@ -91,7 +91,7 @@ export default function TemplateManager({ isPremium, currentComponents, onApplyT
             initial={{ opacity: 0, y: -5, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -5, scale: 0.95 }}
-            className="absolute top-full right-0 mt-2 w-72 acad-surface-strong z-50 overflow-hidden"
+            className="absolute top-full right-0 mt-2 w-72 rounded-xl bg-[#12121f] border border-white/[0.08] shadow-2xl shadow-black/40 z-50 overflow-hidden"
           >
             <div className="p-3 border-b border-white/[0.06] flex items-center justify-between">
               <h3 className="text-xs font-semibold text-white/60">Local Templates</h3>

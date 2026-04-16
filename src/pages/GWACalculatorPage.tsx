@@ -189,7 +189,7 @@ export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Pr
 
   if (!isPremium) {
     return (
-      <div className="acad-page text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0a0f] text-white flex items-center justify-center">
         <div className="text-center">
           <Lock className="w-10 h-10 text-white/10 mx-auto mb-4" />
           <h2 className="text-lg font-bold text-white/40 mb-2">GWA Calculator</h2>
@@ -201,12 +201,12 @@ export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Pr
   }
 
   return (
-    <div className="acad-page text-white">
+    <div className="min-h-screen bg-[#0a0a0f] text-white">
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[20%] left-[40%] w-[500px] h-[500px] bg-indigo-500/[0.02] rounded-full blur-[150px]" />
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-black/15 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#0a0a0f]/80 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
           <button onClick={onBack} className="flex items-center gap-1.5 text-white/40 hover:text-white/60 text-sm cursor-pointer">
             <ArrowLeft className="w-4 h-4" /> Back

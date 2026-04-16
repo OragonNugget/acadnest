@@ -28,7 +28,7 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
 
   if (!isPremium) {
     return (
-      <div className="acad-surface-glass-strong bg-gradient-to-br from-cyan-500/[0.03] to-blue-500/[0.02] p-5">
+      <div className="rounded-2xl bg-gradient-to-br from-cyan-500/[0.03] to-blue-500/[0.02] border border-cyan-500/[0.08] p-5">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center">
             <Bot className="w-4.5 h-4.5 text-cyan-400" />
@@ -51,7 +51,7 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
 
   if (!analysis) {
     return (
-      <div className="acad-surface-glass-strong bg-gradient-to-br from-cyan-500/[0.03] to-blue-500/[0.02] p-5">
+      <div className="rounded-2xl bg-gradient-to-br from-cyan-500/[0.03] to-blue-500/[0.02] border border-cyan-500/[0.08] p-5">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center">
             <Bot className="w-4.5 h-4.5 text-cyan-400" />
@@ -68,7 +68,7 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`acad-surface-glass-strong bg-gradient-to-br ${colors.bg} ${colors.border} overflow-hidden`}
+      className={`rounded-2xl bg-gradient-to-br ${colors.bg} border ${colors.border} overflow-hidden`}
     >
       {/* Header */}
       <button

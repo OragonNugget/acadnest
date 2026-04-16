@@ -59,7 +59,7 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
 
   if (!gradeResult) {
     return (
-      <div className="acad-surface p-8 text-center">
+      <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 text-center">
         <p className="text-white/30">Add components and entries to see your grade overview.</p>
       </div>
     );
@@ -73,7 +73,7 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="acad-surface-strong p-6"
+      className="rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.06] p-6"
     >
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <h2 className="text-base font-semibold text-white/80">Grade Overview</h2>

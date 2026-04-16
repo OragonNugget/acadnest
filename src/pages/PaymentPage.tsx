@@ -27,7 +27,7 @@ interface Props {
 
 export default function PaymentPage({ onBack }: Props) {
   return (
-    <div className="acad-page text-white overflow-x-hidden flex flex-col items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden flex flex-col items-center justify-center px-4 py-16">
       {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-amber-500/[0.04] rounded-full blur-[150px]" />

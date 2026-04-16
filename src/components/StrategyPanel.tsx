@@ -42,7 +42,7 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
 
   if (!isPremium) {
     return (
-      <div className="acad-surface-glass-strong bg-gradient-to-br from-amber-400/[0.03] to-orange-500/[0.02] p-6">
+      <div className="rounded-2xl bg-gradient-to-br from-amber-400/[0.03] to-orange-500/[0.02] border border-amber-400/[0.1] p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center">
             <Crown className="w-5 h-5 text-amber-400" />
@@ -66,7 +66,7 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
   }
 
   return (
-    <div className="acad-surface-glass-strong bg-gradient-to-br from-white/[0.03] to-white/[0.01] p-6">
+    <div className="rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.06] p-6">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-base font-semibold text-white/80">Strategy Engine</h2>
         {!targetPossible && (
@@ -119,7 +119,7 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="acad-surface-soft p-4"
+            className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-4"
           >
             <p className="text-xs text-white/40 mb-4 leading-relaxed">{activeStrategy.description}</p>
 
