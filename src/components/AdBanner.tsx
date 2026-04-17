@@ -18,7 +18,7 @@ const ads = {
     { text: '🧠 Anki Pro — Spaced repetition that actually works', sub: 'Join 2M+ students', color: 'from-cyan-600/15 to-blue-600/8', borderColor: 'border-cyan-500/12' },
   ],
   inline: [
-    { text: '🚀 Acadnest Premium — Remove ads, unlock AI Coach & strategies', sub: 'Upgrade now', color: 'from-amber-500/15 to-orange-500/8', borderColor: 'border-amber-500/15' },
+    { text: '🚀 Acadnest Premium — Remove ads, unlock Grade Coach & strategies', sub: 'Upgrade now', color: 'from-amber-500/15 to-orange-500/8', borderColor: 'border-amber-500/15' },
   ],
 };
 
