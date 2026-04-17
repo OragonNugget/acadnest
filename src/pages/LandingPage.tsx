@@ -133,7 +133,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
           </h1>
 
           <p className="text-base sm:text-lg text-white/35 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Calculate weighted grades, detect weak areas, and get AI-powered strategies
+            Calculate weighted grades, detect weak areas, and get the best grade strategies
             to hit your target. Stop guessing — start forging.
           </p>
 
