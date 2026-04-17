@@ -10,7 +10,7 @@ export const PREMIUM_PRICE_NOTE = 'Billed monthly. Cancel anytime.';
 // ─────────────────────────────────────────────
 
 const premiumFeatures = [
-  'AI Grade Coach — personalized weekly strategy',
+  'Grade Coach — personalized weekly strategy',
   '5 mathematical strategy engines',
   'Target system with feasibility detection',
   'Save & load grades across subjects',
