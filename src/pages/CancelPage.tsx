@@ -9,7 +9,7 @@ interface Props {
 }
 
 const lostPerks = [
-  'AI Grade Coach & personalized weekly strategy',
+  'Grade Coach & personalized weekly strategy',
   '5 mathematical strategy engines',
   'Target system with feasibility detection',
   'Save & load grades across subjects',
