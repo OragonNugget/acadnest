@@ -34,7 +34,7 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
             <Bot className="w-4.5 h-4.5 text-cyan-400" />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-white/70">AI Grade Coach</h2>
+            <h2 className="text-sm font-semibold text-white/70">Grade Coach</h2>
             <p className="text-[10px] text-white/25">Personalized coaching & strategy picks</p>
           </div>
           <Lock className="w-3.5 h-3.5 text-white/15 ml-auto" />
@@ -44,7 +44,7 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
           <div className="h-3 rounded bg-white/[0.03] w-4/5" />
           <div className="h-3 rounded bg-white/[0.03] w-3/5" />
         </div>
-        <p className="text-[11px] text-cyan-400/30 text-center">Upgrade to Premium for AI coaching</p>
+        <p className="text-[11px] text-cyan-400/30 text-center">Upgrade to Premium for grade coaching</p>
       </div>
     );
   }
@@ -80,7 +80,7 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold text-white/80">AI Grade Coach</h2>
+            <h2 className="text-sm font-semibold text-white/80">Grade Coach</h2>
             <Sparkles className="w-3 h-3 text-amber-400/60" />
           </div>
           <p className={`text-xs ${colors.text} mt-0.5`}>{analysis.greeting}</p>
