@@ -48,7 +48,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       {/* Header */}
       <header className="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/25">
+          <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center shadow-lg shadow-amber-500/25">
             <BrandLogo className="w-10 h-10" />
           </div>
           <span className="text-lg font-bold tracking-tight">AcadNest</span>
