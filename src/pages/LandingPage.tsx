@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  GraduationCap, Crown, ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
+  Crown, ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
   Bot, BarChart3, Save, MessageSquare, Library, CheckCircle, Sparkles,
 } from 'lucide-react';
 import { PREMIUM_PRICE, PREMIUM_PRICE_PERIOD } from './PaymentPage';
+import BrandLogo from '../components/BrandLogo';
 
 interface Props {
   onEnterFree: () => void;
@@ -15,7 +16,7 @@ interface Props {
 const features = [
   { icon: BarChart3, title: 'Grade Calculator', desc: 'Weighted averages, component tracking, entry management', free: true },
   { icon: Target, title: 'Target System', desc: 'Set goals, detect feasibility, track progress', free: false },
-  { icon: Bot, title: 'AI Grade Coach', desc: 'Personalized coaching, weak point analysis, strategy picks', free: false },
+  { icon: Bot, title: 'Grade Coach', desc: 'Personalized coaching, weak point analysis, strategy picks', free: false },
   { icon: Zap, title: '5 Strategy Engines', desc: 'Weak Area Repair, High Impact, Survival, Optimal, Conservative', free: false },
   { icon: Save, title: 'Save & Load Grades', desc: 'Switch between subjects, snapshot your progress', free: false },
   { icon: Library, title: 'Template Library', desc: 'Pre-made grading systems from real courses', free: false },
@@ -47,8 +48,8 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       {/* Header */}
       <header className="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
-            <GraduationCap className="w-5 h-5 text-[#0a0a0f]" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/25">
+            <BrandLogo className="w-10 h-10" />
           </div>
           <span className="text-lg font-bold tracking-tight">AcadNest</span>
         </div>
@@ -88,8 +89,8 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                 >✕</button>
 
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                    <GraduationCap className="w-4 h-4 text-[#0a0a0f]" />
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20">
+                    <BrandLogo className="w-8 h-8" />
                   </div>
                   <div>
                     <h2 className="text-sm font-bold text-white">Welcome back</h2>
@@ -132,7 +133,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
           </h1>
 
           <p className="text-base sm:text-lg text-white/35 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Calculate weighted grades, detect weak areas, and get AI-powered strategies
+            Calculate weighted grades, detect weak areas, and get the best grade strategies
             to hit your target. Stop guessing — start forging.
           </p>
 
@@ -182,7 +183,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                   </div>
                 </div>
                 <ul className="space-y-2 mb-5">
-                  {['Everything in Free', 'GWA Calculator', 'Full Template Library (share & apply)', 'Post in Community Forum', 'AI Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Scenario simulator', 'No ads'].map(f => (
+                  {['Everything in Free', 'GWA Calculator', 'Full Template Library (share & apply)', 'Post in Community Forum', 'Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Scenario simulator', 'No ads'].map(f => (
                     <li key={f} className="flex items-center gap-2 text-[11px] text-amber-200/50">
                       <CheckCircle className="w-3 h-3 text-amber-400/50 flex-shrink-0" />{f}
                     </li>
@@ -265,8 +266,8 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       <footer className="relative z-10 border-t border-white/[0.04] py-8">
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-              <GraduationCap className="w-3 h-3 text-[#0a0a0f]" />
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20">
+              <BrandLogo className="w-6 h-6" />
             </div>
             <span className="text-xs text-white/25">AcadNest</span>
           </div>
