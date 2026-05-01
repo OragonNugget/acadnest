@@ -22,7 +22,7 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2 sm:gap-4">
         <div className="flex items-center gap-3">
           <button onClick={() => onNavigate('dashboard')} className="flex items-center gap-3 cursor-pointer">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-rose-400/20">
               <BrandLogo className="w-9 h-9" />
             </div>
             <div className="hidden sm:block">
@@ -67,7 +67,7 @@ export default function Header({ isPremium, onTogglePremium, currentPage, onNavi
           {isPremium ? (
             <button
               onClick={onTogglePremium}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-gradient-to-r from-amber-400/20 to-orange-500/20 text-amber-300 border border-amber-400/30 shadow-lg shadow-amber-500/10 hover:from-amber-400/30 hover:to-orange-500/30 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-gradient-to-r from-rose-300/20 to-pink-400/20 text-rose-200 border border-rose-300/30 shadow-lg shadow-rose-400/10 hover:from-rose-300/30 hover:to-pink-400/30 transition-all cursor-pointer"
             >
               <Crown className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Premium</span>

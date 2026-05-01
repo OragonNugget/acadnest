@@ -57,7 +57,7 @@ export default function SavedGradesSidebar({
         onClick={() => setCollapsed(!collapsed)}
         className="w-full p-4 flex items-center gap-2 text-left cursor-pointer"
       >
-        <BookMarked className="w-4 h-4 text-amber-400/60" />
+        <BookMarked className="w-4 h-4 text-rose-300/60" />
         <h3 className="text-xs font-semibold text-white/60 flex-1">Saved Grades</h3>
         <span className="text-[10px] text-white/20">{savedGrades.length}</span>
         {collapsed ? <ChevronRight className="w-3.5 h-3.5 text-white/20" /> : <ChevronLeft className="w-3.5 h-3.5 text-white/20" />}
@@ -77,7 +77,7 @@ export default function SavedGradesSidebar({
                   key={grade.id}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors group ${
                     activeGradeId === grade.id
-                      ? 'bg-amber-400/10 border border-amber-400/20'
+                      ? 'bg-rose-300/10 border border-rose-300/20'
                       : 'bg-white/[0.02] border border-transparent hover:bg-white/[0.04]'
                   }`}
                 >
@@ -93,7 +93,7 @@ export default function SavedGradesSidebar({
                   {activeGradeId === grade.id && (
                     <button
                       onClick={() => onUpdate(grade.id)}
-                      className="text-white/20 hover:text-amber-400 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="text-white/20 hover:text-rose-300 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                       title="Update save"
                     >
                       <Save className="w-3 h-3" />
@@ -115,10 +115,10 @@ export default function SavedGradesSidebar({
                     onChange={e => setSaveName(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSave()}
                     placeholder="e.g. Calculus II"
-                    className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1 text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
+                    className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1 text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40"
                     autoFocus
                   />
-                  <button onClick={handleSave} className="text-[10px] text-amber-300 hover:text-amber-200 cursor-pointer">Save</button>
+                  <button onClick={handleSave} className="text-[10px] text-rose-200 hover:text-rose-100 cursor-pointer">Save</button>
                   <button onClick={() => setShowSaveForm(false)} className="text-[10px] text-white/25 hover:text-white/40 cursor-pointer">✕</button>
                 </div>
               ) : (

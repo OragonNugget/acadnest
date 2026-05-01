@@ -412,7 +412,7 @@ export default function App() {
           animate={{ opacity: 1 }}
           className="flex flex-col items-center gap-4"
         >
-          <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+          <Loader2 className="w-8 h-8 text-rose-300 animate-spin" />
           <p className="text-sm text-white/30">Loading AcadNest...</p>
         </motion.div>
       </div>
@@ -436,8 +436,8 @@ export default function App() {
       <AdBanner variant="top" isPremium={settings.is_premium} />
 
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/[0.02] rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/[0.02] rounded-full blur-[120px]" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-rose-400/[0.02] rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-400/[0.02] rounded-full blur-[120px]" />
       </div>
 
       <Header
@@ -450,9 +450,9 @@ export default function App() {
 
       <main className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {saving && (
-          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20">
-            <Loader2 className="w-3 h-3 text-amber-400 animate-spin" />
-            <span className="text-[11px] text-amber-300">Saving...</span>
+          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-300/10 border border-rose-300/20">
+            <Loader2 className="w-3 h-3 text-rose-300 animate-spin" />
+            <span className="text-[11px] text-rose-200">Saving...</span>
           </div>
         )}
         {apiError && (

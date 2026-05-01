@@ -20,7 +20,7 @@ const strategyIcons: Record<string, any> = {
 };
 
 const strategyColors: Record<string, string> = {
-  'weak-area': '#f97316',
+  'weak-area': '#fda4af',
   'high-impact': '#3b82f6',
   'survival': '#ef4444',
   'optimal': '#22c55e',
@@ -42,10 +42,10 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
 
   if (!isPremium) {
     return (
-      <div className="rounded-2xl bg-gradient-to-br from-amber-400/[0.03] to-orange-500/[0.02] border border-amber-400/[0.1] p-6">
+      <div className="rounded-2xl bg-gradient-to-br from-rose-300/[0.03] to-pink-400/[0.02] border border-rose-300/[0.1] p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center">
-            <Crown className="w-5 h-5 text-amber-400" />
+          <div className="w-10 h-10 rounded-xl bg-rose-300/10 flex items-center justify-center">
+            <Crown className="w-5 h-5 text-rose-300" />
           </div>
           <div>
             <h2 className="text-base font-semibold text-white/80">Strategy Engine</h2>
@@ -60,7 +60,7 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
             </div>
           ))}
         </div>
-        <p className="text-[11px] text-amber-400/40 mt-4 text-center">Upgrade to Premium to access strategies</p>
+        <p className="text-[11px] text-rose-300/40 mt-4 text-center">Upgrade to Premium to access strategies</p>
       </div>
     );
   }
@@ -81,7 +81,7 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
       <div className="grid grid-cols-1 gap-2 mb-5">
         {strategies.map(strategy => {
           const Icon = strategyIcons[strategy.id] || Target;
-          const color = strategyColors[strategy.id] || '#f59e0b';
+          const color = strategyColors[strategy.id] || '#f9a8c9';
           const isActive = selected === strategy.id;
 
           return (
@@ -141,7 +141,7 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-[11px] text-white/30">{step.currentAvg.toFixed(1)}%</span>
-                        <ArrowUpRight className="w-3 h-3 text-amber-400/50" />
+                        <ArrowUpRight className="w-3 h-3 text-rose-300/50" />
                         <span className="text-[11px] font-medium" style={{ color: strategyColors[activeStrategy.id] }}>
                           {step.requiredAvg.toFixed(1)}%
                         </span>

@@ -176,7 +176,7 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by title, subject, or professor..."
-            className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
+            className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40"
           />
         </div>
 
@@ -196,27 +196,27 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div>
                 <label className="text-[10px] text-white/30 block mb-1">Title *</label>
-                <input value={uploadTitle} onChange={e => setUploadTitle(e.target.value)} placeholder="e.g. Intro to Psychology" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
+                <input value={uploadTitle} onChange={e => setUploadTitle(e.target.value)} placeholder="e.g. Intro to Psychology" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40" />
               </div>
               <div>
                 <label className="text-[10px] text-white/30 block mb-1">Subject / Course</label>
-                <input value={uploadSubject} onChange={e => setUploadSubject(e.target.value)} placeholder="e.g. PSY 101" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
+                <input value={uploadSubject} onChange={e => setUploadSubject(e.target.value)} placeholder="e.g. PSY 101" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40" />
               </div>
               <div>
                 <label className="text-[10px] text-white/30 block mb-1">Professor</label>
-                <input value={uploadProf} onChange={e => setUploadProf(e.target.value)} placeholder="e.g. Dr. Smith" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
+                <input value={uploadProf} onChange={e => setUploadProf(e.target.value)} placeholder="e.g. Dr. Smith" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40" />
               </div>
               <div>
                 <label className="text-[10px] text-white/30 block mb-1">Your Name</label>
-                <input value={uploadAuthor} onChange={e => setUploadAuthor(e.target.value)} placeholder="Anonymous" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
+                <input value={uploadAuthor} onChange={e => setUploadAuthor(e.target.value)} placeholder="Anonymous" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40" />
               </div>
             </div>
             <p className="text-[10px] text-white/30 mb-2">Components</p>
             <div className="space-y-2 mb-3">
               {uploadComponents.map((comp, i) => (
                 <div key={i} className="flex gap-2 items-center">
-                  <input value={comp.name} onChange={e => updateUploadRow(i, 'name', e.target.value)} placeholder="Component name" className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1.5 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
-                  <input value={comp.weight} onChange={e => updateUploadRow(i, 'weight', e.target.value)} placeholder="%" type="number" className="w-16 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1.5 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40" />
+                  <input value={comp.name} onChange={e => updateUploadRow(i, 'name', e.target.value)} placeholder="Component name" className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1.5 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40" />
+                  <input value={comp.weight} onChange={e => updateUploadRow(i, 'weight', e.target.value)} placeholder="%" type="number" className="w-16 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1.5 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40" />
                   {uploadComponents.length > 1 && (
                     <button onClick={() => removeUploadRow(i)} className="text-white/15 hover:text-red-400 cursor-pointer"><X className="w-3 h-3" /></button>
                   )}
@@ -292,7 +292,7 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
                   </div>
                   <button
                     onClick={() => handleApply(tmpl)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-400/15 text-amber-300 text-[11px] font-medium hover:bg-amber-400/25 transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-rose-300/15 text-rose-200 text-[11px] font-medium hover:bg-rose-300/25 transition-colors cursor-pointer"
                   >
                     <Download className="w-3 h-3" /> Use Template
                   </button>

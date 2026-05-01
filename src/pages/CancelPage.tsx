@@ -9,7 +9,7 @@ interface Props {
 }
 
 const lostPerks = [
-  'AI Grade Coach & personalized weekly strategy',
+  'Grade Coach & personalized weekly strategy',
   '5 mathematical strategy engines',
   'Target system with feasibility detection',
   'Save & load grades across subjects',
@@ -50,7 +50,7 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
       {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-red-500/[0.03] rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-orange-600/[0.02] rounded-full blur-[180px]" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-pink-500/[0.02] rounded-full blur-[180px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-lg">
@@ -71,7 +71,7 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
           >
             {/* Header */}
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-300 to-pink-400 flex items-center justify-center shadow-lg shadow-rose-400/25">
                 <Crown className="w-5 h-5 text-[#0a0a0f]" />
               </div>
               <div>
@@ -88,14 +88,14 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
             <ul className="space-y-2.5 mb-8">
               {lostPerks.map(perk => (
                 <li key={perk} className="flex items-start gap-2.5 text-[12px] text-white/40">
-                  <CheckCircle className="w-3.5 h-3.5 text-amber-400/40 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-3.5 h-3.5 text-rose-300/40 flex-shrink-0 mt-0.5" />
                   {perk}
                 </li>
               ))}
             </ul>
 
-            <div className="rounded-xl bg-amber-500/[0.06] border border-amber-400/15 px-4 py-3 mb-6">
-              <p className="text-[11px] text-amber-300/60 leading-relaxed">
+            <div className="rounded-xl bg-rose-400/[0.06] border border-rose-300/15 px-4 py-3 mb-6">
+              <p className="text-[11px] text-rose-200/60 leading-relaxed">
                 Your data and saved grades will remain intact — but you won't be able to access
                 them until you resubscribe.
               </p>
@@ -104,7 +104,7 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
             <div className="flex gap-3">
               <button
                 onClick={onBack}
-                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-amber-400/20 to-orange-500/15 border border-amber-400/25 text-sm font-semibold text-amber-300 hover:from-amber-400/30 hover:to-orange-500/25 transition-all cursor-pointer"
+                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-rose-300/20 to-pink-400/15 border border-rose-300/25 text-sm font-semibold text-rose-200 hover:from-rose-300/30 hover:to-pink-400/25 transition-all cursor-pointer"
               >
                 Keep Premium
               </button>
@@ -147,7 +147,7 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
             <div className="flex gap-3">
               <button
                 onClick={onBack}
-                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-amber-400/20 to-orange-500/15 border border-amber-400/25 text-sm font-semibold text-amber-300 hover:from-amber-400/30 transition-all cursor-pointer"
+                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-rose-300/20 to-pink-400/15 border border-rose-300/25 text-sm font-semibold text-rose-200 hover:from-rose-300/30 transition-all cursor-pointer"
               >
                 Actually, keep it
               </button>

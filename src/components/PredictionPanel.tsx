@@ -12,13 +12,13 @@ interface Props {
 const directionConfig = {
   improving: { icon: TrendingUp, color: '#22c55e', label: 'Improving', bg: 'from-emerald-500/[0.06] to-emerald-600/[0.02]', border: 'border-emerald-500/15' },
   declining: { icon: TrendingDown, color: '#ef4444', label: 'Declining', bg: 'from-red-500/[0.06] to-red-600/[0.02]', border: 'border-red-500/15' },
-  stable: { icon: Minus, color: '#f59e0b', label: 'Stable', bg: 'from-amber-500/[0.06] to-amber-600/[0.02]', border: 'border-amber-500/15' },
+  stable: { icon: Minus, color: '#f9a8c9', label: 'Stable', bg: 'from-rose-400/[0.06] to-rose-500/[0.02]', border: 'border-rose-400/15' },
   mixed: { icon: Activity, color: '#a855f7', label: 'Mixed', bg: 'from-purple-500/[0.06] to-purple-600/[0.02]', border: 'border-purple-500/15' },
 };
 
 const confidenceColors = {
   high: { color: '#22c55e', label: 'High Confidence' },
-  medium: { color: '#f59e0b', label: 'Medium Confidence' },
+  medium: { color: '#f9a8c9', label: 'Medium Confidence' },
   low: { color: '#ef4444', label: 'Low Confidence' },
 };
 

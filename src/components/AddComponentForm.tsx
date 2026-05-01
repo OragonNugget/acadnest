@@ -50,7 +50,7 @@ export default function AddComponentForm({ onAdd }: Props) {
             value={name}
             onChange={e => setName(e.target.value)}
             placeholder="e.g. Midterm Exam"
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40"
             autoFocus
             disabled={submitting}
           />
@@ -65,7 +65,7 @@ export default function AddComponentForm({ onAdd }: Props) {
             max={100}
             step="any"
             placeholder="25"
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40"
             disabled={submitting}
           />
         </div>
@@ -74,7 +74,7 @@ export default function AddComponentForm({ onAdd }: Props) {
         <button
           type="submit"
           disabled={submitting || !name.trim() || !weight}
-          className="px-4 py-2 rounded-lg bg-amber-400/20 text-amber-300 text-sm font-medium hover:bg-amber-400/30 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-4 py-2 rounded-lg bg-rose-300/20 text-rose-200 text-sm font-medium hover:bg-rose-300/30 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
         >
           {submitting ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
           {submitting ? 'Adding...' : 'Add'}
