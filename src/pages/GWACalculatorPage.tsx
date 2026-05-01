@@ -194,7 +194,7 @@ export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Pr
           <Lock className="w-10 h-10 text-white/10 mx-auto mb-4" />
           <h2 className="text-lg font-bold text-white/40 mb-2">GWA Calculator</h2>
           <p className="text-sm text-white/20 mb-6">This is a Premium feature.</p>
-          <button onClick={onBack} className="text-sm text-amber-400/60 hover:text-amber-400 cursor-pointer">← Back to Dashboard</button>
+          <button onClick={onBack} className="text-sm text-yellow-300/60 hover:text-yellow-300 cursor-pointer">← Back to Dashboard</button>
         </div>
       </div>
     );
@@ -229,9 +229,9 @@ export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Pr
 
       <main className="relative max-w-5xl mx-auto px-4 sm:px-6 py-6">
         {saving && (
-          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20">
-            <Loader2 className="w-3 h-3 text-amber-400 animate-spin" />
-            <span className="text-[11px] text-amber-300">Saving...</span>
+          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-300/10 border border-yellow-300/20">
+            <Loader2 className="w-3 h-3 text-yellow-300 animate-spin" />
+            <span className="text-[11px] text-yellow-200">Saving...</span>
           </div>
         )}
 

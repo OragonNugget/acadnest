@@ -112,7 +112,7 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
               <span className="text-[11px] text-white/30">Simulated Grade</span>
               <span className={`text-lg font-bold ${
                 simulatedResult.currentGrade >= 80 ? 'text-emerald-400' :
-                simulatedResult.currentGrade >= 60 ? 'text-amber-400' : 'text-red-400'
+                simulatedResult.currentGrade >= 60 ? 'text-yellow-300' : 'text-red-400'
               }`}>
                 {simulatedResult.currentGrade.toFixed(1)}%
               </span>

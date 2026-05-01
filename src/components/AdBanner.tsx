@@ -10,7 +10,7 @@ interface Props {
 const ads = {
   top: [
     { text: '📚 StudyPro — AI-powered flashcards for any subject', sub: 'Try free for 14 days', color: 'from-blue-600/20 to-indigo-600/10', borderColor: 'border-blue-500/15' },
-    { text: '🎓 CourseHero — Get 24/7 homework help from tutors', sub: 'First month 50% off', color: 'from-orange-600/20 to-red-600/10', borderColor: 'border-orange-500/15' },
+    { text: '🎓 CourseHero — Get 24/7 homework help from tutors', sub: 'First month 50% off', color: 'from-amber-400/20 to-red-600/10', borderColor: 'border-amber-300/15' },
   ],
   sidebar: [
     { text: '☕ FocusBean — Pomodoro timer built for students', sub: 'Free download', color: 'from-emerald-600/15 to-teal-600/8', borderColor: 'border-emerald-500/12' },
@@ -18,7 +18,7 @@ const ads = {
     { text: '🧠 Anki Pro — Spaced repetition that actually works', sub: 'Join 2M+ students', color: 'from-cyan-600/15 to-blue-600/8', borderColor: 'border-cyan-500/12' },
   ],
   inline: [
-    { text: '🚀 Acadnest Premium — Remove ads, unlock AI Coach & strategies', sub: 'Upgrade now', color: 'from-amber-500/15 to-orange-500/8', borderColor: 'border-amber-500/15' },
+    { text: '🚀 Acadnest Premium — Remove ads, unlock Grade Coach & strategies', sub: 'Upgrade now', color: 'from-yellow-400/15 to-amber-300/8', borderColor: 'border-yellow-400/15' },
   ],
 };
 

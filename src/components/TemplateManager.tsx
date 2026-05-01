@@ -132,10 +132,10 @@ export default function TemplateManager({ isPremium, currentComponents, onApplyT
                     onChange={e => setSaveName(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSave()}
                     placeholder="Template name..."
-                    className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1 text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-amber-400/40"
+                    className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1 text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-yellow-300/40"
                     autoFocus
                   />
-                  <button onClick={handleSave} className="px-2 py-1 rounded bg-amber-400/15 text-amber-300 text-[10px] hover:bg-amber-400/25 cursor-pointer">
+                  <button onClick={handleSave} className="px-2 py-1 rounded bg-yellow-300/15 text-yellow-200 text-[10px] hover:bg-yellow-300/25 cursor-pointer">
                     <Download className="w-3 h-3" />
                   </button>
                   <button onClick={() => setShowSave(false)} className="text-white/20 hover:text-white/40 cursor-pointer">

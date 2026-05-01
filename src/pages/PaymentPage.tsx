@@ -10,7 +10,7 @@ export const PREMIUM_PRICE_NOTE = 'Billed monthly. Cancel anytime.';
 // ─────────────────────────────────────────────
 
 const premiumFeatures = [
-  'AI Grade Coach — personalized weekly strategy',
+  'Grade Coach — personalized weekly strategy',
   '5 mathematical strategy engines',
   'Target system with feasibility detection',
   'Save & load grades across subjects',
@@ -30,8 +30,8 @@ export default function PaymentPage({ onBack }: Props) {
     <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden flex flex-col items-center justify-center px-4 py-16">
       {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-amber-500/[0.04] rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-orange-600/[0.03] rounded-full blur-[180px]" />
+        <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-yellow-400/[0.04] rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-amber-400/[0.03] rounded-full blur-[180px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-lg">
@@ -46,11 +46,11 @@ export default function PaymentPage({ onBack }: Props) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl bg-gradient-to-br from-amber-400/[0.07] to-orange-500/[0.03] border border-amber-400/20 p-8"
+          className="rounded-2xl bg-gradient-to-br from-yellow-300/[0.07] to-amber-300/[0.03] border border-yellow-300/20 p-8"
         >
           {/* Header */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-300 to-amber-300 flex items-center justify-center shadow-lg shadow-yellow-400/25">
               <Crown className="w-5 h-5 text-[#0a0a0f]" />
             </div>
             <div>
@@ -61,15 +61,15 @@ export default function PaymentPage({ onBack }: Props) {
 
           {/* Price */}
           <div className="flex items-end gap-2 mb-6">
-            <span className="text-4xl font-extrabold text-amber-300">{PREMIUM_PRICE}</span>
+            <span className="text-4xl font-extrabold text-yellow-200">{PREMIUM_PRICE}</span>
             <span className="text-sm text-white/35 mb-1">{PREMIUM_PRICE_PERIOD}</span>
           </div>
 
           {/* Features */}
           <ul className="space-y-2.5 mb-8">
             {premiumFeatures.map(f => (
-              <li key={f} className="flex items-start gap-2.5 text-[12px] text-amber-100/50">
-                <CheckCircle className="w-3.5 h-3.5 text-amber-400/60 flex-shrink-0 mt-0.5" />
+              <li key={f} className="flex items-start gap-2.5 text-[12px] text-yellow-50/50">
+                <CheckCircle className="w-3.5 h-3.5 text-yellow-300/60 flex-shrink-0 mt-0.5" />
                 {f}
               </li>
             ))}
