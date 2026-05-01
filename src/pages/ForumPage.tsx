@@ -29,7 +29,7 @@ const categoryColors: Record<string, string> = {
   'study-tips': 'bg-blue-500/10 text-blue-400',
   'exam-prep': 'bg-red-500/10 text-red-400',
   'time-management': 'bg-emerald-500/10 text-emerald-400',
-  'motivation': 'bg-rose-400/10 text-rose-300',
+  'motivation': 'bg-yellow-400/10 text-yellow-300',
   'resources': 'bg-purple-500/10 text-purple-400',
 };
 
@@ -152,7 +152,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
           {isPremium ? (
             <button
               onClick={() => setShowCreate(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-300/15 text-rose-200 text-xs font-medium hover:bg-rose-300/25 cursor-pointer transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-yellow-300/15 text-yellow-200 text-xs font-medium hover:bg-yellow-300/25 cursor-pointer transition-colors"
             >
               <Plus className="w-3.5 h-3.5" /> New Post
             </button>
@@ -161,8 +161,8 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
               <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.02] text-white/20 text-xs cursor-not-allowed border border-white/[0.06]">
                 <Lock className="w-3 h-3" /> New Post
               </button>
-              <div className="absolute bottom-full right-0 mb-2 w-48 px-3 py-2 bg-[#1a1a2e] border border-rose-300/20 rounded-lg text-[10px] text-white/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
-                <Crown className="w-3 h-3 text-rose-300/50 mx-auto mb-1" />
+              <div className="absolute bottom-full right-0 mb-2 w-48 px-3 py-2 bg-[#1a1a2e] border border-yellow-300/20 rounded-lg text-[10px] text-white/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
+                <Crown className="w-3 h-3 text-yellow-300/50 mx-auto mb-1" />
                 Only Premium members can post. Upgrade to join the discussion.
               </div>
             </div>
@@ -190,15 +190,15 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
                 <button onClick={() => setShowCreate(false)} className="text-white/20 hover:text-white/40 cursor-pointer"><X className="w-4 h-4" /></button>
               </div>
               <div className="space-y-3">
-                <input value={newAuthor} onChange={e => setNewAuthor(e.target.value)} placeholder="Your name" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40" />
-                <input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Post title" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40" />
-                <textarea value={newBody} onChange={e => setNewBody(e.target.value)} placeholder="Share your tips, ask questions, or discuss strategies..." rows={4} className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-rose-300/40 resize-none" />
+                <input value={newAuthor} onChange={e => setNewAuthor(e.target.value)} placeholder="Your name" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-yellow-300/40" />
+                <input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Post title" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-yellow-300/40" />
+                <textarea value={newBody} onChange={e => setNewBody(e.target.value)} placeholder="Share your tips, ask questions, or discuss strategies..." rows={4} className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-yellow-300/40 resize-none" />
                 <div className="flex items-center gap-3 flex-wrap">
-                  <select value={newCategory} onChange={e => setNewCategory(e.target.value)} className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white/60 focus:outline-none focus:border-rose-300/40">
+                  <select value={newCategory} onChange={e => setNewCategory(e.target.value)} className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white/60 focus:outline-none focus:border-yellow-300/40">
                     {categories.map(cat => <option key={cat} value={cat} className="bg-[#12121f] capitalize">{cat.replace('-', ' ')}</option>)}
                   </select>
                   {postError && <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 flex-1">{postError}</p>}
-                  <button onClick={handleCreate} disabled={posting} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-rose-300/20 text-rose-200 text-sm font-medium hover:bg-rose-300/30 transition-colors cursor-pointer ml-auto disabled:opacity-50">
+                  <button onClick={handleCreate} disabled={posting} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-yellow-300/20 text-yellow-200 text-sm font-medium hover:bg-yellow-300/30 transition-colors cursor-pointer ml-auto disabled:opacity-50">
                     {posting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                     {posting ? 'Posting...' : 'Post'}
                   </button>
@@ -222,8 +222,8 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
               return (
                 <div key={post.id} className="relative group/post">
                   {!isPremium && (
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 bg-[#1a1a2e] border border-rose-300/20 rounded-lg text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover/post:opacity-100 transition-opacity pointer-events-none flex items-center gap-1.5">
-                      <Crown className="w-3 h-3 text-rose-300/50" />
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 bg-[#1a1a2e] border border-yellow-300/20 rounded-lg text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover/post:opacity-100 transition-opacity pointer-events-none flex items-center gap-1.5">
+                      <Crown className="w-3 h-3 text-yellow-300/50" />
                       Upgrade to Premium to post & reply
                     </div>
                   )}
@@ -232,10 +232,10 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     onClick={() => setSelectedPostId(post.id)}
-                    className={`rounded-xl bg-white/[0.02] border transition-colors cursor-pointer ${post.pinned ? 'border-rose-400/20' : 'border-white/[0.06] hover:border-white/[0.1]'} p-5`}
+                    className={`rounded-xl bg-white/[0.02] border transition-colors cursor-pointer ${post.pinned ? 'border-yellow-400/20' : 'border-white/[0.06] hover:border-white/[0.1]'} p-5`}
                   >
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      {post.pinned && <span className="text-[9px] px-1.5 py-0.5 rounded bg-rose-400/15 text-rose-300">📌 Pinned</span>}
+                      {post.pinned && <span className="text-[9px] px-1.5 py-0.5 rounded bg-yellow-400/15 text-yellow-300">📌 Pinned</span>}
                       <span className={`text-[9px] px-1.5 py-0.5 rounded capitalize ${categoryColors[post.category] || categoryColors.general}`}>
                         {post.category.replace('-', ' ')}
                       </span>
@@ -245,7 +245,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1.5">
                         <span className="text-[11px] text-white/40">{post.author}</span>
-                        {post.is_premium_author && <Crown className="w-3 h-3 text-rose-300/50" />}
+                        {post.is_premium_author && <Crown className="w-3 h-3 text-yellow-300/50" />}
                       </div>
                       <span className="text-[10px] text-white/20">{new Date(post.created_at).toLocaleDateString()}</span>
                       <span className="text-[10px] text-white/20 flex items-center gap-1 ml-auto">

@@ -14,7 +14,7 @@ export default function WeakAreasPanel({ weakAreas, isPremium }: Props) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl bg-gradient-to-br from-red-500/[0.03] to-pink-400/[0.02] border border-red-500/[0.08] p-5"
+      className="rounded-2xl bg-gradient-to-br from-red-500/[0.03] to-amber-300/[0.02] border border-red-500/[0.08] p-5"
     >
       <div className="flex items-center gap-2 mb-4">
         <AlertCircle className="w-4 h-4 text-red-400/70" />
@@ -37,7 +37,7 @@ export default function WeakAreasPanel({ weakAreas, isPremium }: Props) {
             </div>
             <div className="text-right flex-shrink-0">
               <p className="text-[10px] text-white/30">Impact</p>
-              <p className="text-xs font-mono text-rose-300/70">{wa.impactScore.toFixed(0)}</p>
+              <p className="text-xs font-mono text-yellow-300/70">{wa.impactScore.toFixed(0)}</p>
             </div>
           </div>
         ))}

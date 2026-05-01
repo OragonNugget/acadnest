@@ -12,13 +12,13 @@ interface Props {
 const verdictColors = {
   great: { bg: 'from-emerald-500/[0.08] to-emerald-600/[0.03]', border: 'border-emerald-500/20', text: 'text-emerald-300', dot: 'bg-emerald-400' },
   good: { bg: 'from-blue-500/[0.08] to-blue-600/[0.03]', border: 'border-blue-500/20', text: 'text-blue-300', dot: 'bg-blue-400' },
-  caution: { bg: 'from-rose-400/[0.08] to-rose-500/[0.03]', border: 'border-rose-400/20', text: 'text-rose-200', dot: 'bg-rose-300' },
+  caution: { bg: 'from-yellow-400/[0.08] to-yellow-500/[0.03]', border: 'border-yellow-400/20', text: 'text-yellow-200', dot: 'bg-yellow-300' },
   danger: { bg: 'from-red-500/[0.08] to-red-600/[0.03]', border: 'border-red-500/20', text: 'text-red-300', dot: 'bg-red-400' },
 };
 
 const insightTypeColors = {
   encouragement: 'border-emerald-500/10 bg-emerald-500/[0.03]',
-  warning: 'border-rose-400/10 bg-rose-400/[0.03]',
+  warning: 'border-yellow-400/10 bg-yellow-400/[0.03]',
   action: 'border-blue-500/10 bg-blue-500/[0.03]',
   info: 'border-white/[0.06] bg-white/[0.02]',
 };
@@ -81,7 +81,7 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-semibold text-white/80">Grade Coach</h2>
-            <Sparkles className="w-3 h-3 text-rose-300/60" />
+            <Sparkles className="w-3 h-3 text-yellow-300/60" />
           </div>
           <p className={`text-xs ${colors.text} mt-0.5`}>{analysis.greeting}</p>
         </div>

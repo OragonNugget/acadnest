@@ -3,8 +3,8 @@
 @theme {
   --color-background: #0a0a0f;
   --color-foreground: #ffffff;
-  --color-primary: #f9a8c9;
-  --color-primary-light: #fda4af;
+  --color-primary: #FFD45A;
+  --color-primary-light: #FFEED3;
   --color-surface: rgba(255, 255, 255, 0.02);
   --color-border: rgba(255, 255, 255, 0.06);
   --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;

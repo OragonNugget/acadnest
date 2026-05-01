@@ -93,7 +93,7 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
           )}
           {isPremium && (
             <div className="flex items-center gap-2">
-              <Target className="w-4 h-4 text-rose-300/70" />
+              <Target className="w-4 h-4 text-yellow-300/70" />
               <label className="text-xs text-white/40">Target:</label>
               <input
                 type="number"
@@ -101,7 +101,7 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
                 max={100}
                 value={target}
                 onChange={e => onTargetChange(Math.min(100, Math.max(0, Number(e.target.value))))}
-                className="w-16 bg-white/[0.04] border border-white/[0.08] rounded-md px-2 py-1 text-sm text-white text-center focus:outline-none focus:border-rose-300/40"
+                className="w-16 bg-white/[0.04] border border-white/[0.08] rounded-md px-2 py-1 text-sm text-white text-center focus:outline-none focus:border-yellow-300/40"
               />
               <span className="text-xs text-white/30">%</span>
             </div>
@@ -110,7 +110,7 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-8 mb-6">
-        <GradeRing value={currentGrade} label="Current Grade" color="#f9a8c9" size={130} displayMode={displayMode} />
+        <GradeRing value={currentGrade} label="Current Grade" color="#FFD45A" size={130} displayMode={displayMode} />
         {!isComplete && (
           <>
             <GradeRing value={maxPossibleGrade} label="Best Case" color="#22c55e" size={100} displayMode={displayMode} />
@@ -139,9 +139,9 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
                 <span className="text-xs text-emerald-300">On track for {target}%</span>
               </div>
             ) : (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-400/10 border border-rose-400/20">
-                <TrendingUp className="w-3.5 h-3.5 text-rose-300" />
-                <span className="text-xs text-rose-200">Target {target}% is achievable — need improvement</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/20">
+                <TrendingUp className="w-3.5 h-3.5 text-yellow-300" />
+                <span className="text-xs text-yellow-200">Target {target}% is achievable — need improvement</span>
               </div>
             )
           ) : (

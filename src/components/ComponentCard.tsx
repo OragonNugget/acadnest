@@ -42,7 +42,7 @@ export default function ComponentCard({
     setShowAddEntry(false);
   };
 
-  const avgColor = average < 0 ? 'text-white/30' : average >= 80 ? 'text-emerald-400' : average >= 60 ? 'text-rose-300' : 'text-red-400';
+  const avgColor = average < 0 ? 'text-white/30' : average >= 80 ? 'text-emerald-400' : average >= 60 ? 'text-yellow-300' : 'text-red-400';
 
   return (
     <motion.div
@@ -58,20 +58,20 @@ export default function ComponentCard({
           onClick={() => setExpanded(!expanded)}
           className="flex-1 flex items-center gap-3 text-left cursor-pointer"
         >
-          <div className={`w-2 h-2 rounded-full ${component.done ? 'bg-emerald-400' : 'bg-rose-300/60'}`} />
+          <div className={`w-2 h-2 rounded-full ${component.done ? 'bg-emerald-400' : 'bg-yellow-300/60'}`} />
           <div className="flex-1 min-w-0">
             {editing && isPremium ? (
               <div className="flex gap-2" onClick={e => e.stopPropagation()}>
                 <input
                   value={editName}
                   onChange={e => setEditName(e.target.value)}
-                  className="bg-white/[0.06] border border-white/[0.1] rounded px-2 py-0.5 text-sm text-white w-32 focus:outline-none focus:border-rose-300/40"
+                  className="bg-white/[0.06] border border-white/[0.1] rounded px-2 py-0.5 text-sm text-white w-32 focus:outline-none focus:border-yellow-300/40"
                   autoFocus
                 />
                 <input
                   value={editWeight}
                   onChange={e => setEditWeight(e.target.value)}
-                  className="bg-white/[0.06] border border-white/[0.1] rounded px-2 py-0.5 text-sm text-white w-16 focus:outline-none focus:border-rose-300/40"
+                  className="bg-white/[0.06] border border-white/[0.1] rounded px-2 py-0.5 text-sm text-white w-16 focus:outline-none focus:border-yellow-300/40"
                   type="number"
                 />
                 <span className="text-xs text-white/30 self-center">%</span>
@@ -175,7 +175,7 @@ export default function ComponentCard({
                         </span>
                         <span className={`text-xs font-medium ${
                           (entry.score / entry.max_score * 100) >= 80 ? 'text-emerald-400/70' :
-                          (entry.score / entry.max_score * 100) >= 60 ? 'text-rose-300/70' : 'text-red-400/70'
+                          (entry.score / entry.max_score * 100) >= 60 ? 'text-yellow-300/70' : 'text-red-400/70'
                         }`}>
                           {(entry.score / entry.max_score * 100).toFixed(0)}%
                         </span>
@@ -199,7 +199,7 @@ export default function ComponentCard({
                       value={newLabel}
                       onChange={e => setNewLabel(e.target.value)}
                       placeholder="e.g. Quiz 3"
-                      className="bg-white/[0.06] border border-white/[0.08] rounded px-2 py-1 text-xs text-white w-24 focus:outline-none focus:border-rose-300/40"
+                      className="bg-white/[0.06] border border-white/[0.08] rounded px-2 py-1 text-xs text-white w-24 focus:outline-none focus:border-yellow-300/40"
                     />
                   </div>
                   <div>
@@ -210,7 +210,7 @@ export default function ComponentCard({
                       type="number"
                       min={0}
                       placeholder="85"
-                      className="bg-white/[0.06] border border-white/[0.08] rounded px-2 py-1 text-xs text-white w-16 focus:outline-none focus:border-rose-300/40"
+                      className="bg-white/[0.06] border border-white/[0.08] rounded px-2 py-1 text-xs text-white w-16 focus:outline-none focus:border-yellow-300/40"
                       autoFocus
                     />
                   </div>
@@ -222,10 +222,10 @@ export default function ComponentCard({
                       type="number"
                       min={1}
                       placeholder="100"
-                      className="bg-white/[0.06] border border-white/[0.08] rounded px-2 py-1 text-xs text-white w-16 focus:outline-none focus:border-rose-300/40"
+                      className="bg-white/[0.06] border border-white/[0.08] rounded px-2 py-1 text-xs text-white w-16 focus:outline-none focus:border-yellow-300/40"
                     />
                   </div>
-                  <button onClick={handleAddEntry} className="px-3 py-1 rounded-md bg-rose-300/20 text-rose-200 text-xs hover:bg-rose-300/30 transition-colors cursor-pointer">Add</button>
+                  <button onClick={handleAddEntry} className="px-3 py-1 rounded-md bg-yellow-300/20 text-yellow-200 text-xs hover:bg-yellow-300/30 transition-colors cursor-pointer">Add</button>
                   <button onClick={() => setShowAddEntry(false)} className="px-3 py-1 rounded-md bg-white/[0.04] text-white/30 text-xs hover:bg-white/[0.08] transition-colors cursor-pointer">Cancel</button>
                 </div>
               ) : (

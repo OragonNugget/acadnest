@@ -40,15 +40,15 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
     <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden">
       {/* Ambient blurs */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-rose-400/[0.04] rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-pink-500/[0.03] rounded-full blur-[180px]" />
+        <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-yellow-400/[0.04] rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-amber-400/[0.03] rounded-full blur-[180px]" />
         <div className="absolute top-[40%] right-[30%] w-[300px] h-[300px] bg-cyan-500/[0.02] rounded-full blur-[120px]" />
       </div>
 
       {/* Header */}
       <header className="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center shadow-lg shadow-rose-400/25">
+          <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center shadow-lg shadow-yellow-400/25">
             <BrandLogo className="w-10 h-10" />
           </div>
           <span className="text-lg font-bold tracking-tight">AcadNest</span>
@@ -89,7 +89,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                 >✕</button>
 
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg shadow-rose-400/20">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg shadow-yellow-400/20">
                     <BrandLogo className="w-8 h-8" />
                   </div>
                   <div>
@@ -119,15 +119,15 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       {/* Hero */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 pt-16 pb-24 text-center">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-300/[0.08] border border-rose-300/15 mb-8">
-            <Sparkles className="w-3.5 h-3.5 text-rose-300" />
-            <span className="text-[11px] text-rose-200/80 font-medium">Your personal grade strategy hub</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300/[0.08] border border-yellow-300/15 mb-8">
+            <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+            <span className="text-[11px] text-yellow-200/80 font-medium">Your personal grade strategy hub</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight">
             Know your grade.
             <br />
-            <span className="bg-gradient-to-r from-rose-200 via-pink-300 to-rose-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-yellow-200 via-amber-200 to-yellow-400 bg-clip-text text-transparent">
               Own your strategy.
             </span>
           </h1>
@@ -167,29 +167,29 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
               onClick={onGoToPayment}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="flex-1 rounded-2xl bg-gradient-to-br from-rose-300/[0.08] to-pink-400/[0.04] border border-rose-300/20 p-6 text-left cursor-pointer transition-colors hover:border-rose-300/35 group relative overflow-hidden"
+              className="flex-1 rounded-2xl bg-gradient-to-br from-yellow-300/[0.08] to-amber-300/[0.04] border border-yellow-300/20 p-6 text-left cursor-pointer transition-colors hover:border-yellow-300/35 group relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-rose-300/[0.06] rounded-full blur-[40px]" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-300/[0.06] rounded-full blur-[40px]" />
               <div className="relative">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <Crown className="w-4 h-4 text-rose-300" />
-                    <span className="text-xs font-semibold text-rose-200/80 uppercase tracking-wider">Premium</span>
+                    <Crown className="w-4 h-4 text-yellow-300" />
+                    <span className="text-xs font-semibold text-yellow-200/80 uppercase tracking-wider">Premium</span>
                   </div>
                   {/* Edit price in PaymentPage.tsx → PREMIUM_PRICE / PREMIUM_PRICE_PERIOD */}
                   <div className="text-right">
-                    <span className="text-xl font-bold text-rose-200">{PREMIUM_PRICE}</span>
-                    <span className="text-[10px] text-rose-200/40 ml-1">{PREMIUM_PRICE_PERIOD}</span>
+                    <span className="text-xl font-bold text-yellow-200">{PREMIUM_PRICE}</span>
+                    <span className="text-[10px] text-yellow-200/40 ml-1">{PREMIUM_PRICE_PERIOD}</span>
                   </div>
                 </div>
                 <ul className="space-y-2 mb-5">
                   {['Everything in Free', 'GWA Calculator', 'Full Template Library (share & apply)', 'Post in Community Forum', 'Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Scenario simulator', 'No ads'].map(f => (
-                    <li key={f} className="flex items-center gap-2 text-[11px] text-rose-100/50">
-                      <CheckCircle className="w-3 h-3 text-rose-300/50 flex-shrink-0" />{f}
+                    <li key={f} className="flex items-center gap-2 text-[11px] text-yellow-100/50">
+                      <CheckCircle className="w-3 h-3 text-yellow-300/50 flex-shrink-0" />{f}
                     </li>
                   ))}
                 </ul>
-                <div className="flex items-center gap-2 text-sm font-medium text-rose-200 group-hover:text-rose-100 transition-colors">
+                <div className="flex items-center gap-2 text-sm font-medium text-yellow-200 group-hover:text-yellow-100 transition-colors">
                   Get Premium <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
@@ -236,7 +236,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                   <h3 className="text-xs font-semibold text-white/60">{f.title}</h3>
                   {f.free
                     ? <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-white/[0.06] text-white/30 ml-auto">Free</span>
-                    : <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-rose-300/10 text-rose-300/60 ml-auto">Pro</span>
+                    : <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-yellow-300/10 text-yellow-300/60 ml-auto">Pro</span>
                   }
                 </div>
                 <p className="text-[10px] text-white/20 leading-relaxed">{f.desc}</p>
@@ -248,14 +248,14 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
 
       {/* Bottom CTA */}
       <section className="relative z-10 max-w-3xl mx-auto px-6 py-20 text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-2xl bg-gradient-to-br from-rose-300/[0.06] to-pink-400/[0.03] border border-rose-300/15 p-10">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-2xl bg-gradient-to-br from-yellow-300/[0.06] to-amber-300/[0.03] border border-yellow-300/15 p-10">
           <h2 className="text-2xl font-bold mb-3">Ready to build your nest?</h2>
           <p className="text-sm text-white/30 mb-8">Join students who stopped guessing and started owning their grades.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button onClick={onEnterFree} className="px-6 py-3 rounded-xl bg-white/[0.06] border border-white/[0.1] text-sm font-medium text-white/60 hover:bg-white/[0.1] hover:text-white/80 transition-colors cursor-pointer">
               Start Free
             </button>
-            <button onClick={onGoToPayment} className="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-300/25 to-pink-400/20 border border-rose-300/25 text-sm font-medium text-rose-200 hover:from-rose-300/35 hover:to-pink-400/30 transition-all cursor-pointer flex items-center gap-2 justify-center">
+            <button onClick={onGoToPayment} className="px-6 py-3 rounded-xl bg-gradient-to-r from-yellow-300/25 to-amber-300/20 border border-yellow-300/25 text-sm font-medium text-yellow-200 hover:from-yellow-300/35 hover:to-amber-300/30 transition-all cursor-pointer flex items-center gap-2 justify-center">
               <Crown className="w-4 h-4" /> Go Premium
             </button>
           </div>
@@ -266,7 +266,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       <footer className="relative z-10 border-t border-white/[0.04] py-8">
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg flex items-center justify-center shadow-lg shadow-rose-400/20">
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center shadow-lg shadow-yellow-400/20">
               <BrandLogo className="w-6 h-6" />
             </div>
             <span className="text-xs text-white/25">AcadNest</span>
