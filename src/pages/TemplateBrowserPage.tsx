@@ -151,7 +151,8 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
           {isPremium ? (
             <button
               onClick={() => setShowUpload(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-400/15 text-emerald-300 text-xs font-medium hover:bg-emerald-400/25 cursor-pointer transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg themed-surface-raised border themed-border-accent text-xs font-medium cursor-pointer transition-colors hover:themed-surface-h"
+              style={{ color: '#593A08' }}
             >
               <Upload className="w-3.5 h-3.5" /> Share Template
             </button>
@@ -292,7 +293,7 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
                   </div>
                   <button
                     onClick={() => handleApply(tmpl)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-yellow-300/15 themed-accent-soft text-[11px] font-medium hover:bg-yellow-300/25 transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md themed-surface-raised border themed-border-accent themed-accent text-[11px] font-medium hover:themed-surface-h transition-colors cursor-pointer"
                   >
                     <Download className="w-3 h-3" /> Use Template
                   </button>

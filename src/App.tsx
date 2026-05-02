@@ -27,6 +27,7 @@ import PredictionPanel from './components/PredictionPanel';
 import { supabase } from './lib/supabaseClient';
 import { useAuth } from './hooks/useAuth';
 import CancelPage from './pages/CancelPage';
+import BookLoader from './components/BookLoader';
 
 type AppView = 'landing' | 'app' | 'payment' | 'cancel';
 
@@ -407,14 +408,7 @@ export default function App() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen themed-bg flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex flex-col items-center gap-4"
-        >
-          <Loader2 className="w-8 h-8 themed-accent animate-spin" />
-          <p className="text-sm themed-text/30">Loading AcadNest...</p>
-        </motion.div>
+        <BookLoader />
       </div>
     );
   }

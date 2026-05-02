@@ -134,3 +134,12 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 /* But not transforms or layout */
 *[class*="motion"], button, a { transition-property: background-color, border-color, color, box-shadow, opacity; }
+
+/* ─── THEME-AWARE GRADIENT TEXT ─── */
+html.dark .dark-gradient-text,
+:root .dark-gradient-text {
+  background-image: linear-gradient(to right, #e8d5a3, #FFD45A, #c8a84b);
+}
+html.light .light-gradient-text {
+  background-image: linear-gradient(to right, #a05c00, #c8890a, #593A08);
+}

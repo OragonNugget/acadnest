@@ -127,7 +127,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight">
             Know your grade.
             <br />
-            <span className="bg-gradient-to-r from-yellow-200 via-yellow-100 to-yellow-400 bg-clip-text text-transparent">
+            <span className="dark-gradient-text light-gradient-text bg-clip-text text-transparent">
               Own your strategy.
             </span>
           </h1>
@@ -184,8 +184,8 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                 </div>
                 <ul className="space-y-2 mb-5">
                   {['Everything in Free', 'GWA Calculator', 'Full Template Library (share & apply)', 'Post in Community Forum', 'Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Scenario simulator', 'No ads'].map(f => (
-                    <li key={f} className="flex items-center gap-2 text-[11px] text-yellow-100/50">
-                      <CheckCircle className="w-3 h-3 themed-accent/50 flex-shrink-0" />{f}
+                    <li key={f} className="flex items-center gap-2 text-[11px] themed-accent-soft">
+                      <CheckCircle className="w-3 h-3 themed-accent flex-shrink-0" />{f}
                     </li>
                   ))}
                 </ul>
@@ -239,7 +239,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                     : <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-yellow-300/10 themed-accent/60 ml-auto">Pro</span>
                   }
                 </div>
-                <p className="text-[10px] themed-text/20 leading-relaxed">{f.desc}</p>
+                <p className="text-[10px] themed-text-subtle leading-relaxed">{f.desc}</p>
               </motion.div>
             );
           })}
