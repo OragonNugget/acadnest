@@ -406,14 +406,14 @@ export default function App() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+      <div className="min-h-screen themed-bg flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="flex flex-col items-center gap-4"
         >
-          <Loader2 className="w-8 h-8 text-yellow-300 animate-spin" />
-          <p className="text-sm text-white/30">Loading AcadNest...</p>
+          <Loader2 className="w-8 h-8 themed-accent animate-spin" />
+          <p className="text-sm themed-text/30">Loading AcadNest...</p>
         </motion.div>
       </div>
     );
@@ -432,12 +432,12 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
+    <div className="min-h-screen themed-bg themed-text">
       <AdBanner variant="top" isPremium={settings.is_premium} />
 
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-400/[0.02] rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-300/[0.02] rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-200/[0.02] rounded-full blur-[120px]" />
       </div>
 
       <Header
@@ -451,8 +451,8 @@ export default function App() {
       <main className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {saving && (
           <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-300/10 border border-yellow-300/20">
-            <Loader2 className="w-3 h-3 text-yellow-300 animate-spin" />
-            <span className="text-[11px] text-yellow-200">Saving...</span>
+            <Loader2 className="w-3 h-3 themed-accent animate-spin" />
+            <span className="text-[11px] themed-accent-soft">Saving...</span>
           </div>
         )}
         {apiError && (
@@ -490,7 +490,7 @@ export default function App() {
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-xs font-semibold text-white/40 uppercase tracking-wider">Components</h2>
+                <h2 className="text-xs font-semibold themed-text/40 uppercase tracking-wider">Components</h2>
                 <div className="flex items-center gap-2">
                   {components.length > 0 && (
                     <div className="relative">
@@ -498,10 +498,10 @@ export default function App() {
                         <div className="flex items-center gap-1.5 bg-red-500/10 border border-red-500/20 rounded-lg px-2 py-1">
                           <span className="text-[10px] text-red-300">Clear all?</span>
                           <button onClick={clearAllComponents} className="text-[10px] text-red-400 font-medium hover:text-red-300 cursor-pointer px-1">Yes</button>
-                          <button onClick={() => setShowClearConfirm(false)} className="text-[10px] text-white/30 hover:text-white/50 cursor-pointer px-1">No</button>
+                          <button onClick={() => setShowClearConfirm(false)} className="text-[10px] themed-text/30 hover:themed-text/50 cursor-pointer px-1">No</button>
                         </div>
                       ) : (
-                        <button onClick={() => setShowClearConfirm(true)} className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.03] hover:bg-red-500/10 text-white/25 hover:text-red-400 text-[10px] transition-colors cursor-pointer">
+                        <button onClick={() => setShowClearConfirm(true)} className="flex items-center gap-1 px-2.5 py-1 rounded-lg themed-surface hover:bg-red-500/10 themed-text/25 hover:text-red-400 text-[10px] transition-colors cursor-pointer">
                           <Trash2 className="w-3 h-3" /> Clear All
                         </button>
                       )}
@@ -512,7 +512,7 @@ export default function App() {
                     currentComponents={components.map(c => ({ name: c.name, weight: c.weight }))}
                     onApplyTemplate={applyTemplate}
                   />
-                  <span className="text-[10px] text-white/20">
+                  <span className="text-[10px] themed-text/20">
                     {components.reduce((s, c) => s + c.weight, 0)}% total
                   </span>
                 </div>
@@ -566,20 +566,20 @@ export default function App() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-10 rounded-2xl bg-white/[0.02] border border-white/[0.04] p-6"
+            className="mt-10 rounded-2xl themed-surface border themed-border p-6"
           >
-            <h3 className="text-sm font-semibold text-white/40 mb-3">Mathematical Model</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-[11px] text-white/25 leading-relaxed font-mono">
+            <h3 className="text-sm font-semibold themed-text/40 mb-3">Mathematical Model</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-[11px] themed-text/25 leading-relaxed font-mono">
               <div>
-                <p className="text-white/40 font-sans font-medium mb-1">Component Average</p>
+                <p className="themed-text/40 font-sans font-medium mb-1">Component Average</p>
                 <p>avg = (Σ(score÷max) ÷ n) × 100</p>
               </div>
               <div>
-                <p className="text-white/40 font-sans font-medium mb-1">Weighted Final Grade</p>
+                <p className="themed-text/40 font-sans font-medium mb-1">Weighted Final Grade</p>
                 <p>grade = Σ(avgᵢ × weightᵢ) ÷ Σ(weights)</p>
               </div>
               <div>
-                <p className="text-white/40 font-sans font-medium mb-1">Potential Range</p>
+                <p className="themed-text/40 font-sans font-medium mb-1">Potential Range</p>
                 <p>max = current + remaining×100</p>
                 <p>min = current + remaining×0</p>
               </div>

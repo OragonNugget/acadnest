@@ -24,29 +24,113 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  background-color: #0a0a0f;
-  color: #ffffff;
+/* ─── DARK MODE (default) ─── */
+:root,
+html.dark {
+  --bg: #0a0a0f;
+  --bg-secondary: #111118;
+  --bg-tooltip: #1a1a2e;
+  --fg: #ffffff;
+  --fg-muted: rgba(255,255,255,0.4);
+  --fg-subtle: rgba(255,255,255,0.2);
+  --border: rgba(255,255,255,0.06);
+  --border-subtle: rgba(255,255,255,0.1);
+  --surface: rgba(255,255,255,0.02);
+  --surface-hover: rgba(255,255,255,0.04);
+  --surface-raised: rgba(255,255,255,0.06);
+  --accent: #FFD45A;
+  --accent-muted: rgba(255,212,90,0.15);
+  --accent-border: rgba(255,212,90,0.25);
+  --accent-text: #FFD45A;
+  --accent-text-soft: #FFEED3;
+  --scrollbar: rgba(255,255,255,0.08);
+  --scrollbar-hover: rgba(255,255,255,0.15);
+  --glow-primary: rgba(255,212,90,0.02);
+  --glow-secondary: rgba(255,238,211,0.02);
+  --header-bg: rgba(10,10,15,0.8);
+  --input-bg: rgba(255,255,255,0.04);
+  --input-border: rgba(255,255,255,0.08);
+  --input-focus: rgba(255,212,90,0.4);
 }
+
+/* ─── LIGHT MODE ─── */
+html.light {
+  --bg: #FFEED3;
+  --bg-secondary: #fff5e4;
+  --bg-tooltip: #ffe0b2;
+  --fg: #2d1a00;
+  --fg-muted: rgba(45,26,0,0.55);
+  --fg-subtle: rgba(45,26,0,0.3);
+  --border: rgba(89,58,8,0.1);
+  --border-subtle: rgba(89,58,8,0.15);
+  --surface: rgba(89,58,8,0.04);
+  --surface-hover: rgba(89,58,8,0.07);
+  --surface-raised: rgba(89,58,8,0.1);
+  --accent: #c8890a;
+  --accent-muted: rgba(200,137,10,0.12);
+  --accent-border: rgba(200,137,10,0.3);
+  --accent-text: #9a6500;
+  --accent-text-soft: #7a4f00;
+  --scrollbar: rgba(89,58,8,0.15);
+  --scrollbar-hover: rgba(89,58,8,0.25);
+  --glow-primary: rgba(255,212,90,0.08);
+  --glow-secondary: rgba(200,137,10,0.05);
+  --header-bg: rgba(255,238,211,0.85);
+  --input-bg: rgba(89,58,8,0.05);
+  --input-border: rgba(89,58,8,0.12);
+  --input-focus: rgba(200,137,10,0.35);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ─── THEMED UTILITY CLASSES ─── */
+
+/* Backgrounds */
+.themed-bg        { background-color: var(--bg); }
+.themed-bg-sec    { background-color: var(--bg-secondary); }
+.themed-surface   { background-color: var(--surface); }
+.themed-surface-h { background-color: var(--surface-hover); }
+.themed-tooltip   { background-color: var(--bg-tooltip); }
+
+/* Text */
+.themed-text        { color: var(--fg); }
+.themed-text-muted  { color: var(--fg-muted); }
+.themed-text-subtle { color: var(--fg-subtle); }
+.themed-accent      { color: var(--accent-text); }
+.themed-accent-soft { color: var(--accent-text-soft); }
+
+/* Borders */
+.themed-border        { border-color: var(--border); }
+.themed-border-subtle { border-color: var(--border-subtle); }
+.themed-border-accent { border-color: var(--accent-border); }
+
+/* Inputs */
+.themed-input {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--fg);
+}
+.themed-input::placeholder { color: var(--fg-subtle); }
+.themed-input:focus { border-color: var(--input-focus); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   opacity: 0.3;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
+/* Smooth transitions for theme switches */
+*, *::before, *::after {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease, box-shadow 0.25s ease;
 }
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
+/* But not transforms or layout */
+*[class*="motion"], button, a { transition-property: background-color, border-color, color, box-shadow, opacity; }

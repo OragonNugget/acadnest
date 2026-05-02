@@ -42,7 +42,7 @@ export default function ComponentCard({
     setShowAddEntry(false);
   };
 
-  const avgColor = average < 0 ? 'text-white/30' : average >= 80 ? 'text-emerald-400' : average >= 60 ? 'text-yellow-300' : 'text-red-400';
+  const avgColor = average < 0 ? 'themed-text/30' : average >= 80 ? 'text-emerald-400' : average >= 60 ? 'themed-accent' : 'text-red-400';
 
   return (
     <motion.div
@@ -50,7 +50,7 @@ export default function ComponentCard({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="rounded-xl bg-white/[0.02] border border-white/[0.06] overflow-hidden hover:border-white/[0.1] transition-colors"
+      className="rounded-xl themed-surface border themed-border overflow-hidden hover:themed-border-subtle transition-colors"
     >
       {/* Header */}
       <div className="p-4 flex items-center gap-3">
@@ -65,23 +65,23 @@ export default function ComponentCard({
                 <input
                   value={editName}
                   onChange={e => setEditName(e.target.value)}
-                  className="bg-white/[0.06] border border-white/[0.1] rounded px-2 py-0.5 text-sm text-white w-32 focus:outline-none focus:border-yellow-300/40"
+                  className="themed-surface-raised border themed-border-subtle rounded px-2 py-0.5 text-sm themed-text w-32 focus:outline-none focus:border-yellow-300/40"
                   autoFocus
                 />
                 <input
                   value={editWeight}
                   onChange={e => setEditWeight(e.target.value)}
-                  className="bg-white/[0.06] border border-white/[0.1] rounded px-2 py-0.5 text-sm text-white w-16 focus:outline-none focus:border-yellow-300/40"
+                  className="themed-surface-raised border themed-border-subtle rounded px-2 py-0.5 text-sm themed-text w-16 focus:outline-none focus:border-yellow-300/40"
                   type="number"
                 />
-                <span className="text-xs text-white/30 self-center">%</span>
+                <span className="text-xs themed-text/30 self-center">%</span>
                 <button onClick={handleSaveEdit} className="text-xs text-emerald-400 hover:text-emerald-300 cursor-pointer">Save</button>
-                <button onClick={() => setEditing(false)} className="text-xs text-white/30 hover:text-white/50 cursor-pointer">Cancel</button>
+                <button onClick={() => setEditing(false)} className="text-xs themed-text/30 hover:themed-text/50 cursor-pointer">Cancel</button>
               </div>
             ) : (
               <>
-                <h3 className="text-sm font-semibold text-white truncate">{component.name}</h3>
-                <p className="text-[11px] text-white/30">Weight: {component.weight}% · {component.entries.length} entries</p>
+                <h3 className="text-sm font-semibold themed-text truncate">{component.name}</h3>
+                <p className="text-[11px] themed-text/30">Weight: {component.weight}% · {component.entries.length} entries</p>
               </>
             )}
           </div>
@@ -89,17 +89,17 @@ export default function ComponentCard({
             <span className={`text-lg font-bold ${avgColor}`}>
               {average >= 0 ? `${average.toFixed(1)}%` : '—'}
             </span>
-            {expanded ? <ChevronUp className="w-4 h-4 text-white/20" /> : <ChevronDown className="w-4 h-4 text-white/20" />}
+            {expanded ? <ChevronUp className="w-4 h-4 themed-text/20" /> : <ChevronDown className="w-4 h-4 themed-text/20" />}
           </div>
         </button>
       </div>
 
       {/* Action buttons */}
-      <div className="px-4 pb-3 flex items-center gap-2 border-t border-white/[0.04] pt-3">
+      <div className="px-4 pb-3 flex items-center gap-2 border-t themed-border pt-3">
         {isPremium ? (
           <button
             onClick={() => { setEditing(true); setExpanded(true); }}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/[0.04] hover:bg-white/[0.08] text-white/40 hover:text-white/60 text-[11px] transition-colors cursor-pointer"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-md themed-surface-h hover:themed-surface-raised themed-text/40 hover:themed-text/60 text-[11px] transition-colors cursor-pointer"
           >
             <Pencil className="w-3 h-3" /> Edit
           </button>
@@ -107,18 +107,18 @@ export default function ComponentCard({
           <div className="relative group">
             <button
               disabled
-              className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/[0.02] text-white/20 text-[11px] cursor-not-allowed"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-md themed-surface themed-text/20 text-[11px] cursor-not-allowed"
             >
               <Lock className="w-3 h-3" /> Edit
             </button>
-            <div className="absolute bottom-full left-0 mb-1 px-2 py-1 bg-[#1a1a2e] border border-white/[0.1] rounded text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+            <div className="absolute bottom-full left-0 mb-1 px-2 py-1 themed-tooltip border themed-border-subtle rounded text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
               Premium feature — upgrade to edit
             </div>
           </div>
         )}
         <button
           onClick={() => onDelete(component.id)}
-          className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/[0.04] hover:bg-red-500/10 text-white/40 hover:text-red-400 text-[11px] transition-colors cursor-pointer"
+          className="flex items-center gap-1 px-2.5 py-1 rounded-md themed-surface-h hover:bg-red-500/10 themed-text/40 hover:text-red-400 text-[11px] transition-colors cursor-pointer"
         >
           <Trash2 className="w-3 h-3" /> Delete
         </button>
@@ -128,7 +128,7 @@ export default function ComponentCard({
             className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] transition-colors cursor-pointer ${
               component.done
                 ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
-                : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08] hover:text-white/60'
+                : 'themed-surface-h themed-text/40 hover:themed-surface-raised hover:themed-text/60'
             }`}
           >
             {component.done ? <CheckCircle className="w-3 h-3" /> : <Circle className="w-3 h-3" />}
@@ -138,11 +138,11 @@ export default function ComponentCard({
           <div className="relative group">
             <button
               disabled
-              className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/[0.02] text-white/20 text-[11px] cursor-not-allowed"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-md themed-surface themed-text/20 text-[11px] cursor-not-allowed"
             >
               <Lock className="w-3 h-3" /> Toggle Done
             </button>
-            <div className="absolute bottom-full left-0 mb-1 px-2 py-1 bg-[#1a1a2e] border border-white/[0.1] rounded text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+            <div className="absolute bottom-full left-0 mb-1 px-2 py-1 themed-tooltip border themed-border-subtle rounded text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
               Premium feature — upgrade to toggle
             </div>
           </div>
@@ -158,30 +158,30 @@ export default function ComponentCard({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 border-t border-white/[0.04] pt-3">
+            <div className="px-4 pb-4 border-t themed-border pt-3">
               {component.entries.length === 0 ? (
-                <p className="text-xs text-white/20 text-center py-2">No entries yet</p>
+                <p className="text-xs themed-text/20 text-center py-2">No entries yet</p>
               ) : (
                 <div className="space-y-1.5 mb-3">
                   {component.entries.map((entry, i) => (
-                    <div key={entry.id} className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-white/[0.02] group">
+                    <div key={entry.id} className="flex items-center justify-between px-3 py-1.5 rounded-lg themed-surface group">
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-white/20 w-5">#{i + 1}</span>
-                        {entry.label && <span className="text-xs text-white/40">{entry.label}</span>}
+                        <span className="text-[11px] themed-text/20 w-5">#{i + 1}</span>
+                        {entry.label && <span className="text-xs themed-text/40">{entry.label}</span>}
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-sm text-white/70 font-mono">
-                          {entry.score}<span className="text-white/20">/</span>{entry.max_score}
+                        <span className="text-sm themed-text/70 font-mono">
+                          {entry.score}<span className="themed-text/20">/</span>{entry.max_score}
                         </span>
                         <span className={`text-xs font-medium ${
                           (entry.score / entry.max_score * 100) >= 80 ? 'text-emerald-400/70' :
-                          (entry.score / entry.max_score * 100) >= 60 ? 'text-yellow-300/70' : 'text-red-400/70'
+                          (entry.score / entry.max_score * 100) >= 60 ? 'themed-accent/70' : 'text-red-400/70'
                         }`}>
                           {(entry.score / entry.max_score * 100).toFixed(0)}%
                         </span>
                         <button
                           onClick={() => onDeleteEntry(entry.id)}
-                          className="opacity-0 group-hover:opacity-100 text-white/20 hover:text-red-400 transition-all cursor-pointer"
+                          className="opacity-0 group-hover:opacity-100 themed-text/20 hover:text-red-400 transition-all cursor-pointer"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -192,46 +192,46 @@ export default function ComponentCard({
               )}
 
               {showAddEntry ? (
-                <div className="flex flex-wrap gap-2 items-end bg-white/[0.02] rounded-lg p-3">
+                <div className="flex flex-wrap gap-2 items-end themed-surface rounded-lg p-3">
                   <div>
-                    <label className="text-[10px] text-white/30 block mb-1">Label</label>
+                    <label className="text-[10px] themed-text/30 block mb-1">Label</label>
                     <input
                       value={newLabel}
                       onChange={e => setNewLabel(e.target.value)}
                       placeholder="e.g. Quiz 3"
-                      className="bg-white/[0.06] border border-white/[0.08] rounded px-2 py-1 text-xs text-white w-24 focus:outline-none focus:border-yellow-300/40"
+                      className="themed-surface-raised border themed-border-subtle rounded px-2 py-1 text-xs themed-text w-24 focus:outline-none focus:border-yellow-300/40"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-white/30 block mb-1">Score</label>
+                    <label className="text-[10px] themed-text/30 block mb-1">Score</label>
                     <input
                       value={newScore}
                       onChange={e => setNewScore(e.target.value)}
                       type="number"
                       min={0}
                       placeholder="85"
-                      className="bg-white/[0.06] border border-white/[0.08] rounded px-2 py-1 text-xs text-white w-16 focus:outline-none focus:border-yellow-300/40"
+                      className="themed-surface-raised border themed-border-subtle rounded px-2 py-1 text-xs themed-text w-16 focus:outline-none focus:border-yellow-300/40"
                       autoFocus
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-white/30 block mb-1">Max</label>
+                    <label className="text-[10px] themed-text/30 block mb-1">Max</label>
                     <input
                       value={newMax}
                       onChange={e => setNewMax(e.target.value)}
                       type="number"
                       min={1}
                       placeholder="100"
-                      className="bg-white/[0.06] border border-white/[0.08] rounded px-2 py-1 text-xs text-white w-16 focus:outline-none focus:border-yellow-300/40"
+                      className="themed-surface-raised border themed-border-subtle rounded px-2 py-1 text-xs themed-text w-16 focus:outline-none focus:border-yellow-300/40"
                     />
                   </div>
-                  <button onClick={handleAddEntry} className="px-3 py-1 rounded-md bg-yellow-300/20 text-yellow-200 text-xs hover:bg-yellow-300/30 transition-colors cursor-pointer">Add</button>
-                  <button onClick={() => setShowAddEntry(false)} className="px-3 py-1 rounded-md bg-white/[0.04] text-white/30 text-xs hover:bg-white/[0.08] transition-colors cursor-pointer">Cancel</button>
+                  <button onClick={handleAddEntry} className="px-3 py-1 rounded-md bg-yellow-300/20 themed-accent-soft text-xs hover:bg-yellow-300/30 transition-colors cursor-pointer">Add</button>
+                  <button onClick={() => setShowAddEntry(false)} className="px-3 py-1 rounded-md themed-surface-h themed-text/30 text-xs hover:themed-surface-raised transition-colors cursor-pointer">Cancel</button>
                 </div>
               ) : (
                 <button
                   onClick={() => setShowAddEntry(true)}
-                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] text-white/30 hover:text-white/50 text-xs transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg themed-surface hover:themed-surface-h themed-text/30 hover:themed-text/50 text-xs transition-colors cursor-pointer"
                 >
                   <Plus className="w-3 h-3" /> Add Entry
                 </button>

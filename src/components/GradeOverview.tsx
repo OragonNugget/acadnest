@@ -40,11 +40,11 @@ function GradeRing({ value, label, color, size = 120, displayMode }: { value: nu
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-white">{displayValue}</span>
-          <span className="text-[10px] text-white/40 uppercase tracking-wider">{displayUnit}</span>
+          <span className="text-2xl font-bold themed-text">{displayValue}</span>
+          <span className="text-[10px] themed-text/40 uppercase tracking-wider">{displayUnit}</span>
         </div>
       </div>
-      <span className="text-xs text-white/50 font-medium">{label}</span>
+      <span className="text-xs themed-text/50 font-medium">{label}</span>
       {displayMode === 'gpa' && (
         <span className="text-[9px] font-medium" style={{ color: gpaToColor(gpa) }}>
           {percentToGPALabel(value)}
@@ -59,8 +59,8 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
 
   if (!gradeResult) {
     return (
-      <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 text-center">
-        <p className="text-white/30">Add components and entries to see your grade overview.</p>
+      <div className="rounded-2xl themed-surface border themed-border p-8 text-center">
+        <p className="themed-text/30">Add components and entries to see your grade overview.</p>
       </div>
     );
   }
@@ -73,16 +73,16 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.06] p-6"
+      className="rounded-2xl themed-surface border themed-border p-6"
     >
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <h2 className="text-base font-semibold text-white/80">Grade Overview</h2>
+        <h2 className="text-base font-semibold themed-text/80">Grade Overview</h2>
         <div className="flex items-center gap-3">
           {/* GPA toggle — Premium only */}
           {isPremium && (
             <button
               onClick={() => setDisplayMode(displayMode === 'percent' ? 'gpa' : 'percent')}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.06] text-[11px] text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg themed-surface-h hover:themed-surface-raised text-[11px] themed-text/40 hover:themed-text/60 transition-colors cursor-pointer"
             >
               {displayMode === 'percent' ? (
                 <><ToggleLeft className="w-4 h-4" /> Percentage</>
@@ -93,17 +93,17 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
           )}
           {isPremium && (
             <div className="flex items-center gap-2">
-              <Target className="w-4 h-4 text-yellow-300/70" />
-              <label className="text-xs text-white/40">Target:</label>
+              <Target className="w-4 h-4 themed-accent/70" />
+              <label className="text-xs themed-text/40">Target:</label>
               <input
                 type="number"
                 min={0}
                 max={100}
                 value={target}
                 onChange={e => onTargetChange(Math.min(100, Math.max(0, Number(e.target.value))))}
-                className="w-16 bg-white/[0.04] border border-white/[0.08] rounded-md px-2 py-1 text-sm text-white text-center focus:outline-none focus:border-yellow-300/40"
+                className="w-16 themed-surface-h border themed-border-subtle rounded-md px-2 py-1 text-sm themed-text text-center focus:outline-none focus:border-yellow-300/40"
               />
-              <span className="text-xs text-white/30">%</span>
+              <span className="text-xs themed-text/30">%</span>
             </div>
           )}
         </div>
@@ -140,8 +140,8 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
               </div>
             ) : (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/20">
-                <TrendingUp className="w-3.5 h-3.5 text-yellow-300" />
-                <span className="text-xs text-yellow-200">Target {target}% is achievable — need improvement</span>
+                <TrendingUp className="w-3.5 h-3.5 themed-accent" />
+                <span className="text-xs themed-accent-soft">Target {target}% is achievable — need improvement</span>
               </div>
             )
           ) : (
@@ -151,8 +151,8 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
             </div>
           )}
           {!isComplete && (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06]">
-              <span className="text-xs text-white/40">{totalWeightRemaining.toFixed(0)}% weight remaining</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full themed-surface-h border themed-border">
+              <span className="text-xs themed-text/40">{totalWeightRemaining.toFixed(0)}% weight remaining</span>
             </div>
           )}
         </div>

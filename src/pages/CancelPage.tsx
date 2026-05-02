@@ -46,17 +46,17 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col items-center justify-center px-4 py-16">
+    <div className="min-h-screen themed-bg themed-text flex flex-col items-center justify-center px-4 py-16">
       {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-red-500/[0.03] rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-amber-400/[0.02] rounded-full blur-[180px]" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-yellow-300/[0.02] rounded-full blur-[180px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-lg">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-white/30 hover:text-white/60 text-sm mb-8 cursor-pointer transition-colors"
+          className="flex items-center gap-1.5 themed-text/30 hover:themed-text/60 text-sm mb-8 cursor-pointer transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Keep my Premium
@@ -67,35 +67,35 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="rounded-2xl bg-[#111118] border border-white/[0.08] p-8"
+            className="rounded-2xl themed-bg-sec border themed-border-subtle p-8"
           >
             {/* Header */}
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-300 to-amber-300 flex items-center justify-center shadow-lg shadow-yellow-400/25">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-300 to-yellow-200 flex items-center justify-center shadow-lg shadow-yellow-300/25">
                 <Crown className="w-5 h-5 text-[#0a0a0f]" />
               </div>
               <div>
-                <h1 className="text-base font-bold text-white">Before you leave your nest…</h1>
-                <p className="text-[11px] text-white/30">We'd genuinely hate to see you go.</p>
+                <h1 className="text-base font-bold themed-text">Before you leave your nest…</h1>
+                <p className="text-[11px] themed-text/30">We'd genuinely hate to see you go.</p>
               </div>
             </div>
 
-            <p className="text-sm text-white/50 leading-relaxed mb-6">
+            <p className="text-sm themed-text/50 leading-relaxed mb-6">
               Cancelling your Premium subscription means losing access to everything that makes
               Acadnest worth using. Here's what you'd be giving up:
             </p>
 
             <ul className="space-y-2.5 mb-8">
               {lostPerks.map(perk => (
-                <li key={perk} className="flex items-start gap-2.5 text-[12px] text-white/40">
-                  <CheckCircle className="w-3.5 h-3.5 text-yellow-300/40 flex-shrink-0 mt-0.5" />
+                <li key={perk} className="flex items-start gap-2.5 text-[12px] themed-text/40">
+                  <CheckCircle className="w-3.5 h-3.5 themed-accent/40 flex-shrink-0 mt-0.5" />
                   {perk}
                 </li>
               ))}
             </ul>
 
             <div className="rounded-xl bg-yellow-400/[0.06] border border-yellow-300/15 px-4 py-3 mb-6">
-              <p className="text-[11px] text-yellow-200/60 leading-relaxed">
+              <p className="text-[11px] themed-accent-soft/60 leading-relaxed">
                 Your data and saved grades will remain intact — but you won't be able to access
                 them until you resubscribe.
               </p>
@@ -104,13 +104,13 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
             <div className="flex gap-3">
               <button
                 onClick={onBack}
-                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-yellow-300/20 to-amber-300/15 border border-yellow-300/25 text-sm font-semibold text-yellow-200 hover:from-yellow-300/30 hover:to-amber-300/25 transition-all cursor-pointer"
+                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-yellow-300/20 to-yellow-200/15 border border-yellow-300/25 text-sm font-semibold themed-accent-soft hover:from-yellow-300/30 hover:to-yellow-200/25 transition-all cursor-pointer"
               >
                 Keep Premium
               </button>
               <button
                 onClick={() => setConfirming(true)}
-                className="px-4 py-2.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[11px] text-white/25 hover:text-white/40 hover:bg-white/[0.06] transition-all cursor-pointer"
+                className="px-4 py-2.5 rounded-lg themed-surface border themed-border text-[11px] themed-text/25 hover:themed-text/40 hover:themed-surface-raised transition-all cursor-pointer"
               >
                 Cancel anyway
               </button>
@@ -121,19 +121,19 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="rounded-2xl bg-[#111118] border border-red-500/20 p-8"
+            className="rounded-2xl themed-bg-sec border border-red-500/20 p-8"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/20 flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-red-400/70" />
               </div>
               <div>
-                <h1 className="text-base font-bold text-white">Are you certain?</h1>
-                <p className="text-[11px] text-white/30">This will revert your account to the free tier.</p>
+                <h1 className="text-base font-bold themed-text">Are you certain?</h1>
+                <p className="text-[11px] themed-text/30">This will revert your account to the free tier.</p>
               </div>
             </div>
 
-            <p className="text-sm text-white/40 leading-relaxed mb-8">
+            <p className="text-sm themed-text/40 leading-relaxed mb-8">
               Your Premium access will be removed immediately upon confirmation.
               You can always resubscribe — but your streak ends here.
             </p>
@@ -147,7 +147,7 @@ export default function CancelPage({ onBack, onCancelled }: Props) {
             <div className="flex gap-3">
               <button
                 onClick={onBack}
-                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-yellow-300/20 to-amber-300/15 border border-yellow-300/25 text-sm font-semibold text-yellow-200 hover:from-yellow-300/30 transition-all cursor-pointer"
+                className="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-yellow-300/20 to-yellow-200/15 border border-yellow-300/25 text-sm font-semibold themed-accent-soft hover:from-yellow-300/30 transition-all cursor-pointer"
               >
                 Actually, keep it
               </button>

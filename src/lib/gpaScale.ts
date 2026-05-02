@@ -46,7 +46,7 @@ export function gpaToColor(gpa: number): string {
   if (gpa <= 1.75) return '#4ade80'; // light green
   if (gpa <= 2.25) return '#a3e635'; // lime
   if (gpa <= 2.75) return '#FFEED3'; // yellow
-  if (gpa <= 3.00) return '#FFD45A'; // amber
+  if (gpa <= 3.00) return '#FFD45A'; // gold
   return '#ef4444'; // red — failing
 }
 

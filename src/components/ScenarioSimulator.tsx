@@ -33,12 +33,12 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
 
   if (!isPremium) {
     return (
-      <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5">
+      <div className="rounded-2xl themed-surface border themed-border p-5">
         <div className="flex items-center gap-2 mb-2">
-          <Lock className="w-4 h-4 text-white/15" />
-          <h2 className="text-sm font-medium text-white/25">Scenario Simulator</h2>
+          <Lock className="w-4 h-4 themed-text/15" />
+          <h2 className="text-sm font-medium themed-text/25">Scenario Simulator</h2>
         </div>
-        <p className="text-[11px] text-white/15">Premium feature — test "what if" scenarios</p>
+        <p className="text-[11px] themed-text/15">Premium feature — test "what if" scenarios</p>
       </div>
     );
   }
@@ -54,13 +54,13 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Beaker className="w-4 h-4 text-purple-400/70" />
-          <h2 className="text-sm font-semibold text-white/70">Scenario Simulator</h2>
+          <h2 className="text-sm font-semibold themed-text/70">Scenario Simulator</h2>
         </div>
         <div className="flex gap-2">
           {active && (
             <button
               onClick={() => { setScenarios({}); setActive(false); }}
-              className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/[0.04] text-white/30 text-[11px] hover:bg-white/[0.08] cursor-pointer"
+              className="flex items-center gap-1 px-2 py-1 rounded-md themed-surface-h themed-text/30 text-[11px] hover:themed-surface-raised cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" /> Reset
             </button>
@@ -68,7 +68,7 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
           <button
             onClick={() => setActive(!active)}
             className={`flex items-center gap-1 px-3 py-1 rounded-md text-[11px] font-medium cursor-pointer transition-colors ${
-              active ? 'bg-purple-500/20 text-purple-300' : 'bg-white/[0.04] text-white/40 hover:bg-white/[0.08]'
+              active ? 'bg-purple-500/20 text-purple-300' : 'themed-surface-h themed-text/40 hover:themed-surface-raised'
             }`}
           >
             <Play className="w-3 h-3" /> {active ? 'Active' : 'Simulate'}
@@ -78,13 +78,13 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
 
       {active && (
         <div className="space-y-2">
-          <p className="text-[11px] text-white/30 mb-3">Enter hypothetical scores (0–100) for incomplete components:</p>
+          <p className="text-[11px] themed-text/30 mb-3">Enter hypothetical scores (0–100) for incomplete components:</p>
           {incompleteComponents.length === 0 ? (
-            <p className="text-xs text-white/20 text-center py-2">All components are marked as done.</p>
+            <p className="text-xs themed-text/20 text-center py-2">All components are marked as done.</p>
           ) : (
             incompleteComponents.map(comp => (
-              <div key={comp.id} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.02]">
-                <span className="text-xs text-white/50 flex-1">{comp.name}</span>
+              <div key={comp.id} className="flex items-center gap-3 px-3 py-2 rounded-lg themed-surface">
+                <span className="text-xs themed-text/50 flex-1">{comp.name}</span>
                 <input
                   type="number"
                   min={0}
@@ -101,18 +101,18 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
                     }
                   }}
                   placeholder="—"
-                  className="w-16 bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1 text-xs text-white text-center focus:outline-none focus:border-purple-400/40"
+                  className="w-16 themed-surface-h border themed-border-subtle rounded px-2 py-1 text-xs themed-text text-center focus:outline-none focus:border-purple-400/40"
                 />
               </div>
             ))
           )}
 
           {simulatedResult && (
-            <div className="mt-3 pt-3 border-t border-white/[0.04] flex items-center justify-between">
-              <span className="text-[11px] text-white/30">Simulated Grade</span>
+            <div className="mt-3 pt-3 border-t themed-border flex items-center justify-between">
+              <span className="text-[11px] themed-text/30">Simulated Grade</span>
               <span className={`text-lg font-bold ${
                 simulatedResult.currentGrade >= 80 ? 'text-emerald-400' :
-                simulatedResult.currentGrade >= 60 ? 'text-yellow-300' : 'text-red-400'
+                simulatedResult.currentGrade >= 60 ? 'themed-accent' : 'text-red-400'
               }`}>
                 {simulatedResult.currentGrade.toFixed(1)}%
               </span>

@@ -25,11 +25,11 @@ interface Props {
 
 const categories = ['general', 'study-tips', 'exam-prep', 'time-management', 'motivation', 'resources'];
 const categoryColors: Record<string, string> = {
-  'general': 'bg-white/[0.06] text-white/40',
+  'general': 'themed-surface-raised themed-text/40',
   'study-tips': 'bg-blue-500/10 text-blue-400',
   'exam-prep': 'bg-red-500/10 text-red-400',
   'time-management': 'bg-emerald-500/10 text-emerald-400',
-  'motivation': 'bg-yellow-400/10 text-yellow-300',
+  'motivation': 'bg-yellow-400/10 themed-accent',
   'resources': 'bg-purple-500/10 text-purple-400',
 };
 
@@ -135,34 +135,34 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
   const filtered = filter === 'all' ? posts : posts.filter(p => p.category === filter);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
+    <div className="min-h-screen themed-bg themed-text">
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 right-1/3 w-96 h-96 bg-blue-500/[0.02] rounded-full blur-[120px]" />
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#0a0a0f]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b themed-border themed-bg/80 backdrop-blur-xl">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
-          <button onClick={onBack} className="flex items-center gap-1.5 text-white/40 hover:text-white/60 text-sm cursor-pointer">
+          <button onClick={onBack} className="flex items-center gap-1.5 themed-text/40 hover:themed-text/60 text-sm cursor-pointer">
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-white">Community Forum</h1>
-            <p className="text-[11px] text-white/30">Tips, strategies & discussion from fellow students</p>
+            <h1 className="text-lg font-bold themed-text">Community Forum</h1>
+            <p className="text-[11px] themed-text/30">Tips, strategies & discussion from fellow students</p>
           </div>
           {isPremium ? (
             <button
               onClick={() => setShowCreate(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-yellow-300/15 text-yellow-200 text-xs font-medium hover:bg-yellow-300/25 cursor-pointer transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-yellow-300/15 themed-accent-soft text-xs font-medium hover:bg-yellow-300/25 cursor-pointer transition-colors"
             >
               <Plus className="w-3.5 h-3.5" /> New Post
             </button>
           ) : (
             <div className="relative group">
-              <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.02] text-white/20 text-xs cursor-not-allowed border border-white/[0.06]">
+              <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg themed-surface themed-text/20 text-xs cursor-not-allowed border themed-border">
                 <Lock className="w-3 h-3" /> New Post
               </button>
-              <div className="absolute bottom-full right-0 mb-2 w-48 px-3 py-2 bg-[#1a1a2e] border border-yellow-300/20 rounded-lg text-[10px] text-white/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
-                <Crown className="w-3 h-3 text-yellow-300/50 mx-auto mb-1" />
+              <div className="absolute bottom-full right-0 mb-2 w-48 px-3 py-2 themed-tooltip border border-yellow-300/20 rounded-lg text-[10px] themed-text/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
+                <Crown className="w-3 h-3 themed-accent/50 mx-auto mb-1" />
                 Only Premium members can post. Upgrade to join the discussion.
               </div>
             </div>
@@ -172,11 +172,11 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
 
       <main className="relative max-w-4xl mx-auto px-4 sm:px-6 py-6">
         <div className="flex flex-wrap gap-2 mb-6">
-          <button onClick={() => setFilter('all')} className={`px-3 py-1 rounded-full text-[11px] cursor-pointer transition-colors ${filter === 'all' ? 'bg-white/[0.1] text-white/70' : 'bg-white/[0.03] text-white/30 hover:bg-white/[0.06]'}`}>
+          <button onClick={() => setFilter('all')} className={`px-3 py-1 rounded-full text-[11px] cursor-pointer transition-colors ${filter === 'all' ? 'themed-surface-raised themed-text/70' : 'themed-surface themed-text/30 hover:themed-surface-raised'}`}>
             All
           </button>
           {categories.map(cat => (
-            <button key={cat} onClick={() => setFilter(cat)} className={`px-3 py-1 rounded-full text-[11px] cursor-pointer transition-colors capitalize ${filter === cat ? 'bg-white/[0.1] text-white/70' : 'bg-white/[0.03] text-white/30 hover:bg-white/[0.06]'}`}>
+            <button key={cat} onClick={() => setFilter(cat)} className={`px-3 py-1 rounded-full text-[11px] cursor-pointer transition-colors capitalize ${filter === cat ? 'themed-surface-raised themed-text/70' : 'themed-surface themed-text/30 hover:themed-surface-raised'}`}>
               {cat.replace('-', ' ')}
             </button>
           ))}
@@ -184,21 +184,21 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
 
         <AnimatePresence>
           {showCreate && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-5 mb-6">
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="rounded-xl themed-surface border themed-border-subtle p-5 mb-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-white/60">Create Post</h3>
-                <button onClick={() => setShowCreate(false)} className="text-white/20 hover:text-white/40 cursor-pointer"><X className="w-4 h-4" /></button>
+                <h3 className="text-sm font-semibold themed-text/60">Create Post</h3>
+                <button onClick={() => setShowCreate(false)} className="themed-text/20 hover:themed-text/40 cursor-pointer"><X className="w-4 h-4" /></button>
               </div>
               <div className="space-y-3">
-                <input value={newAuthor} onChange={e => setNewAuthor(e.target.value)} placeholder="Your name" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-yellow-300/40" />
-                <input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Post title" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-yellow-300/40" />
-                <textarea value={newBody} onChange={e => setNewBody(e.target.value)} placeholder="Share your tips, ask questions, or discuss strategies..." rows={4} className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-yellow-300/40 resize-none" />
+                <input value={newAuthor} onChange={e => setNewAuthor(e.target.value)} placeholder="Your name" className="w-full themed-surface-h border themed-border-subtle rounded-lg px-3 py-2 text-sm themed-text placeholder:themed-text/20 focus:outline-none focus:border-yellow-300/40" />
+                <input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Post title" className="w-full themed-surface-h border themed-border-subtle rounded-lg px-3 py-2 text-sm themed-text placeholder:themed-text/20 focus:outline-none focus:border-yellow-300/40" />
+                <textarea value={newBody} onChange={e => setNewBody(e.target.value)} placeholder="Share your tips, ask questions, or discuss strategies..." rows={4} className="w-full themed-surface-h border themed-border-subtle rounded-lg px-3 py-2 text-sm themed-text placeholder:themed-text/20 focus:outline-none focus:border-yellow-300/40 resize-none" />
                 <div className="flex items-center gap-3 flex-wrap">
-                  <select value={newCategory} onChange={e => setNewCategory(e.target.value)} className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white/60 focus:outline-none focus:border-yellow-300/40">
+                  <select value={newCategory} onChange={e => setNewCategory(e.target.value)} className="themed-surface-h border themed-border-subtle rounded-lg px-3 py-2 text-sm themed-text/60 focus:outline-none focus:border-yellow-300/40">
                     {categories.map(cat => <option key={cat} value={cat} className="bg-[#12121f] capitalize">{cat.replace('-', ' ')}</option>)}
                   </select>
                   {postError && <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 flex-1">{postError}</p>}
-                  <button onClick={handleCreate} disabled={posting} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-yellow-300/20 text-yellow-200 text-sm font-medium hover:bg-yellow-300/30 transition-colors cursor-pointer ml-auto disabled:opacity-50">
+                  <button onClick={handleCreate} disabled={posting} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-yellow-300/20 themed-accent-soft text-sm font-medium hover:bg-yellow-300/30 transition-colors cursor-pointer ml-auto disabled:opacity-50">
                     {posting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                     {posting ? 'Posting...' : 'Post'}
                   </button>
@@ -209,11 +209,11 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
         </AnimatePresence>
 
         {loading ? (
-          <div className="text-center py-12"><p className="text-sm text-white/30">Loading posts...</p></div>
+          <div className="text-center py-12"><p className="text-sm themed-text/30">Loading posts...</p></div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-12">
-            <MessageSquare className="w-8 h-8 text-white/10 mx-auto mb-3" />
-            <p className="text-sm text-white/30">{isPremium ? 'No posts yet. Be the first to share!' : 'No posts yet. Upgrade to Premium to start a discussion.'}</p>
+            <MessageSquare className="w-8 h-8 themed-text/10 mx-auto mb-3" />
+            <p className="text-sm themed-text/30">{isPremium ? 'No posts yet. Be the first to share!' : 'No posts yet. Upgrade to Premium to start a discussion.'}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -222,8 +222,8 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
               return (
                 <div key={post.id} className="relative group/post">
                   {!isPremium && (
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 bg-[#1a1a2e] border border-yellow-300/20 rounded-lg text-[10px] text-white/50 whitespace-nowrap opacity-0 group-hover/post:opacity-100 transition-opacity pointer-events-none flex items-center gap-1.5">
-                      <Crown className="w-3 h-3 text-yellow-300/50" />
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 themed-tooltip border border-yellow-300/20 rounded-lg text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover/post:opacity-100 transition-opacity pointer-events-none flex items-center gap-1.5">
+                      <Crown className="w-3 h-3 themed-accent/50" />
                       Upgrade to Premium to post & reply
                     </div>
                   )}
@@ -232,28 +232,28 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     onClick={() => setSelectedPostId(post.id)}
-                    className={`rounded-xl bg-white/[0.02] border transition-colors cursor-pointer ${post.pinned ? 'border-yellow-400/20' : 'border-white/[0.06] hover:border-white/[0.1]'} p-5`}
+                    className={`rounded-xl themed-surface border transition-colors cursor-pointer ${post.pinned ? 'border-yellow-400/20' : 'themed-border hover:themed-border-subtle'} p-5`}
                   >
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      {post.pinned && <span className="text-[9px] px-1.5 py-0.5 rounded bg-yellow-400/15 text-yellow-300">📌 Pinned</span>}
+                      {post.pinned && <span className="text-[9px] px-1.5 py-0.5 rounded bg-yellow-400/15 themed-accent">📌 Pinned</span>}
                       <span className={`text-[9px] px-1.5 py-0.5 rounded capitalize ${categoryColors[post.category] || categoryColors.general}`}>
                         {post.category.replace('-', ' ')}
                       </span>
                     </div>
-                    <h3 className="text-sm font-semibold text-white/80 mb-1">{post.title}</h3>
-                    <p className="text-xs text-white/35 leading-relaxed mb-3 line-clamp-2">{post.body}</p>
+                    <h3 className="text-sm font-semibold themed-text/80 mb-1">{post.title}</h3>
+                    <p className="text-xs themed-text/35 leading-relaxed mb-3 line-clamp-2">{post.body}</p>
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] text-white/40">{post.author}</span>
-                        {post.is_premium_author && <Crown className="w-3 h-3 text-yellow-300/50" />}
+                        <span className="text-[11px] themed-text/40">{post.author}</span>
+                        {post.is_premium_author && <Crown className="w-3 h-3 themed-accent/50" />}
                       </div>
-                      <span className="text-[10px] text-white/20">{new Date(post.created_at).toLocaleDateString()}</span>
-                      <span className="text-[10px] text-white/20 flex items-center gap-1 ml-auto">
+                      <span className="text-[10px] themed-text/20">{new Date(post.created_at).toLocaleDateString()}</span>
+                      <span className="text-[10px] themed-text/20 flex items-center gap-1 ml-auto">
                         <MessageSquare className="w-3 h-3" /> View replies
                       </span>
                       <button
                         onClick={e => handleLike(e, post.id)}
-                        className={`flex items-center gap-1 transition-colors cursor-pointer ${userLiked ? 'text-red-400 hover:text-red-300' : 'text-white/20 hover:text-red-400'}`}
+                        className={`flex items-center gap-1 transition-colors cursor-pointer ${userLiked ? 'text-red-400 hover:text-red-300' : 'themed-text/20 hover:text-red-400'}`}
                       >
                         <Heart className={`w-3 h-3 ${userLiked ? 'fill-red-400' : ''}`} />
                         <span className="text-[10px]">{post.likes}</span>

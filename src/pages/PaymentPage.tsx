@@ -27,17 +27,17 @@ interface Props {
 
 export default function PaymentPage({ onBack }: Props) {
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden flex flex-col items-center justify-center px-4 py-16">
+    <div className="min-h-screen themed-bg themed-text overflow-x-hidden flex flex-col items-center justify-center px-4 py-16">
       {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-yellow-400/[0.04] rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-amber-400/[0.03] rounded-full blur-[180px]" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-yellow-300/[0.03] rounded-full blur-[180px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-lg">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-white/30 hover:text-white/60 text-sm mb-8 cursor-pointer transition-colors"
+          className="flex items-center gap-1.5 themed-text/30 hover:themed-text/60 text-sm mb-8 cursor-pointer transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back
         </button>
@@ -46,40 +46,40 @@ export default function PaymentPage({ onBack }: Props) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl bg-gradient-to-br from-yellow-300/[0.07] to-amber-300/[0.03] border border-yellow-300/20 p-8"
+          className="rounded-2xl bg-gradient-to-br from-yellow-300/[0.07] to-yellow-200/[0.03] border border-yellow-300/20 p-8"
         >
           {/* Header */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-300 to-amber-300 flex items-center justify-center shadow-lg shadow-yellow-400/25">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-300 to-yellow-200 flex items-center justify-center shadow-lg shadow-yellow-300/25">
               <Crown className="w-5 h-5 text-[#0a0a0f]" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white">Acadnest Premium</h1>
-              <p className="text-[11px] text-white/35">Unlock everything. Forge better grades.</p>
+              <h1 className="text-lg font-bold themed-text">Acadnest Premium</h1>
+              <p className="text-[11px] themed-text/35">Unlock everything. Forge better grades.</p>
             </div>
           </div>
 
           {/* Price */}
           <div className="flex items-end gap-2 mb-6">
-            <span className="text-4xl font-extrabold text-yellow-200">{PREMIUM_PRICE}</span>
-            <span className="text-sm text-white/35 mb-1">{PREMIUM_PRICE_PERIOD}</span>
+            <span className="text-4xl font-extrabold themed-accent-soft">{PREMIUM_PRICE}</span>
+            <span className="text-sm themed-text/35 mb-1">{PREMIUM_PRICE_PERIOD}</span>
           </div>
 
           {/* Features */}
           <ul className="space-y-2.5 mb-8">
             {premiumFeatures.map(f => (
               <li key={f} className="flex items-start gap-2.5 text-[12px] text-yellow-50/50">
-                <CheckCircle className="w-3.5 h-3.5 text-yellow-300/60 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-3.5 h-3.5 themed-accent/60 flex-shrink-0 mt-0.5" />
                 {f}
               </li>
             ))}
           </ul>
 
           {/* Payment placeholder */}
-          <div className="rounded-xl border border-dashed border-white/[0.1] bg-white/[0.02] p-6 text-center mb-6">
-            <Lock className="w-6 h-6 text-white/15 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-white/30 mb-1">Payment coming soon</p>
-            <p className="text-[11px] text-white/20 leading-relaxed">
+          <div className="rounded-xl border border-dashed themed-border-subtle themed-surface p-6 text-center mb-6">
+            <Lock className="w-6 h-6 themed-text/15 mx-auto mb-3" />
+            <p className="text-sm font-semibold themed-text/30 mb-1">Payment coming soon</p>
+            <p className="text-[11px] themed-text/20 leading-relaxed">
               We're setting up secure payment processing.<br />
               Check back shortly — this will connect to your preferred payment gateway.
             </p>
@@ -100,13 +100,13 @@ export default function PaymentPage({ onBack }: Props) {
             ───────────────────────────────────────────────────────────────── */}
           </div>
 
-          <p className="text-[10px] text-white/20 text-center">{PREMIUM_PRICE_NOTE}</p>
+          <p className="text-[10px] themed-text/20 text-center">{PREMIUM_PRICE_NOTE}</p>
         </motion.div>
 
-        <p className="text-center text-[10px] text-white/15 mt-6">
+        <p className="text-center text-[10px] themed-text/15 mt-6">
           Questions? Reach us at{' '}
           {/* EDIT: replace with your support email */}
-          <span className="text-white/25">support@acadnest.app</span>
+          <span className="themed-text/25">support@acadnest.app</span>
         </p>
       </div>
     </div>
