@@ -49,7 +49,7 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
           </div>
           <div>
             <h2 className="text-base font-semibold themed-text/80">Strategy Engine</h2>
-            <p className="text-[11px] themed-text/30">Unlock 5 AI-powered grade strategies</p>
+            <p className="text-[11px] themed-text/30">5 strategies to help you hit your target</p>
           </div>
         </div>
         <div className="space-y-2">
@@ -60,7 +60,7 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
             </div>
           ))}
         </div>
-        <p className="text-[11px] themed-accent/40 mt-4 text-center">Upgrade to Premium to access strategies</p>
+        <p className="text-[11px] themed-accent/40 mt-4 text-center">Upgrade to Premium to unlock all 5 strategies</p>
       </div>
     );
   }

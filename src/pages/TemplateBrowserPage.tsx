@@ -146,7 +146,7 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
           </button>
           <div className="flex-1">
             <h1 className="text-lg font-bold themed-text">Template Library</h1>
-            <p className="text-[11px] themed-text/30">Pre-made grading systems from teachers & students</p>
+            <p className="text-[11px] themed-text/30">Ready-to-use grade templates, shared by real students</p>
           </div>
           {isPremium ? (
             <button

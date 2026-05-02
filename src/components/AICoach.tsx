@@ -35,7 +35,7 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
           </div>
           <div>
             <h2 className="text-sm font-semibold themed-text/70">Grade Coach</h2>
-            <p className="text-[10px] themed-text/25">Personalized coaching & strategy picks</p>
+            <p className="text-[10px] themed-text/25">Advice and strategies picked just for your grades</p>
           </div>
           <Lock className="w-3.5 h-3.5 themed-text/15 ml-auto" />
         </div>
@@ -44,7 +44,7 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
           <div className="h-3 rounded themed-surface w-4/5" />
           <div className="h-3 rounded themed-surface w-3/5" />
         </div>
-        <p className="text-[11px] text-cyan-400/30 text-center">Upgrade to Premium for grade coaching</p>
+        <p className="text-[11px] text-cyan-400/30 text-center">Upgrade to Premium to get your own Grade Coach</p>
       </div>
     );
   }
@@ -56,7 +56,7 @@ export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props
           <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center">
             <Bot className="w-4.5 h-4.5 text-cyan-400" />
           </div>
-          <p className="text-xs themed-text/30">Add components and entries so I can coach you.</p>
+          <p className="text-xs themed-text/30">Add your components and grades first — then I can help!</p>
         </div>
       </div>
     );

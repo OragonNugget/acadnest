@@ -10,7 +10,7 @@ export const PREMIUM_PRICE_NOTE = 'Billed monthly. Cancel anytime.';
 // ─────────────────────────────────────────────
 
 const premiumFeatures = [
-  'Grade Coach — personalized weekly strategy',
+  'Grade Coach — tips and strategies just for you',
   '5 mathematical strategy engines',
   'Target system with feasibility detection',
   'Save & load grades across subjects',
@@ -55,7 +55,7 @@ export default function PaymentPage({ onBack }: Props) {
             </div>
             <div>
               <h1 className="text-lg font-bold themed-text">Acadnest Premium</h1>
-              <p className="text-[11px] themed-text/35">Unlock everything. Forge better grades.</p>
+              <p className="text-[11px] themed-text/35">Unlock everything. Actually know your grades.</p>
             </div>
           </div>
 

@@ -133,8 +133,8 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
           </h1>
 
           <p className="text-base sm:text-lg themed-text/35 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Calculate weighted grades, detect weak areas, and get the best grade strategies
-            to hit your target. Stop guessing — start forging.
+            Track your grades, spot what needs work, and get strategies that actually fit 
+            your goal. Your academic home, all in one place.
           </p>
 
           {/* CTA Cards */}
@@ -250,7 +250,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       <section className="relative z-10 max-w-3xl mx-auto px-6 py-20 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-2xl bg-gradient-to-br from-yellow-300/[0.06] to-yellow-200/[0.03] border border-yellow-300/15 p-10">
           <h2 className="text-2xl font-bold mb-3">Ready to build your nest?</h2>
-          <p className="text-sm themed-text/30 mb-8">Join students who stopped guessing and started owning their grades.</p>
+          <p className="text-sm themed-text/30 mb-8">Join students who finally have their grades figured out.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button onClick={onEnterFree} className="px-6 py-3 rounded-xl themed-surface-raised border themed-border-subtle text-sm font-medium themed-text/60 hover:themed-surface-raised hover:themed-text/80 transition-colors cursor-pointer">
               Start Free
