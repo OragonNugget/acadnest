@@ -83,41 +83,42 @@ export function computeGrades(components: Component[]): GradeResult {
 
   for (const comp of components) {
     if (comp.done) continue;
-    const avg = componentAverages.get(comp.id)!;
-    if (avg < 0) {
-      remainingWeightForMax += comp.weight;
-      remainingWeightForMin += comp.weight;
-    }
-    // Note: if a component has entries but is not done, future entries could change the avg.
-    // For simplicity, we treat the current avg as locked for done components.
+    // Any component not marked done still has future entries coming —
+    // treat it as having remaining potential regardless of current entries.
+    remainingWeightForMax += comp.weight;
+    remainingWeightForMin += comp.weight;
   }
 
-  const currentGrade = totalWeightCompleted > 0
-    ? weightedSum / totalWeightCompleted
-    : 0;
+  // Max possible: for done components use locked avg, for incomplete blend current with 100% potential
+  // Min possible: same but blend with 0% potential
+  let maxNumerator = 0;
+  let minNumerator = 0;
 
-  // Max possible: current weighted sum + remaining at 100%
-  const maxNumerator = weightedSum + remainingWeightForMax * 100;
-  const maxDenominator = totalWeightCompleted + remainingWeightForMax;
-  const maxPossibleGrade = maxDenominator > 0 ? maxNumerator / maxDenominator : 0;
+  for (const comp of components) {
+    const avg = componentAverages.get(comp.id) ?? -1;
+    if (comp.done) {
+      // Locked in — use actual average (or 0 if no entries)
+      const lockedAvg = avg >= 0 ? avg : 0;
+      maxNumerator += lockedAvg * comp.weight;
+      minNumerator += lockedAvg * comp.weight;
+    } else {
+      // Not done — future entries can still come in
+      // Best case: score 100 on everything remaining
+      // Worst case: score 0 on everything remaining
+      maxNumerator += 100 * comp.weight;
+      minNumerator += (avg >= 0 ? 0 : 0) * comp.weight; // worst case is always 0
+    }
+  }
 
-  // Min possible: current weighted sum + remaining at 0%
-  const minNumerator = weightedSum + remainingWeightForMin * 0;
-  const minDenominator = totalWeightCompleted + remainingWeightForMin;
-  const minPossibleGrade = minDenominator > 0 ? minNumerator / minDenominator : 0;
+  const maxGradeTotal = totalWeight > 0 ? maxNumerator / totalWeight : 0;
+  const minGradeTotal = totalWeight > 0 ? minNumerator / totalWeight : 0;
 
-  // Use total weight for proper calculation
   const currentGradeTotal = totalWeight > 0 ? weightedSum / totalWeight : 0;
-  const maxGradeTotal = totalWeight > 0 ? (weightedSum + remainingWeightForMax * 100) / totalWeight : 0;
-  const minGradeTotal = totalWeight > 0 ? (weightedSum + remainingWeightForMin * 0) / totalWeight : 0;
-
-  // If all weights accounted for, use total weight basis
-  const useTotal = totalWeight > 0;
 
   return {
-    currentGrade: clamp(useTotal ? currentGradeTotal : currentGrade, 0, 100),
-    maxPossibleGrade: clamp(useTotal ? maxGradeTotal : maxPossibleGrade, 0, 100),
-    minPossibleGrade: clamp(useTotal ? minGradeTotal : minPossibleGrade, 0, 100),
+    currentGrade: clamp(currentGradeTotal, 0, 100),
+    maxPossibleGrade: clamp(maxGradeTotal, 0, 100),
+    minPossibleGrade: clamp(minGradeTotal, 0, 100),
     componentAverages,
     totalWeightCompleted,
     totalWeightRemaining: remainingWeightForMax,

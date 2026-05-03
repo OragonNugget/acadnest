@@ -55,8 +55,8 @@ export default function App() {
     ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
   }), [session]);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const fetchData = useCallback(async (showLoader = false) => {
+    if (showLoader) setLoading(true);
     try {
       const h = authHeaders();
       const [compsRes, entriesRes, settingsRes, gradesRes] = await Promise.all([
@@ -121,7 +121,7 @@ export default function App() {
         setAppView('app');
       } else {
         // Already in app view, fetch data now that we have a real session
-        fetchData();
+        fetchData(true);
       }
     } else {
       // Auth resolved with no user — go to landing
@@ -134,7 +134,7 @@ export default function App() {
   // Fetch data whenever appView switches to 'app' and we have a session
   useEffect(() => {
     if (appView === 'app' && session && !authLoading) {
-      fetchData();
+      fetchData(true);
     }
   }, [appView]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -203,66 +203,89 @@ export default function App() {
         setApiError(msg);
       } else {
         setApiError(null);
+        const newComp = await res.json().catch(() => null);
+        if (newComp && newComp.id) {
+          setComponents(prev => [...prev, { ...newComp, entries: [] }]);
+        } else {
+          await fetchData();
+        }
       }
     } catch (err) {
       console.error('Add component error:', err);
+      await fetchData();
     }
-    await fetchData();
     setSaving(false);
   };
 
   const deleteComponent = async (id: number) => {
     setSaving(true);
+    setComponents(prev => prev.filter(c => c.id !== id));
     await fetch('/api/components', {
       method: 'DELETE',
       headers: authHeaders(),
       body: JSON.stringify({ id }),
     });
-    await fetchData();
     setSaving(false);
   };
 
   const updateComponent = async (id: number, data: Partial<GradeComponent>) => {
     setSaving(true);
+    setComponents(prev => prev.map(c => c.id === id ? { ...c, ...data } : c));
     await fetch('/api/components', {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({ id, ...data }),
     });
-    await fetchData();
     setSaving(false);
   };
 
   const toggleDone = async (id: number, done: boolean) => {
     setSaving(true);
+    setComponents(prev => prev.map(c => c.id === id ? { ...c, done } : c));
     await fetch('/api/components', {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({ id, done }),
     });
-    await fetchData();
     setSaving(false);
   };
 
   const addEntry = async (componentId: number, score: number, maxScore: number, label: string) => {
     setSaving(true);
-    await fetch('/api/entries', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ component_id: componentId, score, max_score: maxScore, label }),
-    });
-    await fetchData();
+    try {
+      const res = await fetch('/api/entries', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ component_id: componentId, score, max_score: maxScore, label }),
+      });
+      if (res.ok) {
+        const newEntry = await res.json().catch(() => null);
+        if (newEntry && newEntry.id) {
+          setComponents(prev => prev.map(c =>
+            c.id === componentId ? { ...c, entries: [...c.entries, newEntry] } : c
+          ));
+        } else {
+          await fetchData();
+        }
+      }
+    } catch (err) {
+      console.error('Add entry error:', err);
+      await fetchData();
+    }
     setSaving(false);
   };
 
   const deleteEntry = async (entryId: number) => {
     setSaving(true);
+    setComponents(prev => prev.map(c => ({
+      ...c,
+      entries: c.entries.filter(e => e.id !== entryId),
+    })));
     await fetch('/api/entries', {
       method: 'DELETE',
       headers: authHeaders(),
       body: JSON.stringify({ id: entryId }),
     });
-    await fetchData();
     setSaving(false);
   };
 
@@ -280,13 +303,13 @@ export default function App() {
   const clearAllComponents = async () => {
     setSaving(true);
     setShowClearConfirm(false);
+    setComponents([]);
+    setActiveGradeId(null);
     await fetch('/api/components?action=clear', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({}),
     });
-    setActiveGradeId(null);
-    await fetchData();
     setSaving(false);
   };
 

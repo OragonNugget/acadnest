@@ -44,6 +44,8 @@ export function generateWeakAreaRepair(
   for (const wa of weakAreas) {
     const comp = components.find(c => c.id === wa.componentId);
     if (!comp) continue;
+    // Skip done components — can't improve what's already locked in
+    if (comp.done) continue;
     // Required contribution: (weight / totalWeight) * target
     const requiredContribution = (comp.weight / totalWeight) * target;
     const currentContribution = wa.average * comp.weight / totalWeight;
@@ -91,8 +93,9 @@ export function generateHighImpactOptimization(
     return { name: 'High Impact Optimization', id: 'high-impact', description: 'Focus on highest-impact components.', feasible: false, infeasibleReason: 'No components.', steps: [], projectedGrade: 0 };
   }
 
-  // Rank by impact = weight * (100 - avg)
+  // Rank by impact = weight * (100 - avg), only for non-done components
   const ranked = components
+    .filter(c => !c.done)
     .map(c => {
       const avg = gradeResult.componentAverages.get(c.id) ?? -1;
       return { comp: c, avg: avg >= 0 ? avg : 50, impact: c.weight * (100 - (avg >= 0 ? avg : 50)) };
@@ -103,7 +106,11 @@ export function generateHighImpactOptimization(
   const topCount = Math.max(1, Math.ceil(ranked.length * 0.5));
   const topComponents = ranked.slice(0, topCount);
 
-  // Distribute needed improvement among top components
+  // Locked contributions from done components
+  const lockedSum = components
+    .filter(c => c.done)
+    .reduce((s, c) => s + (gradeResult.componentAverages.get(c.id) ?? 0) * c.weight, 0);
+
   const currentWeightedSum = components.reduce((s, c) => {
     const avg = gradeResult.componentAverages.get(c.id) ?? -1;
     return s + (avg >= 0 ? avg : 0) * c.weight;
@@ -143,7 +150,7 @@ export function generateHighImpactOptimization(
     id: 'high-impact',
     description: 'Maximize grade gains by focusing on components with the highest weight × improvement potential.',
     feasible,
-    infeasibleReason: feasible ? undefined : 'Cannot reach target even with maximum improvement on high-impact components.',
+    infeasibleReason: feasible ? undefined : 'Cannot reach target even with perfect scores on remaining components. Some grades are already locked in.',
     steps,
     projectedGrade: clamp(projected, 0, 100),
   };
@@ -208,7 +215,7 @@ export function generateSurvivalStrategy(
     id: 'survival',
     description: 'The absolute minimum performance needed on remaining components to reach your target.',
     feasible,
-    infeasibleReason: feasible ? undefined : 'Target is impossible given locked-in grades.',
+    infeasibleReason: feasible ? undefined : 'Target cannot be reached — locked-in grades make it mathematically impossible. Try lowering your target.',
     steps,
     projectedGrade: clamp(projected, 0, 100),
   };
