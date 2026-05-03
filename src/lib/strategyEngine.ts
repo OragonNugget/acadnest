@@ -106,11 +106,6 @@ export function generateHighImpactOptimization(
   const topCount = Math.max(1, Math.ceil(ranked.length * 0.5));
   const topComponents = ranked.slice(0, topCount);
 
-  // Locked contributions from done components
-  const lockedSum = components
-    .filter(c => c.done)
-    .reduce((s, c) => s + (gradeResult.componentAverages.get(c.id) ?? 0) * c.weight, 0);
-
   const currentWeightedSum = components.reduce((s, c) => {
     const avg = gradeResult.componentAverages.get(c.id) ?? -1;
     return s + (avg >= 0 ? avg : 0) * c.weight;
