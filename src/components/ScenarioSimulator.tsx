@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Beaker, Lock, Play, RotateCcw } from 'lucide-react';
+import { Beaker, Play, RotateCcw } from 'lucide-react';
 import type { Component as GradeComponent } from '../lib/calculationEngine';
 import { computeGrades } from '../lib/calculationEngine';
 

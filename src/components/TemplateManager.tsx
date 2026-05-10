@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileDown, Lock, Download, FolderOpen, X } from 'lucide-react';
+import { FileDown, Download, FolderOpen, X } from 'lucide-react';
 
 interface TemplateComponent {
   name: string;

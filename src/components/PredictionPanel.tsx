@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, Activity, ChevronDown, ChevronUp, Lock, Eye } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Activity, ChevronDown, ChevronUp,  Eye } from 'lucide-react';
 import type { GradePrediction } from '../lib/predictionEngine';
 
 interface Props {

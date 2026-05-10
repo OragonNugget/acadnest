@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
-  Bot, BarChart3, Save, MessageSquare, Library, CheckCircle,
+  Bot, BarChart3, Save, MessageSquare, Library, CheckCircle, Sparkles,
 } from 'lucide-react';
 import BrandLogo from '../components/BrandLogo';
 

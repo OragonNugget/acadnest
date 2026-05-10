@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Download, User, BookOpen, Search, X, Upload, Lock } from 'lucide-react';
+import { ArrowLeft, Download, User, BookOpen, Search, X, Upload } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
 
 interface CommunityTemplate {
@@ -229,7 +229,7 @@ export default function TemplateBrowserPage({ onBack, onApplyTemplate, session }
                 {uploadError}
               </p>
             )}
-            <button onClick={handleUpload} disabled={uploading} className="px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-300 text-sm font-medium hover:bg-emerald-400/30 transition-colors cursor-pointer disabled:opacity-50">
+            <button onClick={handleUpload } disabled={uploading} className="px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-300 text-sm font-medium hover:bg-emerald-400/30 transition-colors cursor-pointer disabled:opacity-50">
               {uploading ? 'Sharing...' : 'Share Template'}
             </button>
           </motion.div>

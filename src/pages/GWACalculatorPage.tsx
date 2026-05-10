@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, Plus, Trash2, Save, X, BookMarked,
-  ChevronDown, GraduationCap, Lock, Loader2
+  ChevronDown, GraduationCap, Loader2
 } from 'lucide-react';
 import type { SavedGrade } from '../components/SavedGradesSidebar';
 import { percentToGPA, formatGPA, gpaToColor, calculateGWA, GPA_TABLE } from '../lib/gpaScale';

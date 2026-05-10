@@ -22,6 +22,7 @@ const insightTypeColors = {
   info: 'themed-border themed-surface',
 };
 
+export default function AICoach({ analysis, onSelectStrategy }: Props) {
   const [expanded, setExpanded] = useState(true);
 
 
@@ -36,6 +37,7 @@ const insightTypeColors = {
         </div>
       </div>
     );
+  }
 
   const colors = verdictColors[analysis.verdictType];
 

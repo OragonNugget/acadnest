@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Heart, Send, Loader2, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Heart, MessageSquare } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
 
 interface ForumPost {
@@ -42,10 +42,6 @@ export default function ForumPostPage({ postId, onBack, session }: Props) {
   const [post, setPost] = useState<ForumPost | null>(null);
   const [replies, setReplies] = useState<ForumReply[]>([]);
   const [loading, setLoading] = useState(true);
-  const [replyAuthor, setReplyAuthor] = useState('');
-  const [replyBody, setReplyBody] = useState('');
-  const [replySending, setReplySending] = useState(false);
-  const [replyError, setReplyError] = useState('');
 
   const authHeader: Record<string, string> = session
     ? { Authorization: `Bearer ${session.access_token}` }
@@ -100,36 +96,6 @@ export default function ForumPostPage({ postId, onBack, session }: Props) {
     }
   };
 
-  const handleReply = async () => {
-    if (!replyBody.trim() || !replyAuthor.trim()) return;
-    setReplySending(true);
-    setReplyError('');
-    try {
-      const res = await fetch('/api/forum?action=reply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeader },
-        body: JSON.stringify({
-          post_id: postId,
-          author: replyAuthor.trim(),
-          body: replyBody.trim(),
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        setReplyError(err.error || `Error ${res.status}`);
-        return;
-      }
-      setReplyBody('');
-      // Refresh replies
-      const repliesRes = await fetch(`/api/forum?action=replies&post_id=${postId}`);
-      const data = await repliesRes.json();
-      setReplies(Array.isArray(data) ? data : []);
-    } catch (err: any) {
-      setReplyError(err.message || 'Failed to send reply');
-    } finally {
-      setReplySending(false);
-    }
-  };
 
   if (loading) {
     return (
