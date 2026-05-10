@@ -461,7 +461,7 @@ export default function App() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
           {/* ── LEFT RAIL: Saved Grades + Deadlines + ClassmateCompare ── */}
           <div className="lg:col-span-2 space-y-4">
@@ -486,8 +486,8 @@ export default function App() {
             <AdBanner variant="sidebar" />
           </div>
 
-          {/* ── CENTER: Subject Title + Overview + Components + History ── */}
-          <div className="lg:col-span-5 space-y-5">
+          {/* ── CENTER (main focus): Subject + Overview + Components + History ── */}
+          <div className="lg:col-span-7 space-y-5">
             {/* Subject / Course title */}
             <div className="flex items-center gap-3 px-1">
               <input
@@ -578,53 +578,36 @@ export default function App() {
             />
           </div>
 
-          {/* ── RIGHT: 2-col grid for panels ── */}
-          <div className="lg:col-span-5">
-            <div className="grid grid-cols-2 gap-5">
-              {/* AICoach — full width (2 cols) */}
-              <div className="col-span-2">
-                <AICoach
-                  analysis={coachAnalysis}
-                  onSelectStrategy={(id) => setSelectedStrategyId(id)}
-                />
-              </div>
-              {/* PredictionPanel — full width (2 cols) */}
-              <div className="col-span-2">
-                <PredictionPanel
-                  prediction={prediction}
-                  currentGrade={gradeResult?.currentGrade ?? 0}
-                />
-              </div>
-              {/* StrategyPanel — full width (2 cols) */}
-              <div className="col-span-2">
-                <StrategyPanel
-                  strategies={strategies}
-                  targetPossible={targetPossible}
-                  externalSelectedId={selectedStrategyId}
-                  onExternalSelectedClear={() => setSelectedStrategyId(null)}
-                />
-              </div>
-              {/* GradeNeededPanel — full width (2 cols) */}
-              <div className="col-span-2">
-                <GradeNeededPanel
-                  components={components}
-                  gradeResult={gradeResult}
-                  target={settings.target_grade}
-                />
-              </div>
-              {/* ScenarioSimulator — 1 col */}
-              <div className="col-span-1">
-                <ScenarioSimulator components={components} />
-              </div>
-              {/* WeakAreasPanel — 1 col */}
-              <div className="col-span-1">
-                <WeakAreasPanel weakAreas={weakAreas} />
-              </div>
-              {/* AdBanner — full width */}
-              <div className="col-span-2">
-                <AdBanner variant="sidebar" />
-              </div>
+          {/* ── RIGHT RAIL: AI panels ── */}
+          <div className="lg:col-span-3 space-y-4">
+            <AICoach
+              analysis={coachAnalysis}
+              onSelectStrategy={(id) => setSelectedStrategyId(id)}
+            />
+            <StrategyPanel
+              strategies={strategies}
+              targetPossible={targetPossible}
+              externalSelectedId={selectedStrategyId}
+              onExternalSelectedClear={() => setSelectedStrategyId(null)}
+            />
+            {/* Prediction + Grade Needed side by side */}
+            <div className="grid grid-cols-1 gap-4">
+              <PredictionPanel
+                prediction={prediction}
+                currentGrade={gradeResult?.currentGrade ?? 0}
+              />
+              <GradeNeededPanel
+                components={components}
+                gradeResult={gradeResult}
+                target={settings.target_grade}
+              />
             </div>
+            {/* Scenario + Weak Areas side by side */}
+            <div className="grid grid-cols-2 gap-3">
+              <ScenarioSimulator components={components} />
+              <WeakAreasPanel weakAreas={weakAreas} />
+            </div>
+            <AdBanner variant="sidebar" />
           </div>
         </div>
 

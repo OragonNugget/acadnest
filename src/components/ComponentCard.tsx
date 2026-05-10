@@ -33,7 +33,7 @@ export default function ComponentCard({
   };
 
   const handleAddEntry = () => {
-    const score = parseFloat(newScore);
+    const score = parseFloat(newScore)
     const max = parseFloat(newMax);
     const newErrors = {
       label: !newLabel.trim(),
@@ -45,7 +45,8 @@ export default function ComponentCard({
 
     // Combine label with date if provided
     const fullLabel = newDate ? `${newLabel.trim()} · ${newDate}` : newLabel.trim();
-    onAddEntry(component.id, Math.max(0, score), Math.max(0.01, max), fullLabel);
+    // Allow score > max (bonus points) — no clamping
+    onAddEntry(component.id, score, Math.max(0.01, max), fullLabel);
     setNewScore('');
     setNewMax('100');
     setNewLabel('');
@@ -186,6 +187,9 @@ export default function ComponentCard({
                       <div className="flex items-center gap-3 shrink-0">
                         <span className="text-sm themed-text/70 font-mono">
                           {entry.score}<span className="themed-text/20">/</span>{entry.max_score}
+                          {entry.score > entry.max_score && (
+                            <span className="ml-1 text-[8px] px-1 py-0.5 rounded bg-yellow-300/15 text-yellow-300/80 font-medium">bonus</span>
+                          )}
                         </span>
                         <span className={`text-xs font-medium w-10 text-right ${
                           (entry.score / entry.max_score * 100) >= 80 ? 'text-emerald-400/70' :

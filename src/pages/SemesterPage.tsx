@@ -1,11 +1,21 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, BookOpen, Plus, Trash2, ChevronDown, ChevronUp,
-  GraduationCap
+  GraduationCap, BookMarked
 } from 'lucide-react';
 import type { SavedGrade } from '../components/SavedGradesSidebar';
 import { percentToGPA, formatGPA, gpaToColor, calculateGWA, GPA_TABLE } from '../lib/gpaScale';
+import { useAuth } from '../hooks/useAuth';
+
+interface GWARecord {
+  id: number;
+  name: string;
+  semester: string;
+  courses: any[];
+  gwa: number;
+  created_at: string;
+}
 
 interface SemesterCourse {
   id: string;
@@ -55,11 +65,26 @@ interface Props {
 }
 
 export default function SemesterPage({ onBack, savedGrades }: Props) {
+  const { session } = useAuth();
   const [semesters, setSemesters] = useState<SemesterData[]>(() => loadSemesters());
   const [showNewSem, setShowNewSem] = useState(false);
   const [newSemName, setNewSemName] = useState('');
   const [newSemYear, setNewSemYear] = useState('');
   const [showImportFor, setShowImportFor] = useState<string | null>(null);
+  const [gwaRecords, setGwaRecords] = useState<GWARecord[]>([]);
+
+  const authHeaders = useCallback((): Record<string, string> => ({
+    'Content-Type': 'application/json',
+    ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+  }), [session]);
+
+  useEffect(() => {
+    if (!session) return;
+    fetch('/api/gwa', { headers: authHeaders() })
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setGwaRecords(data || []))
+      .catch(() => {});
+  }, [session, authHeaders]);
 
   const update = (fn: (prev: SemesterData[]) => SemesterData[]) => {
     setSemesters(prev => {
@@ -132,7 +157,20 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
     setShowImportFor(null);
   };
 
-  const overallGWA = useMemo(() => calcOverallGWA(semesters), [semesters]);
+  const importFromGWA = (semId: string, record: GWARecord) => {
+    // Each course in the GWA record becomes a course in this semester
+    const newCourses = record.courses.map((c: any) => ({
+      id: uid(),
+      name: c.name || record.name,
+      units: c.units || 3,
+      gradePercent: c.gradePercent || null,
+      fromSavedGradeId: null,
+    }));
+    update(prev => prev.map(s => s.id === semId ? {
+      ...s, courses: [...s.courses, ...newCourses]
+    } : s));
+    setShowImportFor(null);
+  };
 
   return (
     <div className="min-h-screen themed-bg themed-text">
@@ -302,13 +340,13 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
                               <Plus className="w-3 h-3" /> Add Course
                             </button>
 
-                            {savedGrades.length > 0 && (
+                            {(savedGrades.length > 0 || gwaRecords.length > 0) && (
                               <div className="relative">
                                 <button
                                   onClick={() => setShowImportFor(showImportFor === sem.id ? null : sem.id)}
                                   className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-green-500/15 bg-green-500/[0.04] hover:bg-green-500/[0.08] text-green-400/60 hover:text-green-400/80 text-[11px] transition-all cursor-pointer"
                                 >
-                                  <GraduationCap className="w-3 h-3" /> Import from Grade Tracker
+                                  <GraduationCap className="w-3 h-3" /> Import
                                   <ChevronDown className={`w-2.5 h-2.5 transition-transform ${showImportFor === sem.id ? 'rotate-180' : ''}`} />
                                 </button>
                                 <AnimatePresence>
@@ -317,19 +355,45 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
                                       initial={{ opacity: 0, y: -5 }}
                                       animate={{ opacity: 1, y: 0 }}
                                       exit={{ opacity: 0, y: -5 }}
-                                      className="absolute top-full left-0 mt-1 w-64 rounded-xl bg-[#12121f] border themed-border-subtle shadow-2xl z-40 overflow-hidden"
+                                      className="absolute top-full left-0 mt-1 w-72 rounded-xl bg-[#12121f] border themed-border-subtle shadow-2xl z-40 overflow-hidden"
                                     >
-                                      <div className="p-2 max-h-48 overflow-y-auto">
-                                        {savedGrades.map(sg => (
-                                          <button
-                                            key={sg.id}
-                                            onClick={() => importFromSaved(sem.id, sg)}
-                                            className="w-full text-left px-3 py-2 rounded-lg hover:themed-surface-h text-[11px] themed-text/50 hover:themed-text/70 cursor-pointer"
-                                          >
-                                            <p className="font-medium truncate">{sg.name}</p>
-                                            <p className="text-[9px] themed-text/25">{sg.current_grade.toFixed(1)}% · {formatGPA(percentToGPA(sg.current_grade))} GPA</p>
-                                          </button>
-                                        ))}
+                                      <div className="p-2 max-h-64 overflow-y-auto space-y-3">
+                                        {savedGrades.length > 0 && (
+                                          <div>
+                                            <p className="text-[9px] themed-text/25 uppercase tracking-wider px-2 py-1">From Grade Tracker</p>
+                                            {savedGrades.map(sg => (
+                                              <button
+                                                key={sg.id}
+                                                onClick={() => importFromSaved(sem.id, sg)}
+                                                className="w-full text-left px-3 py-2 rounded-lg hover:themed-surface-h text-[11px] themed-text/50 hover:themed-text/70 cursor-pointer flex items-center gap-2"
+                                              >
+                                                <GraduationCap className="w-3 h-3 shrink-0 themed-accent/40" />
+                                                <div>
+                                                  <p className="font-medium truncate">{sg.name}</p>
+                                                  <p className="text-[9px] themed-text/25">{sg.current_grade.toFixed(1)}% · {formatGPA(percentToGPA(sg.current_grade))} GPA</p>
+                                                </div>
+                                              </button>
+                                            ))}
+                                          </div>
+                                        )}
+                                        {gwaRecords.length > 0 && (
+                                          <div>
+                                            <p className="text-[9px] themed-text/25 uppercase tracking-wider px-2 py-1">From GWA Calculator</p>
+                                            {gwaRecords.map(gr => (
+                                              <button
+                                                key={gr.id}
+                                                onClick={() => importFromGWA(sem.id, gr)}
+                                                className="w-full text-left px-3 py-2 rounded-lg hover:themed-surface-h text-[11px] themed-text/50 hover:themed-text/70 cursor-pointer flex items-center gap-2"
+                                              >
+                                                <BookMarked className="w-3 h-3 shrink-0 text-blue-400/40" />
+                                                <div>
+                                                  <p className="font-medium truncate">{gr.name}</p>
+                                                  <p className="text-[9px] themed-text/25">{gr.semester} · {formatGPA(gr.gwa)} GPA</p>
+                                                </div>
+                                              </button>
+                                            ))}
+                                          </div>
+                                        )}
                                       </div>
                                     </motion.div>
                                   )}
