@@ -202,7 +202,7 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="rounded-2xl themed-surface border themed-border overflow-hidden"
+                  className="rounded-2xl themed-surface border themed-border"
                 >
                   {/* Sem header */}
                   <div className="flex items-center gap-3 p-5">

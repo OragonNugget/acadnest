@@ -6,7 +6,7 @@ import type { Component as GradeComponent } from '../lib/calculationEngine';
 interface Props {
   component: GradeComponent;
   average: number;
-    onDelete: (id: number) => void;
+  onDelete: (id: number) => void;
   onUpdate: (id: number, data: Partial<GradeComponent>) => void;
   onToggleDone: (id: number, done: boolean) => void;
   onAddEntry: (componentId: number, score: number, maxScore: number, label: string) => void;
@@ -24,6 +24,8 @@ export default function ComponentCard({
   const [newScore, setNewScore] = useState('');
   const [newMax, setNewMax] = useState('100');
   const [newLabel, setNewLabel] = useState('');
+  const [newDate, setNewDate] = useState('');
+  const [entryErrors, setEntryErrors] = useState<{ label?: boolean; score?: boolean; max?: boolean }>({});
 
   const handleSaveEdit = () => {
     onUpdate(component.id, { name: editName, weight: parseFloat(editWeight) || 0 });
@@ -33,11 +35,22 @@ export default function ComponentCard({
   const handleAddEntry = () => {
     const score = parseFloat(newScore);
     const max = parseFloat(newMax);
-    if (isNaN(score) || isNaN(max) || max <= 0) return;
-    onAddEntry(component.id, Math.max(0, score), Math.max(0.01, max), newLabel);
+    const newErrors = {
+      label: !newLabel.trim(),
+      score: isNaN(score) || newScore === '',
+      max: isNaN(max) || max <= 0 || newMax === '',
+    };
+    setEntryErrors(newErrors);
+    if (newErrors.label || newErrors.score || newErrors.max) return;
+
+    // Combine label with date if provided
+    const fullLabel = newDate ? `${newLabel.trim()} · ${newDate}` : newLabel.trim();
+    onAddEntry(component.id, Math.max(0, score), Math.max(0.01, max), fullLabel);
     setNewScore('');
     setNewMax('100');
     setNewLabel('');
+    setNewDate('');
+    setEntryErrors({});
     setShowAddEntry(false);
   };
 
@@ -110,8 +123,6 @@ export default function ComponentCard({
             >
               <Lock className="w-3 h-3" /> Edit
             </button>
-            <div className="absolute bottom-full left-0 mb-1 px-2 py-1 themed-tooltip border themed-border-subtle rounded text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-            </div>
           </div>
         )}
         <button
@@ -140,8 +151,6 @@ export default function ComponentCard({
             >
               <Lock className="w-3 h-3" /> Toggle Done
             </button>
-            <div className="absolute bottom-full left-0 mb-1 px-2 py-1 themed-tooltip border themed-border-subtle rounded text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-            </div>
           </div>
         )}
       </div>
@@ -160,17 +169,25 @@ export default function ComponentCard({
                 <p className="text-xs themed-text/20 text-center py-2">No entries yet</p>
               ) : (
                 <div className="space-y-1.5 mb-3">
+                  {/* Header row */}
+                  <div className="flex items-center px-3 gap-2">
+                    <span className="text-[9px] themed-text/20 w-5" />
+                    <span className="flex-1 text-[9px] themed-text/25 uppercase tracking-wider">Topic</span>
+                    <span className="text-[9px] themed-text/25 uppercase tracking-wider w-20 text-right">Score</span>
+                    <span className="text-[9px] themed-text/25 uppercase tracking-wider w-12 text-right">%</span>
+                    <span className="w-4" />
+                  </div>
                   {component.entries.map((entry, i) => (
                     <div key={entry.id} className="flex items-center justify-between px-3 py-1.5 rounded-lg themed-surface group">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
                         <span className="text-[11px] themed-text/20 w-5">#{i + 1}</span>
-                        {entry.label && <span className="text-xs themed-text/40">{entry.label}</span>}
+                        {entry.label && <span className="text-xs themed-text/50 truncate">{entry.label}</span>}
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 shrink-0">
                         <span className="text-sm themed-text/70 font-mono">
                           {entry.score}<span className="themed-text/20">/</span>{entry.max_score}
                         </span>
-                        <span className={`text-xs font-medium ${
+                        <span className={`text-xs font-medium w-10 text-right ${
                           (entry.score / entry.max_score * 100) >= 80 ? 'text-emerald-400/70' :
                           (entry.score / entry.max_score * 100) >= 60 ? 'themed-accent/70' : 'text-red-400/70'
                         }`}>
@@ -189,41 +206,74 @@ export default function ComponentCard({
               )}
 
               {showAddEntry ? (
-                <div className="flex flex-wrap gap-2 items-end themed-surface rounded-lg p-3">
-                  <div>
-                    <label className="text-[10px] themed-text/30 block mb-1">Label</label>
-                    <input
-                      value={newLabel}
-                      onChange={e => setNewLabel(e.target.value)}
-                      placeholder="e.g. Quiz 3"
-                      className="themed-surface-raised border themed-border-subtle rounded px-2 py-1 text-xs themed-text w-24 focus:outline-none focus:border-yellow-300/40"
-                    />
+                <div className="themed-surface rounded-lg p-3 space-y-2">
+                  {/* Row 1: Topic + Date */}
+                  <div className="flex flex-wrap gap-2">
+                    <div className="flex-1 min-w-[120px]">
+                      <label className="text-[10px] themed-text/30 block mb-1">Topic</label>
+                      <input
+                        value={newLabel}
+                        onChange={e => { setNewLabel(e.target.value); if (entryErrors.label) setEntryErrors(p => ({ ...p, label: false })); }}
+                        placeholder="e.g. Quiz 3"
+                        className={`w-full border rounded px-2 py-1.5 text-xs themed-text focus:outline-none transition-colors ${
+                          entryErrors.label
+                            ? 'border-red-500/60 bg-red-500/5 focus:border-red-500/80'
+                            : 'themed-surface-raised themed-border-subtle focus:border-yellow-300/40'
+                        }`}
+                        autoFocus
+                      />
+                      {entryErrors.label && <p className="text-[9px] text-red-400/80 mt-0.5">Required</p>}
+                    </div>
+                    <div className="w-32">
+                      <label className="text-[10px] themed-text/30 block mb-1">Date</label>
+                      <input
+                        value={newDate}
+                        onChange={e => setNewDate(e.target.value)}
+                        type="date"
+                        className="w-full themed-surface-raised border themed-border-subtle rounded px-2 py-1.5 text-xs themed-text focus:outline-none focus:border-yellow-300/40 [color-scheme:dark]"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-[10px] themed-text/30 block mb-1">Score</label>
-                    <input
-                      value={newScore}
-                      onChange={e => setNewScore(e.target.value)}
-                      type="number"
-                      min={0}
-                      placeholder="85"
-                      className="themed-surface-raised border themed-border-subtle rounded px-2 py-1 text-xs themed-text w-16 focus:outline-none focus:border-yellow-300/40"
-                      autoFocus
-                    />
+                  {/* Row 2: Score + Out of */}
+                  <div className="flex flex-wrap gap-2 items-end">
+                    <div className="w-24">
+                      <label className="text-[10px] themed-text/30 block mb-1">Score</label>
+                      <input
+                        value={newScore}
+                        onChange={e => { setNewScore(e.target.value); if (entryErrors.score) setEntryErrors(p => ({ ...p, score: false })); }}
+                        type="number"
+                        min={0}
+                        placeholder="85"
+                        className={`w-full border rounded px-2 py-1.5 text-xs themed-text focus:outline-none transition-colors ${
+                          entryErrors.score
+                            ? 'border-red-500/60 bg-red-500/5 focus:border-red-500/80'
+                            : 'themed-surface-raised themed-border-subtle focus:border-yellow-300/40'
+                        }`}
+                      />
+                      {entryErrors.score && <p className="text-[9px] text-red-400/80 mt-0.5">Required</p>}
+                    </div>
+                    <span className="text-xs themed-text/20 pb-2">out of</span>
+                    <div className="w-24">
+                      <label className="text-[10px] themed-text/30 block mb-1">Max score</label>
+                      <input
+                        value={newMax}
+                        onChange={e => { setNewMax(e.target.value); if (entryErrors.max) setEntryErrors(p => ({ ...p, max: false })); }}
+                        type="number"
+                        min={1}
+                        placeholder="100"
+                        className={`w-full border rounded px-2 py-1.5 text-xs themed-text focus:outline-none transition-colors ${
+                          entryErrors.max
+                            ? 'border-red-500/60 bg-red-500/5 focus:border-red-500/80'
+                            : 'themed-surface-raised themed-border-subtle focus:border-yellow-300/40'
+                        }`}
+                      />
+                      {entryErrors.max && <p className="text-[9px] text-red-400/80 mt-0.5">Required</p>}
+                    </div>
+                    <div className="flex gap-2 ml-auto">
+                      <button onClick={handleAddEntry} className="px-3 py-1.5 rounded-md bg-yellow-300/20 themed-accent-soft text-xs hover:bg-yellow-300/30 transition-colors cursor-pointer">Add</button>
+                      <button onClick={() => { setShowAddEntry(false); setEntryErrors({}); }} className="px-3 py-1.5 rounded-md themed-surface-h themed-text/30 text-xs hover:themed-surface-raised transition-colors cursor-pointer">Cancel</button>
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-[10px] themed-text/30 block mb-1">Max</label>
-                    <input
-                      value={newMax}
-                      onChange={e => setNewMax(e.target.value)}
-                      type="number"
-                      min={1}
-                      placeholder="100"
-                      className="themed-surface-raised border themed-border-subtle rounded px-2 py-1 text-xs themed-text w-16 focus:outline-none focus:border-yellow-300/40"
-                    />
-                  </div>
-                  <button onClick={handleAddEntry} className="px-3 py-1 rounded-md bg-yellow-300/20 themed-accent-soft text-xs hover:bg-yellow-300/30 transition-colors cursor-pointer">Add</button>
-                  <button onClick={() => setShowAddEntry(false)} className="px-3 py-1 rounded-md themed-surface-h themed-text/30 text-xs hover:themed-surface-raised transition-colors cursor-pointer">Cancel</button>
                 </div>
               ) : (
                 <button

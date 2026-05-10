@@ -466,7 +466,7 @@ export default function App() {
             <AdBanner variant="sidebar" />
           </div>
 
-          <div className="lg:col-span-6 space-y-5">
+          <div className="lg:col-span-5 space-y-5">
             <GradeOverview
               gradeResult={gradeResult}
               components={components}
@@ -532,40 +532,46 @@ export default function App() {
             </div>
           </div>
 
-          <div className="lg:col-span-4 space-y-5">
-            <AICoach
-              analysis={coachAnalysis}
-                            onSelectStrategy={(id) => setSelectedStrategyId(id)}
-            />
-            <GradeNeededPanel
-              components={components}
-              gradeResult={gradeResult}
-              target={settings.target_grade}
-            />
+          <div className="lg:col-span-5 space-y-5">
             <GradeHistoryChart
               components={components}
               target={settings.target_grade}
             />
-            <StrategyPanel
-              strategies={strategies}
-                            targetPossible={targetPossible}
-              externalSelectedId={selectedStrategyId}
-              onExternalSelectedClear={() => setSelectedStrategyId(null)}
-            />
-            <DeadlinePanel
-              componentNames={components.map(c => c.name)}
-            />
-            <ClassmateCompare
-              currentGrade={gradeResult?.currentGrade ?? null}
-              session={session}
-            />
-            <PredictionPanel
-              prediction={prediction}
-                            currentGrade={gradeResult?.currentGrade ?? 0}
-            />
-            <WeakAreasPanel weakAreas={weakAreas} />
-            <ScenarioSimulator components={components} />
-            <AdBanner variant="sidebar" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="space-y-5">
+                <AICoach
+                  analysis={coachAnalysis}
+                  onSelectStrategy={(id) => setSelectedStrategyId(id)}
+                />
+                <GradeNeededPanel
+                  components={components}
+                  gradeResult={gradeResult}
+                  target={settings.target_grade}
+                />
+                <DeadlinePanel
+                  componentNames={components.map(c => c.name)}
+                />
+                <WeakAreasPanel weakAreas={weakAreas} />
+                <AdBanner variant="sidebar" />
+              </div>
+              <div className="space-y-5">
+                <StrategyPanel
+                  strategies={strategies}
+                  targetPossible={targetPossible}
+                  externalSelectedId={selectedStrategyId}
+                  onExternalSelectedClear={() => setSelectedStrategyId(null)}
+                />
+                <PredictionPanel
+                  prediction={prediction}
+                  currentGrade={gradeResult?.currentGrade ?? 0}
+                />
+                <ClassmateCompare
+                  currentGrade={gradeResult?.currentGrade ?? null}
+                  session={session}
+                />
+                <ScenarioSimulator components={components} />
+              </div>
+            </div>
           </div>
         </div>
 
