@@ -71,7 +71,6 @@ export default function ForumPage({ onBack, session }: Props) {
                 session={session}
       />
     );
-  }
 
   const handleCreate = async () => {
     if (!newTitle.trim() || !newBody.trim() || !newAuthor.trim()) return;

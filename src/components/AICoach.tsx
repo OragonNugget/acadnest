@@ -36,7 +36,6 @@ const insightTypeColors = {
         </div>
       </div>
     );
-  }
 
   const colors = verdictColors[analysis.verdictType];
 

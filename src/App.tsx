@@ -529,8 +529,7 @@ export default function App() {
           </div>
         </div>
 
-        {
-          <motion.div
+        <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mt-10 rounded-2xl themed-surface border themed-border p-6"
@@ -552,7 +551,6 @@ export default function App() {
               </div>
             </div>
           </motion.div>
-        )}
       </main>
     </div>
   );

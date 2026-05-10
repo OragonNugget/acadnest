@@ -213,11 +213,12 @@ export default function ForumPostPage({ postId, onBack, session }: Props) {
             {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
           </h2>
 
-          {replies.length === 0 ? (
+          {replies.length === 0 && (
             <p className="text-[11px] themed-text/20 text-center py-6">
-              No replies yet.' Be the first to reply below.'
+              No replies yet. Be the first to reply below.
             </p>
-          ) : null}
+          )}
+        </div>
       </main>
     </div>
   );

@@ -160,7 +160,9 @@ export default function LandingPage({ onEnterFree }: Props) {
               <div className="flex items-center gap-2 text-sm font-medium themed-text/50 group-hover:themed-text/70 transition-colors">
                 Get started <ArrowRight className="w-4 h-4" />
               </div>
-            </motion.button>        </motion.div>
+            </motion.button>
+          </div>
+        </motion.div>
       </section>
 
       {/* Strategy showcase */}

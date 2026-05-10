@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Shield, Target, TrendingUp, Wrench, Lock, AlertTriangle, ChevronRight, Crown, ArrowUpRight } from 'lucide-react';
+import { Zap, Shield, Target, TrendingUp, Wrench, AlertTriangle, ChevronRight, ArrowUpRight } from 'lucide-react';
 import type { Strategy } from '../lib/strategyEngine';
 
 interface Props {
@@ -26,6 +26,7 @@ const strategyColors: Record<string, string> = {
   'conservative': '#a855f7',
 };
 
+export default function StrategyPanel({ strategies, targetPossible, externalSelectedId, onExternalSelectedClear }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
 
   // Handle external selection from AI Coach
