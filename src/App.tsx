@@ -53,6 +53,7 @@ export default function App() {
   const [selectedStrategyId, setSelectedStrategyId] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [subjectTitle, setSubjectTitle] = useState('');
 
   // Build auth headers from the live session token
   const authHeaders = useCallback((): Record<string, string> => ({
@@ -301,11 +302,12 @@ export default function App() {
       done: c.done,
       entries: c.entries.map(e => ({ score: e.score, max_score: e.max_score, label: e.label })),
     }));
+    const fullName = subjectTitle.trim() ? `${subjectTitle.trim()} — ${name}` : name;
     const res = await fetch('/api/grades', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({
-        name,
+        name: fullName,
         components_snapshot: snapshot,
         current_grade: gradeResult?.currentGrade ?? 0,
       }),
@@ -318,6 +320,13 @@ export default function App() {
 
   const loadGrade = async (grade: SavedGrade) => {
     setSaving(true);
+    // Restore subject title if the saved name has the "Subject — label" pattern
+    const dashIdx = grade.name.indexOf(' — ');
+    if (dashIdx !== -1) {
+      setSubjectTitle(grade.name.slice(0, dashIdx));
+    } else {
+      setSubjectTitle('');
+    }
     await fetch('/api/components?action=clear', {
       method: 'POST',
       headers: authHeaders(),
@@ -454,7 +463,7 @@ export default function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-          {/* ── LEFT RAIL: Saved Grades + Deadlines ── */}
+          {/* ── LEFT RAIL: Saved Grades + Deadlines + Strategy ── */}
           <div className="lg:col-span-2 space-y-4">
             <SavedGradesSidebar
               savedGrades={savedGrades}
@@ -468,11 +477,35 @@ export default function App() {
             <DeadlinePanel
               componentNames={components.map(c => c.name)}
             />
+            <StrategyPanel
+              strategies={strategies}
+              targetPossible={targetPossible}
+              externalSelectedId={selectedStrategyId}
+              onExternalSelectedClear={() => setSelectedStrategyId(null)}
+            />
             <AdBanner variant="sidebar" />
           </div>
 
-          {/* ── CENTER: Overview + Chart + Components ── */}
+          {/* ── CENTER: Subject Title + Overview + Chart + Components ── */}
           <div className="lg:col-span-5 space-y-5">
+            {/* Subject / Course title */}
+            <div className="flex items-center gap-3 px-1">
+              <input
+                value={subjectTitle}
+                onChange={e => setSubjectTitle(e.target.value)}
+                placeholder="Subject or course name…"
+                className="flex-1 bg-transparent text-xl font-bold themed-text placeholder:themed-text/15 focus:outline-none border-b border-transparent focus:border-yellow-300/20 pb-1 transition-colors"
+              />
+              {subjectTitle && (
+                <button
+                  onClick={() => setSubjectTitle('')}
+                  className="text-[10px] themed-text/20 hover:themed-text/40 transition-colors cursor-pointer shrink-0"
+                >
+                  clear
+                </button>
+              )}
+            </div>
+
             <GradeOverview
               gradeResult={gradeResult}
               components={components}
@@ -515,6 +548,7 @@ export default function App() {
                       components={components}
                       gradeResult={gradeResult}
                       target={settings.target_grade}
+                      subjectName={subjectTitle || undefined}
                     />
                   )}
                   <span className="text-[10px] themed-text/20">
@@ -543,39 +577,22 @@ export default function App() {
             </div>
           </div>
 
-          {/* ── RIGHT: Insights + Tools ── */}
+          {/* ── RIGHT: Coach + Grade Needed (stacked) + Prediction + WeakAreas + Scenario + Compare ── */}
           <div className="lg:col-span-5 space-y-5">
-            {/* Top: Coach + Grade Needed side by side at 2xl, stacked below */}
-            <div className="grid grid-cols-1 2xl:grid-cols-2 gap-5">
-              <AICoach
-                analysis={coachAnalysis}
-                onSelectStrategy={(id) => setSelectedStrategyId(id)}
-              />
-              <GradeNeededPanel
-                components={components}
-                gradeResult={gradeResult}
-                target={settings.target_grade}
-              />
-            </div>
-
-            {/* Strategy — full width, it has a lot of content */}
-            <StrategyPanel
-              strategies={strategies}
-              targetPossible={targetPossible}
-              externalSelectedId={selectedStrategyId}
-              onExternalSelectedClear={() => setSelectedStrategyId(null)}
+            <AICoach
+              analysis={coachAnalysis}
+              onSelectStrategy={(id) => setSelectedStrategyId(id)}
             />
-
-            {/* Prediction + WeakAreas side by side at 2xl */}
-            <div className="grid grid-cols-1 2xl:grid-cols-2 gap-5">
-              <PredictionPanel
-                prediction={prediction}
-                currentGrade={gradeResult?.currentGrade ?? 0}
-              />
-              <WeakAreasPanel weakAreas={weakAreas} />
-            </div>
-
-            {/* Scenario + Compare side by side at 2xl */}
+            <GradeNeededPanel
+              components={components}
+              gradeResult={gradeResult}
+              target={settings.target_grade}
+            />
+            <PredictionPanel
+              prediction={prediction}
+              currentGrade={gradeResult?.currentGrade ?? 0}
+            />
+            <WeakAreasPanel weakAreas={weakAreas} />
             <div className="grid grid-cols-1 2xl:grid-cols-2 gap-5">
               <ScenarioSimulator components={components} />
               <ClassmateCompare
@@ -583,7 +600,6 @@ export default function App() {
                 session={session}
               />
             </div>
-
             <AdBanner variant="sidebar" />
           </div>
         </div>
