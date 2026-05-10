@@ -18,7 +18,7 @@ export default function Header({ currentPage, onNavigate, onGoToLanding }: Heade
 
   return (
     <header className="w-full border-b themed-border themed-bg/80 backdrop-blur-xl sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2 sm:gap-4">
+      <div className="max-w-[1700px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2 sm:gap-4">
         <div className="flex items-center gap-3">
           <button onClick={() => onNavigate('dashboard')} className="flex items-center gap-3 cursor-pointer">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-300/20">

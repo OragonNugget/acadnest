@@ -463,12 +463,13 @@ export default function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-          {/* ── LEFT RAIL: Saved Grades + Deadlines + Strategy ── */}
+          {/* ── LEFT RAIL: Saved Grades + Deadlines + ClassmateCompare ── */}
           <div className="lg:col-span-2 space-y-4">
             <SavedGradesSidebar
               savedGrades={savedGrades}
               activeGradeId={activeGradeId}
               currentGrade={gradeResult?.currentGrade ?? 0}
+              defaultName={subjectTitle}
               onSave={saveGrade}
               onLoad={loadGrade}
               onDelete={deleteSavedGrade}
@@ -477,16 +478,15 @@ export default function App() {
             <DeadlinePanel
               componentNames={components.map(c => c.name)}
             />
-            <StrategyPanel
-              strategies={strategies}
-              targetPossible={targetPossible}
-              externalSelectedId={selectedStrategyId}
-              onExternalSelectedClear={() => setSelectedStrategyId(null)}
+            <ClassmateCompare
+              currentGrade={gradeResult?.currentGrade ?? null}
+              session={session}
+              subjectTitle={subjectTitle}
             />
             <AdBanner variant="sidebar" />
           </div>
 
-          {/* ── CENTER: Subject Title + Overview + Chart + Components ── */}
+          {/* ── CENTER: Subject Title + Overview + Components + History ── */}
           <div className="lg:col-span-5 space-y-5">
             {/* Subject / Course title */}
             <div className="flex items-center gap-3 px-1">
@@ -511,11 +511,6 @@ export default function App() {
               components={components}
               target={settings.target_grade}
               onTargetChange={updateTarget}
-            />
-
-            <GradeHistoryChart
-              components={components}
-              target={settings.target_grade}
             />
 
             <AdBanner variant="inline" />
@@ -575,32 +570,61 @@ export default function App() {
                 <AddComponentForm onAdd={addComponent} />
               </div>
             </div>
-          </div>
 
-          {/* ── RIGHT: Coach + Grade Needed (stacked) + Prediction + WeakAreas + Scenario + Compare ── */}
-          <div className="lg:col-span-5 space-y-5">
-            <AICoach
-              analysis={coachAnalysis}
-              onSelectStrategy={(id) => setSelectedStrategyId(id)}
-            />
-            <GradeNeededPanel
+            {/* Grade History — below components */}
+            <GradeHistoryChart
               components={components}
-              gradeResult={gradeResult}
               target={settings.target_grade}
             />
-            <PredictionPanel
-              prediction={prediction}
-              currentGrade={gradeResult?.currentGrade ?? 0}
-            />
-            <WeakAreasPanel weakAreas={weakAreas} />
-            <div className="grid grid-cols-1 2xl:grid-cols-2 gap-5">
-              <ScenarioSimulator components={components} />
-              <ClassmateCompare
-                currentGrade={gradeResult?.currentGrade ?? null}
-                session={session}
-              />
+          </div>
+
+          {/* ── RIGHT: 2-col grid for panels ── */}
+          <div className="lg:col-span-5">
+            <div className="grid grid-cols-2 gap-5">
+              {/* AICoach — full width (2 cols) */}
+              <div className="col-span-2">
+                <AICoach
+                  analysis={coachAnalysis}
+                  onSelectStrategy={(id) => setSelectedStrategyId(id)}
+                />
+              </div>
+              {/* PredictionPanel — full width (2 cols) */}
+              <div className="col-span-2">
+                <PredictionPanel
+                  prediction={prediction}
+                  currentGrade={gradeResult?.currentGrade ?? 0}
+                />
+              </div>
+              {/* StrategyPanel — full width (2 cols) */}
+              <div className="col-span-2">
+                <StrategyPanel
+                  strategies={strategies}
+                  targetPossible={targetPossible}
+                  externalSelectedId={selectedStrategyId}
+                  onExternalSelectedClear={() => setSelectedStrategyId(null)}
+                />
+              </div>
+              {/* GradeNeededPanel — full width (2 cols) */}
+              <div className="col-span-2">
+                <GradeNeededPanel
+                  components={components}
+                  gradeResult={gradeResult}
+                  target={settings.target_grade}
+                />
+              </div>
+              {/* ScenarioSimulator — 1 col */}
+              <div className="col-span-1">
+                <ScenarioSimulator components={components} />
+              </div>
+              {/* WeakAreasPanel — 1 col */}
+              <div className="col-span-1">
+                <WeakAreasPanel weakAreas={weakAreas} />
+              </div>
+              {/* AdBanner — full width */}
+              <div className="col-span-2">
+                <AdBanner variant="sidebar" />
+              </div>
             </div>
-            <AdBanner variant="sidebar" />
           </div>
         </div>
 
