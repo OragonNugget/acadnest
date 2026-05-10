@@ -33,7 +33,7 @@ export default function ComponentCard({
   };
 
   const handleAddEntry = () => {
-    const score = parseFloat(newScore)
+    const score = parseFloat(newScore);
     const max = parseFloat(newMax);
     const newErrors = {
       label: !newLabel.trim(),
@@ -43,10 +43,10 @@ export default function ComponentCard({
     setEntryErrors(newErrors);
     if (newErrors.label || newErrors.score || newErrors.max) return;
 
-    // Combine label with date if provided
-    const fullLabel = newDate ? `${newLabel.trim()} · ${newDate}` : newLabel.trim();
-    // Allow score > max (bonus points) — no clamping
-    onAddEntry(component.id, score, Math.max(0.01, max), fullLabel);
+    // If date is empty, use today's local date
+    const resolvedDate = newDate || new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
+    const fullLabel = `${newLabel.trim()} · ${resolvedDate}`;
+    onAddEntry(component.id, Math.max(0, score), Math.max(0.01, max), fullLabel);
     setNewScore('');
     setNewMax('100');
     setNewLabel('');
@@ -187,9 +187,6 @@ export default function ComponentCard({
                       <div className="flex items-center gap-3 shrink-0">
                         <span className="text-sm themed-text/70 font-mono">
                           {entry.score}<span className="themed-text/20">/</span>{entry.max_score}
-                          {entry.score > entry.max_score && (
-                            <span className="ml-1 text-[8px] px-1 py-0.5 rounded bg-yellow-300/15 text-yellow-300/80 font-medium">bonus</span>
-                          )}
                         </span>
                         <span className={`text-xs font-medium w-10 text-right ${
                           (entry.score / entry.max_score * 100) >= 80 ? 'text-emerald-400/70' :
@@ -218,6 +215,7 @@ export default function ComponentCard({
                       <input
                         value={newLabel}
                         onChange={e => { setNewLabel(e.target.value); if (entryErrors.label) setEntryErrors(p => ({ ...p, label: false })); }}
+                        onKeyDown={e => e.key === 'Enter' && handleAddEntry()}
                         placeholder="e.g. Quiz 3"
                         className={`w-full border rounded px-2 py-1.5 text-xs themed-text focus:outline-none transition-colors ${
                           entryErrors.label
@@ -229,10 +227,11 @@ export default function ComponentCard({
                       {entryErrors.label && <p className="text-[9px] text-red-400/80 mt-0.5">Required</p>}
                     </div>
                     <div className="w-32">
-                      <label className="text-[10px] themed-text/30 block mb-1">Date</label>
+                      <label className="text-[10px] themed-text/30 block mb-1">Date <span className="themed-text/20">(optional)</span></label>
                       <input
                         value={newDate}
                         onChange={e => setNewDate(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && handleAddEntry()}
                         type="date"
                         className="w-full themed-surface-raised border themed-border-subtle rounded px-2 py-1.5 text-xs themed-text focus:outline-none focus:border-yellow-300/40 [color-scheme:dark]"
                       />
@@ -245,6 +244,7 @@ export default function ComponentCard({
                       <input
                         value={newScore}
                         onChange={e => { setNewScore(e.target.value); if (entryErrors.score) setEntryErrors(p => ({ ...p, score: false })); }}
+                        onKeyDown={e => e.key === 'Enter' && handleAddEntry()}
                         type="number"
                         min={0}
                         placeholder="85"
@@ -262,6 +262,7 @@ export default function ComponentCard({
                       <input
                         value={newMax}
                         onChange={e => { setNewMax(e.target.value); if (entryErrors.max) setEntryErrors(p => ({ ...p, max: false })); }}
+                        onKeyDown={e => e.key === 'Enter' && handleAddEntry()}
                         type="number"
                         min={1}
                         placeholder="100"

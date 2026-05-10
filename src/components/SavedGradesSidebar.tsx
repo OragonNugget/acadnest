@@ -15,7 +15,6 @@ interface Props {
   savedGrades: SavedGrade[];
   activeGradeId: number | null;
     currentGrade: number;
-  defaultName?: string;
   onSave: (name: string) => void;
   onLoad: (grade: SavedGrade) => void;
   onDelete: (id: number) => void;
@@ -23,7 +22,7 @@ interface Props {
 }
 
 export default function SavedGradesSidebar({
-  savedGrades, activeGradeId, defaultName = '', onSave, onLoad, onDelete, onUpdate
+  savedGrades, activeGradeId, onSave, onLoad, onDelete, onUpdate
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [showSaveForm, setShowSaveForm] = useState(false);
@@ -124,7 +123,7 @@ export default function SavedGradesSidebar({
                 </div>
               ) : (
                 <button
-                  onClick={() => { setShowSaveForm(true); setSaveName(defaultName); }}
+                  onClick={() => setShowSaveForm(true)}
                   className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg themed-surface hover:themed-surface-h themed-text/25 hover:themed-text/40 text-[11px] transition-colors cursor-pointer"
                 >
                   <Plus className="w-3 h-3" /> Save Current

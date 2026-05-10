@@ -15,7 +15,6 @@ interface Distribution {
 interface Props {
   currentGrade: number | null;
   session: any;
-  subjectTitle?: string;
 }
 
 function gradeToRange(grade: number): keyof Distribution {
@@ -41,7 +40,7 @@ const RANGE_COLORS: Record<string, string> = {
   s95plus: '#22c55e',
 };
 
-export default function ClassmateCompare({ currentGrade, session, subjectTitle }: Props) {
+export default function ClassmateCompare({ currentGrade, session }: Props) {
   const [dist, setDist] = useState<Distribution | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -75,10 +74,7 @@ export default function ClassmateCompare({ currentGrade, session, subjectTitle }
       const res = await fetch('/api/compare', {
         method: 'POST',
         headers: authHeaders(),
-        body: JSON.stringify({
-          grade: Math.round(currentGrade * 10) / 10,
-          ...(subjectTitle ? { subject: subjectTitle } : {}),
-        }),
+        body: JSON.stringify({ grade: Math.round(currentGrade * 10) / 10 }),
       });
       if (!res.ok) throw new Error(`${res.status}`);
       setSubmitted(true);
@@ -141,59 +137,42 @@ export default function ClassmateCompare({ currentGrade, session, subjectTitle }
                 </div>
               )}
 
-              {/* Distribution as leaderboard */}
+              {/* Distribution chart */}
               {loading ? (
-                <p className="text-[11px] themed-text/25 text-center py-4">Loading...</p>
+                <p className="text-[11px] themed-text/25 text-center py-4">Loading data...</p>
               ) : dist && dist.total > 0 ? (
-                <div className="space-y-1.5">
-                  <p className="text-[9px] themed-text/25 uppercase tracking-wider mb-2">{totalInDist} students · class avg <span className="themed-text/40 font-semibold">{dist.avg > 0 ? `${dist.avg.toFixed(1)}%` : '—'}</span></p>
-                  {/* Sorted best → worst (leaderboard order) */}
-                  {[...ranges].reverse().map((range, i) => {
+                <div className="space-y-2">
+                  <p className="text-[9px] themed-text/25 uppercase tracking-wider">Grade distribution · {totalInDist} students</p>
+                  {ranges.map(range => {
                     const count = (dist[range] as number) || 0;
                     const pct = totalInDist > 0 ? (count / totalInDist) * 100 : 0;
                     const isMe = range === myRange;
-                    const medals = ['🥇', '🥈', '🥉', '4th', '5th'];
                     return (
-                      <div
-                        key={range}
-                        className={`flex items-center gap-2.5 px-3 py-2 rounded-xl transition-colors ${
-                          isMe
-                            ? 'border'
-                            : 'themed-surface border border-transparent'
-                        }`}
-                        style={isMe ? {
-                          backgroundColor: `${RANGE_COLORS[range]}12`,
-                          borderColor: `${RANGE_COLORS[range]}30`,
-                        } : {}}
-                      >
-                        <span className="text-[11px] w-6 text-center shrink-0 themed-text/25">{medals[i]}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <span
-                              className={`text-[10px] font-medium ${isMe ? 'font-bold' : 'themed-text/45'}`}
-                              style={isMe ? { color: RANGE_COLORS[range] } : {}}
-                            >
-                              {RANGE_LABELS[range]}{isMe ? ' ← You' : ''}
-                            </span>
-                            <span className="text-[10px] themed-text/25">{count}</span>
-                          </div>
-                          <div className="h-1.5 rounded-full themed-surface-raised overflow-hidden">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${pct}%` }}
-                              transition={{ duration: 0.5, ease: 'easeOut', delay: i * 0.05 }}
-                              className="h-full rounded-full"
-                              style={{ backgroundColor: isMe ? RANGE_COLORS[range] : `${RANGE_COLORS[range]}40` }}
-                            />
-                          </div>
+                      <div key={range} className="space-y-1">
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className={`${isMe ? 'font-semibold' : 'themed-text/35'}`} style={isMe ? { color: RANGE_COLORS[range] } : {}}>
+                            {RANGE_LABELS[range]}{isMe ? ' ← You' : ''}
+                          </span>
+                          <span className="themed-text/25">{count} ({pct.toFixed(0)}%)</span>
                         </div>
-                        <span className="text-[10px] themed-text/30 shrink-0 w-8 text-right">{pct.toFixed(0)}%</span>
+                        <div className="h-2 rounded-full themed-surface overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${pct}%` }}
+                            transition={{ duration: 0.6, ease: 'easeOut' }}
+                            className="h-full rounded-full"
+                            style={{ backgroundColor: isMe ? RANGE_COLORS[range] : `${RANGE_COLORS[range]}50` }}
+                          />
+                        </div>
                       </div>
                     );
                   })}
+                  {dist.avg > 0 && (
+                    <p className="text-[10px] themed-text/25 pt-1">Class average: <span className="font-semibold themed-text/50">{dist.avg.toFixed(1)}%</span></p>
+                  )}
                 </div>
               ) : !error ? (
-                <p className="text-[11px] themed-text/25 text-center py-2">No data yet. Be the first!</p>
+                <p className="text-[11px] themed-text/25 text-center py-2">No data yet. Be the first to contribute!</p>
               ) : null}
 
               {/* Submit button */}
