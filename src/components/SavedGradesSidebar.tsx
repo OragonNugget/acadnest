@@ -97,17 +97,29 @@ export default function SavedGradesSidebar({
               ))}
 
               {showSaveForm ? (
-                <div className="flex gap-2 items-center themed-surface rounded-lg p-2">
+                <div className="themed-surface-h border themed-border-subtle rounded-xl p-3 space-y-2">
                   <input
                     value={saveName}
                     onChange={e => setSaveName(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSave()}
                     placeholder="e.g. Calculus II"
-                    className="flex-1 themed-surface-h border themed-border-subtle rounded px-2 py-1 text-[11px] themed-text placeholder:themed-text/20 focus:outline-none focus:border-yellow-300/40"
+                    className="w-full themed-surface border themed-border-subtle rounded-lg px-3 py-1.5 text-[11px] themed-text placeholder:themed-text/20 focus:outline-none focus:border-yellow-300/40"
                     autoFocus
                   />
-                  <button onClick={handleSave} className="text-[10px] themed-accent-soft hover:text-yellow-100 cursor-pointer">Save</button>
-                  <button onClick={() => setShowSaveForm(false)} className="text-[10px] themed-text/25 hover:themed-text/40 cursor-pointer">✕</button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleSave}
+                      className="flex-1 py-1.5 rounded-lg bg-yellow-300/15 hover:bg-yellow-300/25 text-[11px] themed-accent-soft font-medium transition-colors cursor-pointer"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => { setShowSaveForm(false); setSaveName(''); }}
+                      className="flex-1 py-1.5 rounded-lg themed-surface hover:themed-surface-raised text-[11px] themed-text/30 hover:themed-text/50 transition-colors cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <button
