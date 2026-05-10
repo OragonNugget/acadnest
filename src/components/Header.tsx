@@ -1,4 +1,4 @@
-import { MessageSquare, Library, LayoutDashboard, LogOut, GraduationCap } from 'lucide-react';
+import { MessageSquare, Library, LayoutDashboard, LogOut, GraduationCap, BookOpen, CalendarDays } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 
 interface HeaderProps {
@@ -10,6 +10,7 @@ interface HeaderProps {
 export default function Header({ currentPage, onNavigate, onGoToLanding }: HeaderProps) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'semester', label: 'Semesters', icon: BookOpen },
     { id: 'gwa', label: 'GWA', icon: GraduationCap },
     { id: 'forum', label: 'Forum', icon: MessageSquare },
     { id: 'templates', label: 'Templates', icon: Library },

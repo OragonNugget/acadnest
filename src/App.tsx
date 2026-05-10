@@ -23,6 +23,13 @@ import { generateAllStrategies, type Strategy } from './lib/strategyEngine';
 import { generateCoachAnalysis, type CoachAnalysis } from './lib/coachEngine';
 import { generatePrediction, type GradePrediction } from './lib/predictionEngine';
 import PredictionPanel from './components/PredictionPanel';
+import DeadlinePanel from './components/DeadlinePanel';
+import GradeNeededPanel from './components/GradeNeededPanel';
+import GradeHistoryChart from './components/GradeHistoryChart';
+import WeightValidator from './components/WeightValidator';
+import ExportButton from './components/ExportButton';
+import ClassmateCompare from './components/ClassmateCompare';
+import SemesterPage from './pages/SemesterPage';
 import { supabase } from './lib/supabaseClient';
 import { useAuth } from './hooks/useAuth';
 import BookLoader from './components/BookLoader';
@@ -411,6 +418,9 @@ export default function App() {
   if (currentPage === 'gwa') {
     return <GWACalculatorPage onBack={() => setCurrentPage('dashboard')} savedGrades={savedGrades} />;
   }
+  if (currentPage === 'semester') {
+    return <SemesterPage onBack={() => setCurrentPage('dashboard')} savedGrades={savedGrades} />;
+  }
 
   return (
     <div className="min-h-screen themed-bg themed-text">
@@ -489,12 +499,20 @@ export default function App() {
                                         currentComponents={components.map(c => ({ name: c.name, weight: c.weight }))}
                     onApplyTemplate={applyTemplate}
                   />
+                  {gradeResult && (
+                    <ExportButton
+                      components={components}
+                      gradeResult={gradeResult}
+                      target={settings.target_grade}
+                    />
+                  )}
                   <span className="text-[10px] themed-text/20">
                     {components.reduce((s, c) => s + c.weight, 0)}% total
                   </span>
                 </div>
               </div>
-              <div className="space-y-3">
+              <WeightValidator components={components} />
+              <div className="space-y-3 mt-3">
                 <AnimatePresence initial={false}>
                   {components.map(comp => (
                     <ComponentCard
@@ -519,11 +537,27 @@ export default function App() {
               analysis={coachAnalysis}
                             onSelectStrategy={(id) => setSelectedStrategyId(id)}
             />
+            <GradeNeededPanel
+              components={components}
+              gradeResult={gradeResult}
+              target={settings.target_grade}
+            />
+            <GradeHistoryChart
+              components={components}
+              target={settings.target_grade}
+            />
             <StrategyPanel
               strategies={strategies}
                             targetPossible={targetPossible}
               externalSelectedId={selectedStrategyId}
               onExternalSelectedClear={() => setSelectedStrategyId(null)}
+            />
+            <DeadlinePanel
+              componentNames={components.map(c => c.name)}
+            />
+            <ClassmateCompare
+              currentGrade={gradeResult?.currentGrade ?? null}
+              session={session}
             />
             <PredictionPanel
               prediction={prediction}
