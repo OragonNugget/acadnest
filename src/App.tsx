@@ -437,7 +437,7 @@ export default function App() {
         onGoToLanding={goToLanding}
       />
 
-      <main className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <main className="relative max-w-[1600px] mx-auto px-6 sm:px-10 xl:px-16 py-6">
         {saving && (
           <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-300/10 border border-yellow-300/20">
             <Loader2 className="w-3 h-3 themed-accent animate-spin" />
@@ -452,7 +452,7 @@ export default function App() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-2 space-y-4">
             <SavedGradesSidebar
               savedGrades={savedGrades}
@@ -537,7 +537,7 @@ export default function App() {
               components={components}
               target={settings.target_grade}
             />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
               <div className="space-y-5">
                 <AICoach
                   analysis={coachAnalysis}

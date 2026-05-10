@@ -194,7 +194,7 @@ export default function GWACalculatorPage({ onBack, savedGrades }: Props) {
       </div>
 
       <header className="sticky top-0 z-50 border-b themed-border themed-bg/80 backdrop-blur-xl">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 xl:px-16 py-4 flex items-center gap-4">
           <button onClick={onBack} className="flex items-center gap-1.5 themed-text/40 hover:themed-text/60 text-sm cursor-pointer">
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
@@ -214,7 +214,7 @@ export default function GWACalculatorPage({ onBack, savedGrades }: Props) {
         </div>
       </header>
 
-      <main className="relative max-w-5xl mx-auto px-4 sm:px-6 py-6">
+      <main className="relative max-w-[1200px] mx-auto px-6 sm:px-10 xl:px-16 py-6">
         {saving && (
           <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-300/10 border border-yellow-300/20">
             <Loader2 className="w-3 h-3 themed-accent animate-spin" />
