@@ -1,6 +1,4 @@
 import { motion } from 'framer-motion';
-import { X } from 'lucide-react';
-import { useState } from 'react';
 
 interface Props {
   variant: 'top' | 'sidebar' | 'inline';
@@ -23,24 +21,18 @@ const ads = {
 };
 
 export default function AdBanner({ variant }: Props) {
-  const [dismissed, setDismissed] = useState(false);
-  if (dismissed) return null;
-
   const pool = ads[variant];
   const ad = pool[Math.floor(Date.now() / 60000) % pool.length];
 
   if (variant === 'top') {
     return (
-      <div className={`relative bg-gradient-to-r ${ad.color} border-b ${ad.borderColor}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-center gap-3">
-          <p className="text-[11px] themed-text/50">
-            <span className="font-medium themed-text/60">{ad.text}</span>
-            <span className="themed-text/30 ml-2">· {ad.sub}</span>
+      <div className={`bg-gradient-to-r ${ad.color} border-b ${ad.borderColor}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-center gap-3">
+          <p className="text-[12px] themed-text/60">
+            <span className="font-medium">{ad.text}</span>
+            <span className="themed-text/35 ml-2">· {ad.sub}</span>
           </p>
-          <span className="text-[9px] px-1.5 py-0.5 rounded themed-surface-raised themed-text/25 uppercase tracking-wider">Ad</span>
-          <button onClick={() => setDismissed(true)} className="absolute right-3 top-1/2 -translate-y-1/2 themed-text/15 hover:themed-text/30 cursor-pointer">
-            <X className="w-3 h-3" />
-          </button>
+          <span className="text-[9px] px-1.5 py-0.5 rounded themed-surface-raised themed-text/30 uppercase tracking-wider">Ad</span>
         </div>
       </div>
     );
@@ -51,25 +43,22 @@ export default function AdBanner({ variant }: Props) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className={`rounded-xl bg-gradient-to-br ${ad.color} border ${ad.borderColor} p-4 relative`}
+        className={`rounded-xl bg-gradient-to-br ${ad.color} border ${ad.borderColor} p-5`}
       >
-        <button onClick={() => setDismissed(true)} className="absolute top-2 right-2 themed-text/15 hover:themed-text/30 cursor-pointer">
-          <X className="w-3 h-3" />
-        </button>
-        <p className="text-[11px] themed-text/50 font-medium mb-1">{ad.text}</p>
-        <p className="text-[10px] themed-text/25">{ad.sub}</p>
-        <span className="text-[8px] px-1 py-0.5 rounded themed-surface-h themed-text/15 uppercase tracking-wider mt-2 inline-block">Sponsored</span>
+        <p className="text-[12px] themed-text/60 font-medium mb-1.5">{ad.text}</p>
+        <p className="text-[11px] themed-text/35">{ad.sub}</p>
+        <span className="text-[8px] px-1.5 py-0.5 rounded themed-surface-h themed-text/20 uppercase tracking-wider mt-2.5 inline-block">Sponsored</span>
       </motion.div>
     );
   }
 
   return (
-    <div className={`rounded-lg bg-gradient-to-r ${ad.color} border ${ad.borderColor} px-4 py-2.5 flex items-center justify-between`}>
+    <div className={`rounded-lg bg-gradient-to-r ${ad.color} border ${ad.borderColor} px-4 py-3 flex items-center justify-between`}>
       <div>
-        <p className="text-[11px] themed-text/50 font-medium">{ad.text}</p>
-        <p className="text-[10px] themed-text/25">{ad.sub}</p>
+        <p className="text-[12px] themed-text/60 font-medium">{ad.text}</p>
+        <p className="text-[11px] themed-text/35 mt-0.5">{ad.sub}</p>
       </div>
-      <span className="text-[8px] px-1 py-0.5 rounded themed-surface-h themed-text/15 uppercase tracking-wider flex-shrink-0">Ad</span>
+      <span className="text-[8px] px-1.5 py-0.5 rounded themed-surface-h themed-text/20 uppercase tracking-wider flex-shrink-0 ml-3">Ad</span>
     </div>
   );
 }

@@ -146,7 +146,7 @@ export default function LandingPage({ onEnterFree }: Props) {
               Start tracking your grades <ArrowRight className="w-4 h-4" />
             </motion.button>
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-              {['No sign-up required to explore', 'Works on any device', 'Built for PH university students'].map(t => (
+              {['Works on any device', 'Built for PH university students'].map(t => (
                 <span key={t} className="flex items-center gap-1.5 text-[11px] themed-text/25">
                   <CheckCircle className="w-3 h-3 themed-accent/40 flex-shrink-0" />{t}
                 </span>

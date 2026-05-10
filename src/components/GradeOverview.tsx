@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, Target, AlertTriangle, CheckCircle, ToggleLeft, ToggleRight } from 'lucide-react';
-import type { GradeResult } from '../lib/calculationEngine';
+import type { Component, GradeResult } from '../lib/calculationEngine';
 import { percentToGPA, percentToGPALabel, formatGPA, gpaToColor } from '../lib/gpaScale';
 
 interface Props {
   gradeResult: GradeResult | null;
+  components: Component[];
   target: number;
-    onTargetChange: (t: number) => void;
+  onTargetChange: (t: number) => void;
 }
 
 type DisplayMode = 'percent' | 'gpa';
@@ -53,7 +54,7 @@ function GradeRing({ value, label, color, size = 120, displayMode }: { value: nu
   );
 }
 
-export default function GradeOverview({ gradeResult, target, onTargetChange }: Props) {
+export default function GradeOverview({ gradeResult, components, target, onTargetChange }: Props) {
   const [displayMode, setDisplayMode] = useState<DisplayMode>('percent');
 
   if (!gradeResult) {
@@ -67,6 +68,16 @@ export default function GradeOverview({ gradeResult, target, onTargetChange }: P
   const { currentGrade, maxPossibleGrade, minPossibleGrade, isComplete, totalWeightRemaining } = gradeResult;
   const targetPossible = maxPossibleGrade >= target;
   const onTrack = currentGrade >= target;
+
+  // Best/Worst case is only meaningful when there is remaining weight AND at least some data exists
+  const allDone = components.length > 0 && components.every(c => c.done);
+  const totalEntries = components.reduce((s, c) => s + c.entries.length, 0);
+  const showBestWorst = !isComplete && !allDone && totalEntries > 0;
+  const bestWorstReason = allDone
+    ? 'All components are marked done.'
+    : totalEntries === 0
+    ? 'Add entries to see best/worst case.'
+    : null;
 
   return (
     <motion.div
@@ -110,11 +121,14 @@ export default function GradeOverview({ gradeResult, target, onTargetChange }: P
 
       <div className="flex flex-wrap items-center justify-center gap-8 mb-6">
         <GradeRing value={currentGrade} label="Current Grade" color="#FFD45A" size={130} displayMode={displayMode} />
-        {!isComplete && (
+        {showBestWorst && (
           <>
             <GradeRing value={maxPossibleGrade} label="Best Case" color="#22c55e" size={100} displayMode={displayMode} />
             <GradeRing value={minPossibleGrade} label="Worst Case" color="#ef4444" size={100} displayMode={displayMode} />
           </>
+        )}
+        {bestWorstReason && (
+          <p className="text-[11px] themed-text/30 text-center w-full">{bestWorstReason}</p>
         )}
       </div>
 
@@ -149,7 +163,7 @@ export default function GradeOverview({ gradeResult, target, onTargetChange }: P
               <span className="text-xs text-red-300">Target {target}% is impossible (max: {maxPossibleGrade.toFixed(1)}%)</span>
             </div>
           )}
-          {!isComplete && (
+          {showBestWorst && (
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full themed-surface-h border themed-border">
               <span className="text-xs themed-text/40">{totalWeightRemaining.toFixed(0)}% weight remaining</span>
             </div>

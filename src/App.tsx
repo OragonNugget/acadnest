@@ -459,8 +459,9 @@ export default function App() {
           <div className="lg:col-span-6 space-y-5">
             <GradeOverview
               gradeResult={gradeResult}
+              components={components}
               target={settings.target_grade}
-                            onTargetChange={updateTarget}
+              onTargetChange={updateTarget}
             />
 
             <AdBanner variant="inline" />
