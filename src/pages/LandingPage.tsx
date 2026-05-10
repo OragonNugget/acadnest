@@ -135,32 +135,23 @@ export default function LandingPage({ onEnterFree }: Props) {
             your goal. Your academic home, all in one place.
           </p>
 
-          {/* CTA Cards */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch max-w-xl mx-auto">
+          {/* CTA */}
+          <div className="flex flex-col items-center gap-5">
             <motion.button
               onClick={onEnterFree}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full max-w-md mx-auto rounded-2xl themed-surface border themed-border p-6 text-left cursor-pointer hover:themed-border-subtle transition-colors group"
+              className="flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-yellow-300/25 to-yellow-200/20 border border-yellow-300/25 text-sm font-semibold themed-accent-soft hover:from-yellow-300/35 hover:to-yellow-200/30 transition-all cursor-pointer shadow-lg shadow-yellow-300/10"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 themed-accent" />
-                  <span className="text-xs font-semibold themed-text/70 uppercase tracking-wider">Everything, free</span>
-                </div>
-                <span className="text-xl font-bold themed-accent-soft">₱0</span>
-              </div>
-              <ul className="space-y-2 mb-5">
-                {['Grade Calculator & tracking', 'GWA Calculator', 'Target grade system', 'Grade Coach', '5 Strategy engines', 'Template Library', 'Community Forum', 'Scenario Simulator', 'Save & load grades'].map(f => (
-                  <li key={f} className="flex items-center gap-2 text-[11px] themed-accent-soft">
-                    <CheckCircle className="w-3 h-3 themed-accent flex-shrink-0" />{f}
-                  </li>
-                ))}
-              </ul>
-              <div className="flex items-center gap-2 text-sm font-medium themed-text/50 group-hover:themed-text/70 transition-colors">
-                Get started <ArrowRight className="w-4 h-4" />
-              </div>
+              Start tracking your grades <ArrowRight className="w-4 h-4" />
             </motion.button>
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+              {['No sign-up required to explore', 'Works on any device', 'Built for PH university students'].map(t => (
+                <span key={t} className="flex items-center gap-1.5 text-[11px] themed-text/25">
+                  <CheckCircle className="w-3 h-3 themed-accent/40 flex-shrink-0" />{t}
+                </span>
+              ))}
+            </div>
           </div>
         </motion.div>
       </section>
@@ -191,7 +182,7 @@ export default function LandingPage({ onEnterFree }: Props) {
       <section className="relative z-10 max-w-6xl mx-auto px-6 py-20">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Everything in One Place</h2>
-          <p className="text-sm themed-text/30">Everything you need to stay on top of your grades, for free.</p>
+          <p className="text-sm themed-text/30">Everything you need to stay on top of your grades.</p>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {features.map((f, i) => {
@@ -216,7 +207,7 @@ export default function LandingPage({ onEnterFree }: Props) {
           <h2 className="text-2xl font-bold mb-3">Ready to build your nest?</h2>
           <p className="text-sm themed-text/30 mb-8">Join students who finally have their grades figured out.</p>
           <button onClick={onEnterFree} className="px-8 py-3 rounded-xl bg-gradient-to-r from-yellow-300/25 to-yellow-200/20 border border-yellow-300/25 text-sm font-medium themed-accent-soft hover:from-yellow-300/35 hover:to-yellow-200/30 transition-all cursor-pointer">
-            Get started — it's free
+            Open AcadNest <ArrowRight className="w-4 h-4 inline ml-1" />
           </button>
         </motion.div>
       </section>

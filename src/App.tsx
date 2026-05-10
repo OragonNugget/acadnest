@@ -27,7 +27,7 @@ import { supabase } from './lib/supabaseClient';
 import { useAuth } from './hooks/useAuth';
 import BookLoader from './components/BookLoader';
 
-type AppView = 'landing' | 'app' | 'payment' | 'cancel';
+type AppView = 'landing' | 'app';
 
 export default function App() {
   const { user, session, loading: authLoading } = useAuth();
@@ -374,11 +374,6 @@ export default function App() {
     await fetchData();
     setSaving(false);
   };
-
-  // Landing page
-  if (appView === 'payment') {
-
-  }
 
   if (appView === 'landing') {
     return (
