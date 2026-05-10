@@ -375,15 +375,25 @@ export default function App() {
     setSaving(false);
   };
 
+  // Always wait for auth to resolve before deciding what to render —
+  // prevents a logged-in user from briefly seeing the landing page on redirect.
+  if (authLoading) {
+    return (
+      <div className="min-h-screen themed-bg flex items-center justify-center">
+        <BookLoader />
+      </div>
+    );
+  }
+
   if (appView === 'landing') {
     return (
       <LandingPage
         onEnterFree={enterApp}
-              />
+      />
     );
   }
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
       <div className="min-h-screen themed-bg flex items-center justify-center">
         <BookLoader />
