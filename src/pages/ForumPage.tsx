@@ -18,7 +18,8 @@ interface ForumPost {
 
 interface Props {
   onBack: () => void;
-    session: Session | null;
+  session: Session | null;
+  username: string;
 }
 
 const categories = ['general', 'study-tips', 'exam-prep', 'time-management', 'motivation', 'resources'];
@@ -31,7 +32,7 @@ const categoryColors: Record<string, string> = {
   'resources': 'bg-purple-500/10 text-purple-400',
 };
 
-export default function ForumPage({ onBack, session }: Props) {
+export default function ForumPage({ onBack, session, username }: Props) {
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -39,7 +40,6 @@ export default function ForumPage({ onBack, session }: Props) {
   const [newTitle, setNewTitle] = useState('');
   const [newBody, setNewBody] = useState('');
   const [newCategory, setNewCategory] = useState('general');
-  const [newAuthor, setNewAuthor] = useState('');
   const [postError, setPostError] = useState('');
   const [posting, setPosting] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
@@ -74,7 +74,7 @@ export default function ForumPage({ onBack, session }: Props) {
   }
 
   const handleCreate = async () => {
-    if (!newTitle.trim() || !newBody.trim() || !newAuthor.trim()) return;
+    if (!newTitle.trim() || !newBody.trim()) return;
     setPosting(true);
     setPostError('');
     try {
@@ -82,7 +82,7 @@ export default function ForumPage({ onBack, session }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeader },
         body: JSON.stringify({
-          author: newAuthor.trim(),
+          author: username,
           title: newTitle.trim(),
           body: newBody.trim(),
           category: newCategory,
@@ -93,7 +93,7 @@ export default function ForumPage({ onBack, session }: Props) {
         setPostError(err.error || `Error ${res.status}`);
         return;
       }
-      setNewTitle(''); setNewBody(''); setNewAuthor('');
+      setNewTitle(''); setNewBody('');
       setShowCreate(false);
       await fetchPosts();
     } catch (err: any) {
@@ -176,7 +176,10 @@ export default function ForumPage({ onBack, session }: Props) {
                 <button onClick={() => setShowCreate(false)} className="themed-text/20 hover:themed-text/40 cursor-pointer"><X className="w-4 h-4" /></button>
               </div>
               <div className="space-y-3">
-                <input value={newAuthor} onChange={e => setNewAuthor(e.target.value)} placeholder="Your name" className="w-full themed-surface-h border themed-border-subtle rounded-lg px-3 py-2 text-sm themed-text placeholder:themed-text/20 focus:outline-none focus:border-yellow-300/40" />
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg themed-surface-h border themed-border-subtle">
+                  <span className="text-[10px] themed-text/25 uppercase tracking-wider">Posting as</span>
+                  <span className="text-xs font-semibold themed-accent-soft">@{username}</span>
+                </div>
                 <input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Post title" className="w-full themed-surface-h border themed-border-subtle rounded-lg px-3 py-2 text-sm themed-text placeholder:themed-text/20 focus:outline-none focus:border-yellow-300/40" />
                 <textarea value={newBody} onChange={e => setNewBody(e.target.value)} placeholder="What's on your mind? Tips, questions, rants — all welcome." rows={4} className="w-full themed-surface-h border themed-border-subtle rounded-lg px-3 py-2 text-sm themed-text placeholder:themed-text/20 focus:outline-none focus:border-yellow-300/40 resize-none" />
                 <div className="flex items-center gap-3 flex-wrap">

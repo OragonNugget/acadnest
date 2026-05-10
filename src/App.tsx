@@ -55,6 +55,24 @@ export default function App() {
   const [apiError, setApiError] = useState<string | null>(null);
   const [subjectTitle, setSubjectTitle] = useState('');
 
+  // ── Username (stored in Supabase user_metadata, set once on first login) ──
+  const username = (user?.user_metadata?.username as string) || '';
+  const [usernameInput, setUsernameInput] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [savingUsername, setSavingUsername] = useState(false);
+
+  const saveUsername = async () => {
+    const cleaned = usernameInput.trim();
+    if (cleaned.length < 3) { setUsernameError('Must be at least 3 characters.'); return; }
+    if (!/^[a-zA-Z0-9_]+$/.test(cleaned)) { setUsernameError('Letters, numbers, and underscores only.'); return; }
+    setSavingUsername(true);
+    setUsernameError('');
+    const { error } = await supabase.auth.updateUser({ data: { username: cleaned } });
+    if (error) { setUsernameError(error.message); setSavingUsername(false); }
+    // On success, onAuthStateChange fires USER_UPDATED → user re-renders with metadata set
+    setSavingUsername(false);
+  };
+
   // Build auth headers from the live session token
   const authHeaders = useCallback((): Record<string, string> => ({
     'Content-Type': 'application/json',
@@ -391,12 +409,69 @@ export default function App() {
     setSaving(false);
   };
 
-  // Always wait for auth to resolve before deciding what to render —
-  // prevents a logged-in user from briefly seeing the landing page on redirect.
   if (authLoading) {
     return (
       <div className="min-h-screen themed-bg flex items-center justify-center">
         <BookLoader />
+      </div>
+    );
+  }
+
+  // ── First-login username gate ──────────────────────────────────────────────
+  // Fires after OAuth resolves if the user hasn't picked a username yet.
+  if (user && !username) {
+    return (
+      <div className="min-h-screen themed-bg flex items-center justify-center px-4">
+        <div className="w-full max-w-sm rounded-2xl border themed-border-subtle bg-[#0e0e1a] p-8 shadow-2xl shadow-black/60">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-9 h-9 rounded-xl bg-yellow-300/10 flex items-center justify-center">
+              <span className="text-lg">🪺</span>
+            </div>
+            <div>
+              <h2 className="text-sm font-bold themed-text">One last thing</h2>
+              <p className="text-[10px] themed-text/30">Pick your username — it'll show on your forum posts</p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div>
+              <div className="flex items-center gap-2 themed-surface-h border themed-border-subtle rounded-lg px-3 py-2.5 focus-within:border-yellow-300/40 transition-colors">
+                <span className="text-sm themed-text/25">@</span>
+                <input
+                  value={usernameInput}
+                  onChange={e => { setUsernameInput(e.target.value); setUsernameError(''); }}
+                  onKeyDown={e => e.key === 'Enter' && saveUsername()}
+                  placeholder="your_username"
+                  maxLength={24}
+                  autoFocus
+                  className="flex-1 bg-transparent text-sm themed-text placeholder:themed-text/20 focus:outline-none"
+                />
+              </div>
+              <p className="text-[10px] themed-text/20 mt-1.5 px-1">Letters, numbers, underscores · 3–24 characters · permanent</p>
+            </div>
+
+            {usernameError && (
+              <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                {usernameError}
+              </p>
+            )}
+
+            <button
+              onClick={saveUsername}
+              disabled={savingUsername || usernameInput.trim().length < 3}
+              className="w-full py-2.5 rounded-lg bg-yellow-300/15 themed-accent-soft text-sm font-semibold hover:bg-yellow-300/25 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {savingUsername ? 'Saving…' : 'Set username & continue'}
+            </button>
+
+            <button
+              onClick={goToLanding}
+              className="w-full py-1.5 text-[11px] themed-text/20 hover:themed-text/40 cursor-pointer transition-colors"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -419,7 +494,7 @@ export default function App() {
 
   // Page routing
   if (currentPage === 'forum') {
-    return <ForumPage onBack={() => setCurrentPage('dashboard')} session={session} />;
+    return <ForumPage onBack={() => setCurrentPage('dashboard')} session={session} username={username} />;
   }
   if (currentPage === 'templates') {
     return <TemplateBrowserPage onBack={() => setCurrentPage('dashboard')} onApplyTemplate={applyTemplate} session={session} />;
@@ -461,10 +536,10 @@ export default function App() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_4fr_3fr] gap-6">
 
           {/* ── LEFT RAIL: Saved Grades + Deadlines + ClassmateCompare ── */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="space-y-4">
             <SavedGradesSidebar
               savedGrades={savedGrades}
               activeGradeId={activeGradeId}
@@ -487,7 +562,7 @@ export default function App() {
           </div>
 
           {/* ── CENTER (main focus): Subject + Overview + Components + History ── */}
-          <div className="lg:col-span-7 space-y-5">
+          <div className="space-y-5">
             {/* Subject / Course title */}
             <div className="flex items-center gap-3 px-1">
               <input
@@ -579,7 +654,7 @@ export default function App() {
           </div>
 
           {/* ── RIGHT RAIL: AI panels ── */}
-          <div className="lg:col-span-3 space-y-4">
+          <div className="space-y-4">
             <AICoach
               analysis={coachAnalysis}
               onSelectStrategy={(id) => setSelectedStrategyId(id)}
