@@ -206,11 +206,6 @@ export default function ForumPage({ onBack, session }: Props) {
               const userLiked = post.liked_by?.includes(userId);
               return (
                 <div key={post.id} className="relative group/post">
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 themed-tooltip border border-yellow-300/20 rounded-lg text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover/post:opacity-100 transition-opacity pointer-events-none flex items-center gap-1.5">
-                      <Crown className="w-3 h-3 themed-accent/50" />
-                      Upgrade to Premium to post & reply
-                    </div>
-                  )}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}

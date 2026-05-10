@@ -4,7 +4,9 @@ import type { WeakArea } from '../lib/calculationEngine';
 
 interface Props {
   weakAreas: WeakArea[];
+}
 
+export default function WeakAreasPanel({ weakAreas }: Props) {
   if (weakAreas.length === 0) return null;
 
   return (

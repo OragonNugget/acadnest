@@ -6,7 +6,9 @@ import { computeGrades } from '../lib/calculationEngine';
 
 interface Props {
   components: GradeComponent[];
+}
 
+export default function ScenarioSimulator({ components }: Props) {
   const [scenarios, setScenarios] = useState<Record<number, number>>({});
   const [active, setActive] = useState(false);
 
