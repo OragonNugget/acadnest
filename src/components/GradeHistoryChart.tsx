@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+  XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, ReferenceLine, Area, AreaChart
 } from 'recharts';
 import { TrendingUp } from 'lucide-react';
-import type { Component, GradeResult } from '../lib/calculationEngine';
+import type { Component } from '../lib/calculationEngine';
 import { computeGrades } from '../lib/calculationEngine';
 
 interface Props {
@@ -48,7 +48,7 @@ function buildHistoryPoints(components: Component[]): DataPoint[] {
   return points;
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload }: any) => {
   if (!active || !payload || !payload.length) return null;
   return (
     <div className="px-3 py-2 rounded-xl bg-[#111118] border border-white/10 shadow-2xl text-[11px]">

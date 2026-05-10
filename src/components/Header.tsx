@@ -1,4 +1,4 @@
-import { MessageSquare, Library, LayoutDashboard, LogOut, GraduationCap, BookOpen, CalendarDays } from 'lucide-react';
+import { MessageSquare, Library, LayoutDashboard, LogOut, GraduationCap, BookOpen } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 
 interface HeaderProps {

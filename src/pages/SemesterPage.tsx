@@ -1,8 +1,8 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, BookOpen, Plus, Trash2, ChevronDown, ChevronUp,
-  GraduationCap, Save, Loader2, TrendingUp, AlertTriangle
+  GraduationCap
 } from 'lucide-react';
 import type { SavedGrade } from '../components/SavedGradesSidebar';
 import { percentToGPA, formatGPA, gpaToColor, calculateGWA, GPA_TABLE } from '../lib/gpaScale';

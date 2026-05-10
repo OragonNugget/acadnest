@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, Plus, Trash2, Calendar, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
+import { Bell, Plus, Trash2, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
 
 export interface Deadline {
   id: string;

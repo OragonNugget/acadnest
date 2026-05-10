@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, BarChart2, Share2, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Users, BarChart2, Share2, Eye, AlertCircle } from 'lucide-react';
 
 interface Distribution {
   below60: number;

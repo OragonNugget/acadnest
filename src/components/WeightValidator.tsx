@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, CheckCircle, Info } from 'lucide-react';
+import { AlertTriangle, CheckCircle } from 'lucide-react';
 
 interface Props {
   components: { name: string; weight: number }[];
@@ -12,7 +12,6 @@ export default function WeightValidator({ components }: Props) {
   const rounded = Math.round(total * 100) / 100;
   const isExact = Math.abs(rounded - 100) < 0.01;
   const isOver = rounded > 100.01;
-  const isUnder = rounded < 99.99 && rounded > 0;
 
   return (
     <AnimatePresence>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Download, Printer, FileText } from 'lucide-react';
+import { Download, Printer } from 'lucide-react';
 import type { Component, GradeResult } from '../lib/calculationEngine';
-import { percentToGPA, formatGPA, gpaToColor } from '../lib/gpaScale';
+import { percentToGPA, formatGPA } from '../lib/gpaScale';
 
 interface Props {
   components: Component[];
