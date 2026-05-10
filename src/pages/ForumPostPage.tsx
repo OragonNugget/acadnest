@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Heart, Crown, Send, Lock, Loader2, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Heart, Send, Loader2, MessageSquare } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
 
 interface ForumPost {
@@ -9,7 +9,6 @@ interface ForumPost {
   title: string;
   body: string;
   category: string;
-  is_premium_author: boolean;
   likes: number;
   liked_by: string[];
   pinned: boolean;
@@ -27,8 +26,7 @@ interface ForumReply {
 interface Props {
   postId: number;
   onBack: () => void;
-  isPremium: boolean;
-  session: Session | null;
+    session: Session | null;
 }
 
 const categoryColors: Record<string, string> = {
@@ -40,7 +38,7 @@ const categoryColors: Record<string, string> = {
   'resources': 'bg-purple-500/10 text-purple-400',
 };
 
-export default function ForumPostPage({ postId, onBack, isPremium, session }: Props) {
+export default function ForumPostPage({ postId, onBack, session }: Props) {
   const [post, setPost] = useState<ForumPost | null>(null);
   const [replies, setReplies] = useState<ForumReply[]>([]);
   const [loading, setLoading] = useState(true);
@@ -191,7 +189,7 @@ export default function ForumPostPage({ postId, onBack, isPremium, session }: Pr
           <div className="flex items-center gap-4 pt-4 border-t themed-border">
             <div className="flex items-center gap-1.5">
               <span className="text-[11px] themed-text/40">{post.author}</span>
-              {post.is_premium_author && <Crown className="w-3 h-3 themed-accent/50" />}
+              
             </div>
             <span className="text-[10px] themed-text/20">
               {new Date(post.created_at).toLocaleDateString()}
@@ -217,80 +215,9 @@ export default function ForumPostPage({ postId, onBack, isPremium, session }: Pr
 
           {replies.length === 0 ? (
             <p className="text-[11px] themed-text/20 text-center py-6">
-              No replies yet.{isPremium ? ' Be the first to reply below.' : ''}
+              No replies yet.' Be the first to reply below.'
             </p>
-          ) : (
-            <div className="space-y-3">
-              {replies.map((reply, i) => (
-                <motion.div
-                  key={reply.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.04 }}
-                  className="flex gap-3 pl-4 border-l-2 themed-border"
-                >
-                  <div className="flex-1 themed-surface rounded-lg px-4 py-3">
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className="text-[11px] font-semibold themed-text/50">{reply.author}</span>
-                      <span className="text-[9px] themed-text/15">
-                        {new Date(reply.created_at).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-[11px] themed-text/35 leading-relaxed whitespace-pre-wrap">{reply.body}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Reply form */}
-        {isPremium ? (
-          <div className="rounded-xl themed-surface border themed-border-subtle p-5">
-            <h3 className="text-xs font-semibold themed-text/40 mb-3">Write a Reply</h3>
-            <div className="space-y-3">
-              <input
-                value={replyAuthor}
-                onChange={e => setReplyAuthor(e.target.value)}
-                placeholder="Your name"
-                className="w-full themed-surface-h border themed-border-subtle rounded-lg px-3 py-2 text-sm themed-text placeholder:themed-text/20 focus:outline-none focus:border-yellow-300/40"
-              />
-              <textarea
-                value={replyBody}
-                onChange={e => setReplyBody(e.target.value)}
-                placeholder="Share your thoughts..."
-                rows={4}
-                className="w-full themed-surface-h border themed-border-subtle rounded-lg px-3 py-2 text-sm themed-text placeholder:themed-text/20 focus:outline-none focus:border-yellow-300/40 resize-none"
-              />
-              {replyError && (
-                <p className="text-[11px] text-red-400/80 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
-                  {replyError}
-                </p>
-              )}
-              <div className="flex justify-end">
-                <button
-                  onClick={handleReply}
-                  disabled={replySending || !replyBody.trim() || !replyAuthor.trim()}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-yellow-300/20 themed-accent-soft text-sm font-medium hover:bg-yellow-300/30 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  {replySending
-                    ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending...</>
-                    : <><Send className="w-3.5 h-3.5" /> Send Reply</>
-                  }
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="rounded-xl themed-surface border themed-border p-5 flex items-center gap-3">
-            <Lock className="w-4 h-4 themed-text/20 flex-shrink-0" />
-            <div>
-              <p className="text-xs themed-text/30">Premium members can reply to posts.</p>
-              <p className="text-[10px] themed-text/15 mt-0.5">Upgrade to join the discussion.</p>
-            </div>
-            <Crown className="w-4 h-4 themed-accent/30 ml-auto flex-shrink-0" />
-          </div>
-        )}
+          ) : null}
       </main>
     </div>
   );

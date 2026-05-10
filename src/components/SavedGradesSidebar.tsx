@@ -14,8 +14,7 @@ export interface SavedGrade {
 interface Props {
   savedGrades: SavedGrade[];
   activeGradeId: number | null;
-  isPremium: boolean;
-  currentGrade: number;
+    currentGrade: number;
   onSave: (name: string) => void;
   onLoad: (grade: SavedGrade) => void;
   onDelete: (id: number) => void;
@@ -23,7 +22,7 @@ interface Props {
 }
 
 export default function SavedGradesSidebar({
-  savedGrades, activeGradeId, isPremium, onSave, onLoad, onDelete, onUpdate
+  savedGrades, activeGradeId, onSave, onLoad, onDelete, onUpdate
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [showSaveForm, setShowSaveForm] = useState(false);
@@ -36,17 +35,6 @@ export default function SavedGradesSidebar({
     setShowSaveForm(false);
   };
 
-  if (!isPremium) {
-    return (
-      <div className="rounded-2xl themed-surface border themed-border p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Lock className="w-3.5 h-3.5 themed-text/15" />
-          <h3 className="text-xs font-medium themed-text/25">Saved Grades</h3>
-        </div>
-        <p className="text-[10px] themed-text/15">Save & switch between multiple subjects</p>
-      </div>
-    );
-  }
 
   return (
     <motion.div

@@ -17,12 +17,11 @@ interface CommunityTemplate {
 
 interface Props {
   onBack: () => void;
-  isPremium: boolean;
-  onApplyTemplate: (components: { name: string; weight: number }[]) => void;
+    onApplyTemplate: (components: { name: string; weight: number }[]) => void;
   session: Session | null;
 }
 
-export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate, session }: Props) {
+export default function TemplateBrowserPage({ onBack, onApplyTemplate, session }: Props) {
   const [templates, setTemplates] = useState<CommunityTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -148,24 +147,13 @@ export default function TemplateBrowserPage({ onBack, isPremium, onApplyTemplate
             <h1 className="text-lg font-bold themed-text">Template Library</h1>
             <p className="text-[11px] themed-text/30">Ready-to-use grade templates, shared by real students</p>
           </div>
-          {isPremium ? (
-            <button
+          <button
               onClick={() => setShowUpload(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg themed-surface-raised border themed-border-accent text-xs font-medium cursor-pointer transition-colors hover:themed-surface-h"
               style={{ color: '#593A08' }}
             >
               <Upload className="w-3.5 h-3.5" /> Share Template
             </button>
-          ) : (
-            <div className="relative group">
-              <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg themed-surface themed-text/20 text-xs cursor-not-allowed">
-                <Lock className="w-3 h-3" /> Share
-              </button>
-              <div className="absolute bottom-full right-0 mb-1 px-2 py-1 themed-tooltip border themed-border-subtle rounded text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                Premium members can share templates
-              </div>
-            </div>
-          )}
         </div>
       </header>
 

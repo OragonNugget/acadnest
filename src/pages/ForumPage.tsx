@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Heart, MessageSquare, Crown, Send, Lock, Plus, X, Loader2 } from 'lucide-react';
+import { ArrowLeft, Heart, MessageSquare, Send, Plus, X, Loader2 } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
 import ForumPostPage from './ForumPostPage';
 
@@ -10,7 +10,6 @@ interface ForumPost {
   title: string;
   body: string;
   category: string;
-  is_premium_author: boolean;
   likes: number;
   liked_by: string[];
   pinned: boolean;
@@ -19,8 +18,7 @@ interface ForumPost {
 
 interface Props {
   onBack: () => void;
-  isPremium: boolean;
-  session: Session | null;
+    session: Session | null;
 }
 
 const categories = ['general', 'study-tips', 'exam-prep', 'time-management', 'motivation', 'resources'];
@@ -33,7 +31,7 @@ const categoryColors: Record<string, string> = {
   'resources': 'bg-purple-500/10 text-purple-400',
 };
 
-export default function ForumPage({ onBack, isPremium, session }: Props) {
+export default function ForumPage({ onBack, session }: Props) {
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -70,8 +68,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
       <ForumPostPage
         postId={selectedPostId}
         onBack={() => { setSelectedPostId(null); fetchPosts(); }}
-        isPremium={isPremium}
-        session={session}
+                session={session}
       />
     );
   }
@@ -89,7 +86,6 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
           title: newTitle.trim(),
           body: newBody.trim(),
           category: newCategory,
-          is_premium_author: isPremium,
         }),
       });
       if (!res.ok) {
@@ -149,24 +145,14 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
             <h1 className="text-lg font-bold themed-text">Community Forum</h1>
             <p className="text-[11px] themed-text/30">Tips, strategies & discussion from fellow students</p>
           </div>
-          {isPremium ? (
+          { true ? (
             <button
               onClick={() => setShowCreate(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-yellow-300/15 themed-accent-soft text-xs font-medium hover:bg-yellow-300/25 cursor-pointer transition-colors"
             >
               <Plus className="w-3.5 h-3.5" /> New Post
             </button>
-          ) : (
-            <div className="relative group">
-              <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg themed-surface themed-text/20 text-xs cursor-not-allowed border themed-border">
-                <Lock className="w-3 h-3" /> New Post
-              </button>
-              <div className="absolute bottom-full right-0 mb-2 w-48 px-3 py-2 themed-tooltip border border-yellow-300/20 rounded-lg text-[10px] themed-text/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center">
-                <Crown className="w-3 h-3 themed-accent/50 mx-auto mb-1" />
-                Only Premium members can post. Upgrade to join the discussion.
-              </div>
-            </div>
-          )}
+        ) : null}
         </div>
       </header>
 
@@ -213,7 +199,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
         ) : filtered.length === 0 ? (
           <div className="text-center py-12">
             <MessageSquare className="w-8 h-8 themed-text/10 mx-auto mb-3" />
-            <p className="text-sm themed-text/30">{isPremium ? 'No posts yet. Be the first to share!' : 'No posts yet. Upgrade to Premium to start a discussion.'}</p>
+            <p className="text-sm themed-text/30">'No posts yet. Be the first to share!'</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -221,7 +207,6 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
               const userLiked = post.liked_by?.includes(userId);
               return (
                 <div key={post.id} className="relative group/post">
-                  {!isPremium && (
                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 themed-tooltip border border-yellow-300/20 rounded-lg text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover/post:opacity-100 transition-opacity pointer-events-none flex items-center gap-1.5">
                       <Crown className="w-3 h-3 themed-accent/50" />
                       Upgrade to Premium to post & reply
@@ -245,7 +230,7 @@ export default function ForumPage({ onBack, isPremium, session }: Props) {
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1.5">
                         <span className="text-[11px] themed-text/40">{post.author}</span>
-                        {post.is_premium_author && <Crown className="w-3 h-3 themed-accent/50" />}
+                        
                       </div>
                       <span className="text-[10px] themed-text/20">{new Date(post.created_at).toLocaleDateString()}</span>
                       <span className="text-[10px] themed-text/20 flex items-center gap-1 ml-auto">

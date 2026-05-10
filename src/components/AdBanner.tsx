@@ -4,7 +4,6 @@ import { useState } from 'react';
 
 interface Props {
   variant: 'top' | 'sidebar' | 'inline';
-  isPremium: boolean;
 }
 
 const ads = {
@@ -18,17 +17,17 @@ const ads = {
     { text: '🧠 Anki Pro — Spaced repetition that actually works', sub: 'Join 2M+ students', color: 'from-cyan-600/15 to-blue-600/8', borderColor: 'border-cyan-500/12' },
   ],
   inline: [
-    { text: '🚀 Acadnest Premium — Remove ads, unlock Grade Coach & strategies', sub: 'Upgrade now', color: 'from-yellow-400/15 to-yellow-200/8', borderColor: 'border-yellow-400/15' },
+    { text: '📖 Scribd — Unlimited books, audiobooks & study docs', sub: 'Free 30-day trial', color: 'from-yellow-400/15 to-yellow-200/8', borderColor: 'border-yellow-400/15' },
+    { text: '🖊️ Grammarly — Write better papers, faster', sub: 'Free for students', color: 'from-green-400/15 to-teal-200/8', borderColor: 'border-green-400/15' },
   ],
 };
 
-export default function AdBanner({ variant, isPremium }: Props) {
+export default function AdBanner({ variant }: Props) {
   const [dismissed, setDismissed] = useState(false);
-
-  if (isPremium || dismissed) return null;
+  if (dismissed) return null;
 
   const pool = ads[variant];
-  const ad = pool[Math.floor(Date.now() / 60000) % pool.length]; // rotates every minute
+  const ad = pool[Math.floor(Date.now() / 60000) % pool.length];
 
   if (variant === 'top') {
     return (
@@ -39,10 +38,7 @@ export default function AdBanner({ variant, isPremium }: Props) {
             <span className="themed-text/30 ml-2">· {ad.sub}</span>
           </p>
           <span className="text-[9px] px-1.5 py-0.5 rounded themed-surface-raised themed-text/25 uppercase tracking-wider">Ad</span>
-          <button
-            onClick={() => setDismissed(true)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 themed-text/15 hover:themed-text/30 cursor-pointer"
-          >
+          <button onClick={() => setDismissed(true)} className="absolute right-3 top-1/2 -translate-y-1/2 themed-text/15 hover:themed-text/30 cursor-pointer">
             <X className="w-3 h-3" />
           </button>
         </div>
@@ -57,10 +53,7 @@ export default function AdBanner({ variant, isPremium }: Props) {
         animate={{ opacity: 1 }}
         className={`rounded-xl bg-gradient-to-br ${ad.color} border ${ad.borderColor} p-4 relative`}
       >
-        <button
-          onClick={() => setDismissed(true)}
-          className="absolute top-2 right-2 themed-text/15 hover:themed-text/30 cursor-pointer"
-        >
+        <button onClick={() => setDismissed(true)} className="absolute top-2 right-2 themed-text/15 hover:themed-text/30 cursor-pointer">
           <X className="w-3 h-3" />
         </button>
         <p className="text-[11px] themed-text/50 font-medium mb-1">{ad.text}</p>
@@ -70,7 +63,6 @@ export default function AdBanner({ variant, isPremium }: Props) {
     );
   }
 
-  // inline
   return (
     <div className={`rounded-lg bg-gradient-to-r ${ad.color} border ${ad.borderColor} px-4 py-2.5 flex items-center justify-between`}>
       <div>

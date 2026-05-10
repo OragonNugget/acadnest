@@ -29,14 +29,13 @@ interface GWARecord {
 
 interface Props {
   onBack: () => void;
-  isPremium: boolean;
-  savedGrades: SavedGrade[];
+    savedGrades: SavedGrade[];
 }
 
 let idCounter = 0;
 function genId() { return `gwa-${++idCounter}-${Date.now()}`; }
 
-export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Props) {
+export default function GWACalculatorPage({ onBack, savedGrades }: Props) {
   const { session } = useAuth();
   const [courses, setCourses] = useState<GWACourse[]>([]);
   const [records, setRecords] = useState<GWARecord[]>([]);
@@ -187,18 +186,6 @@ export default function GWACalculatorPage({ onBack, isPremium, savedGrades }: Pr
 
   const gwaColor = gpaToColor(gwa);
 
-  if (!isPremium) {
-    return (
-      <div className="min-h-screen themed-bg themed-text flex items-center justify-center">
-        <div className="text-center">
-          <Lock className="w-10 h-10 themed-text/10 mx-auto mb-4" />
-          <h2 className="text-lg font-bold themed-text/40 mb-2">GWA Calculator</h2>
-          <p className="text-sm themed-text/20 mb-6">This is a Premium feature.</p>
-          <button onClick={onBack} className="text-sm themed-accent/60 hover:themed-accent cursor-pointer">← Back to Dashboard</button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen themed-bg themed-text">

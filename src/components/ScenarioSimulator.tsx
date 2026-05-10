@@ -6,10 +6,8 @@ import { computeGrades } from '../lib/calculationEngine';
 
 interface Props {
   components: GradeComponent[];
-  isPremium: boolean;
 }
 
-export default function ScenarioSimulator({ components, isPremium }: Props) {
   const [scenarios, setScenarios] = useState<Record<number, number>>({});
   const [active, setActive] = useState(false);
 
@@ -31,17 +29,6 @@ export default function ScenarioSimulator({ components, isPremium }: Props) {
     return computeGrades(modified);
   }, [components, scenarios, active]);
 
-  if (!isPremium) {
-    return (
-      <div className="rounded-2xl themed-surface border themed-border p-5">
-        <div className="flex items-center gap-2 mb-2">
-          <Lock className="w-4 h-4 themed-text/15" />
-          <h2 className="text-sm font-medium themed-text/25">Scenario Simulator</h2>
-        </div>
-        <p className="text-[11px] themed-text/15">Premium feature — test "what if" scenarios</p>
-      </div>
-    );
-  }
 
   const incompleteComponents = components.filter(c => !c.done);
 

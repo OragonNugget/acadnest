@@ -14,8 +14,7 @@ interface LocalTemplate {
 }
 
 interface Props {
-  isPremium: boolean;
-  currentComponents: { name: string; weight: number }[];
+    currentComponents: { name: string; weight: number }[];
   onApplyTemplate: (components: TemplateComponent[]) => void;
 }
 
@@ -32,7 +31,7 @@ function saveLocalTemplates(templates: LocalTemplate[]) {
   localStorage.setItem(LS_KEY, JSON.stringify(templates));
 }
 
-export default function TemplateManager({ isPremium, currentComponents, onApplyTemplate }: Props) {
+export default function TemplateManager({ currentComponents, onApplyTemplate }: Props) {
   const [open, setOpen] = useState(false);
   const [templates, setTemplates] = useState<LocalTemplate[]>(getLocalTemplates);
   const [saveName, setSaveName] = useState('');
@@ -63,18 +62,6 @@ export default function TemplateManager({ isPremium, currentComponents, onApplyT
     setOpen(false);
   };
 
-  if (!isPremium) {
-    return (
-      <div className="relative group inline-block">
-        <button disabled className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg themed-surface themed-text/20 text-[11px] cursor-not-allowed">
-          <Lock className="w-3 h-3" /> Templates
-        </button>
-        <div className="absolute bottom-full left-0 mb-1 px-2 py-1 themed-tooltip border themed-border-subtle rounded text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-          Premium feature — save/load grading templates
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="relative">

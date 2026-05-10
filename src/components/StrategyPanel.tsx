@@ -5,7 +5,6 @@ import type { Strategy } from '../lib/strategyEngine';
 
 interface Props {
   strategies: Strategy[];
-  isPremium: boolean;
   targetPossible: boolean;
   externalSelectedId?: string | null;
   onExternalSelectedClear?: () => void;
@@ -27,7 +26,6 @@ const strategyColors: Record<string, string> = {
   'conservative': '#a855f7',
 };
 
-export default function StrategyPanel({ strategies, isPremium, targetPossible, externalSelectedId, onExternalSelectedClear }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
 
   // Handle external selection from AI Coach
@@ -40,30 +38,6 @@ export default function StrategyPanel({ strategies, isPremium, targetPossible, e
 
   const activeStrategy = strategies.find(s => s.id === selected);
 
-  if (!isPremium) {
-    return (
-      <div className="rounded-2xl bg-gradient-to-br from-yellow-300/[0.03] to-yellow-200/[0.02] border border-yellow-300/[0.1] p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-yellow-300/10 flex items-center justify-center">
-            <Crown className="w-5 h-5 themed-accent" />
-          </div>
-          <div>
-            <h2 className="text-base font-semibold themed-text/80">Strategy Engine</h2>
-            <p className="text-[11px] themed-text/30">5 strategies to help you hit your target</p>
-          </div>
-        </div>
-        <div className="space-y-2">
-          {['Weak Area Repair', 'High Impact Optimization', 'Survival Strategy', 'Optimal Strategy', 'Conservative Strategy'].map(name => (
-            <div key={name} className="flex items-center gap-2 px-3 py-2 rounded-lg themed-surface">
-              <Lock className="w-3 h-3 themed-text/15" />
-              <span className="text-xs themed-text/20">{name}</span>
-            </div>
-          ))}
-        </div>
-        <p className="text-[11px] themed-accent/40 mt-4 text-center">Upgrade to Premium to unlock all 5 strategies</p>
-      </div>
-    );
-  }
 
   return (
     <div className="rounded-2xl themed-surface border themed-border p-6">

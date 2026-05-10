@@ -4,11 +4,9 @@ import type { WeakArea } from '../lib/calculationEngine';
 
 interface Props {
   weakAreas: WeakArea[];
-  isPremium: boolean;
 }
 
-export default function WeakAreasPanel({ weakAreas, isPremium }: Props) {
-  if (!isPremium || weakAreas.length === 0) return null;
+  if (weakAreas.length === 0) return null;
 
   return (
     <motion.div

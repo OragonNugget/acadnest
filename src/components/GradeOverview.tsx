@@ -7,8 +7,7 @@ import { percentToGPA, percentToGPALabel, formatGPA, gpaToColor } from '../lib/g
 interface Props {
   gradeResult: GradeResult | null;
   target: number;
-  isPremium: boolean;
-  onTargetChange: (t: number) => void;
+    onTargetChange: (t: number) => void;
 }
 
 type DisplayMode = 'percent' | 'gpa';
@@ -54,7 +53,7 @@ function GradeRing({ value, label, color, size = 120, displayMode }: { value: nu
   );
 }
 
-export default function GradeOverview({ gradeResult, target, isPremium, onTargetChange }: Props) {
+export default function GradeOverview({ gradeResult, target, onTargetChange }: Props) {
   const [displayMode, setDisplayMode] = useState<DisplayMode>('percent');
 
   if (!gradeResult) {
@@ -79,7 +78,7 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
         <h2 className="text-base font-semibold themed-text/80">Grade Overview</h2>
         <div className="flex items-center gap-3">
           {/* GPA toggle — Premium only */}
-          {isPremium && (
+          {true && (
             <button
               onClick={() => setDisplayMode(displayMode === 'percent' ? 'gpa' : 'percent')}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg themed-surface-h hover:themed-surface-raised text-[11px] themed-text/40 hover:themed-text/60 transition-colors cursor-pointer"
@@ -91,7 +90,7 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
               )}
             </button>
           )}
-          {isPremium && (
+          {true && (
             <div className="flex items-center gap-2">
               <Target className="w-4 h-4 themed-accent/70" />
               <label className="text-xs themed-text/40">Target:</label>
@@ -120,7 +119,7 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
       </div>
 
       {/* GPA equivalent callout */}
-      {isPremium && displayMode === 'gpa' && (
+      {displayMode === 'gpa' && (
         <div className="flex justify-center mb-4">
           <div className="px-4 py-2 rounded-full border" style={{ borderColor: `${gpaToColor(percentToGPA(currentGrade))}30`, backgroundColor: `${gpaToColor(percentToGPA(currentGrade))}08` }}>
             <span className="text-xs" style={{ color: gpaToColor(percentToGPA(currentGrade)) }}>
@@ -130,7 +129,7 @@ export default function GradeOverview({ gradeResult, target, isPremium, onTarget
         </div>
       )}
 
-      {isPremium && (
+      {true && (
         <div className="flex flex-wrap gap-3 justify-center">
           {targetPossible ? (
             onTrack ? (

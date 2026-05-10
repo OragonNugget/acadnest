@@ -6,8 +6,7 @@ import type { Component as GradeComponent } from '../lib/calculationEngine';
 interface Props {
   component: GradeComponent;
   average: number;
-  isPremium: boolean;
-  onDelete: (id: number) => void;
+    onDelete: (id: number) => void;
   onUpdate: (id: number, data: Partial<GradeComponent>) => void;
   onToggleDone: (id: number, done: boolean) => void;
   onAddEntry: (componentId: number, score: number, maxScore: number, label: string) => void;
@@ -15,7 +14,7 @@ interface Props {
 }
 
 export default function ComponentCard({
-  component, average, isPremium, onDelete, onUpdate, onToggleDone, onAddEntry, onDeleteEntry
+  component, average, onDelete, onUpdate, onToggleDone, onAddEntry, onDeleteEntry
 }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -60,7 +59,7 @@ export default function ComponentCard({
         >
           <div className={`w-2 h-2 rounded-full ${component.done ? 'bg-emerald-400' : 'bg-yellow-300/60'}`} />
           <div className="flex-1 min-w-0">
-            {editing && isPremium ? (
+            {editing ? (
               <div className="flex gap-2" onClick={e => e.stopPropagation()}>
                 <input
                   value={editName}
@@ -96,7 +95,7 @@ export default function ComponentCard({
 
       {/* Action buttons */}
       <div className="px-4 pb-3 flex items-center gap-2 border-t themed-border pt-3">
-        {isPremium ? (
+        {true ? (
           <button
             onClick={() => { setEditing(true); setExpanded(true); }}
             className="flex items-center gap-1 px-2.5 py-1 rounded-md themed-surface-h hover:themed-surface-raised themed-text/40 hover:themed-text/60 text-[11px] transition-colors cursor-pointer"
@@ -112,7 +111,6 @@ export default function ComponentCard({
               <Lock className="w-3 h-3" /> Edit
             </button>
             <div className="absolute bottom-full left-0 mb-1 px-2 py-1 themed-tooltip border themed-border-subtle rounded text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-              Premium feature — upgrade to edit
             </div>
           </div>
         )}
@@ -122,7 +120,7 @@ export default function ComponentCard({
         >
           <Trash2 className="w-3 h-3" /> Delete
         </button>
-        {isPremium ? (
+        {true ? (
           <button
             onClick={() => onToggleDone(component.id, !component.done)}
             className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] transition-colors cursor-pointer ${
@@ -143,7 +141,6 @@ export default function ComponentCard({
               <Lock className="w-3 h-3" /> Toggle Done
             </button>
             <div className="absolute bottom-full left-0 mb-1 px-2 py-1 themed-tooltip border themed-border-subtle rounded text-[10px] themed-text/50 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-              Premium feature — upgrade to toggle
             </div>
           </div>
         )}

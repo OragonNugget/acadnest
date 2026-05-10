@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, ChevronDown, ChevronUp, Sparkles, ArrowRight, Lock, MessageCircle } from 'lucide-react';
+import { Bot, ChevronDown, ChevronUp, Sparkles, ArrowRight, MessageCircle } from 'lucide-react';
 import type { CoachAnalysis } from '../lib/coachEngine';
 
 interface Props {
   analysis: CoachAnalysis | null;
-  isPremium: boolean;
   onSelectStrategy: (id: string) => void;
 }
 
@@ -23,31 +22,8 @@ const insightTypeColors = {
   info: 'themed-border themed-surface',
 };
 
-export default function AICoach({ analysis, isPremium, onSelectStrategy }: Props) {
   const [expanded, setExpanded] = useState(true);
 
-  if (!isPremium) {
-    return (
-      <div className="rounded-2xl bg-gradient-to-br from-cyan-500/[0.03] to-blue-500/[0.02] border border-cyan-500/[0.08] p-5">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-9 h-9 rounded-xl bg-cyan-400/10 flex items-center justify-center">
-            <Bot className="w-4.5 h-4.5 text-cyan-400" />
-          </div>
-          <div>
-            <h2 className="text-sm font-semibold themed-text/70">Grade Coach</h2>
-            <p className="text-[10px] themed-text/25">Advice and strategies picked just for your grades</p>
-          </div>
-          <Lock className="w-3.5 h-3.5 themed-text/15 ml-auto" />
-        </div>
-        <div className="space-y-2 mb-3">
-          <div className="h-3 rounded themed-surface w-full" />
-          <div className="h-3 rounded themed-surface w-4/5" />
-          <div className="h-3 rounded themed-surface w-3/5" />
-        </div>
-        <p className="text-[11px] text-cyan-400/30 text-center">Upgrade to Premium to get your own Grade Coach</p>
-      </div>
-    );
-  }
 
   if (!analysis) {
     return (

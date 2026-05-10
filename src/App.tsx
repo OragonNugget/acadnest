@@ -16,7 +16,6 @@ import ForumPage from './pages/ForumPage';
 import TemplateBrowserPage from './pages/TemplateBrowserPage';
 import GWACalculatorPage from './pages/GWACalculatorPage';
 import LandingPage from './pages/LandingPage';
-import PaymentPage from './pages/PaymentPage';
 import { Loader2, Trash2 } from 'lucide-react';
 import type { Component as GradeComponent, GradeResult, WeakArea } from './lib/calculationEngine';
 import { computeGrades, detectWeakAreas, isTargetPossible } from './lib/calculationEngine';
@@ -26,7 +25,6 @@ import { generatePrediction, type GradePrediction } from './lib/predictionEngine
 import PredictionPanel from './components/PredictionPanel';
 import { supabase } from './lib/supabaseClient';
 import { useAuth } from './hooks/useAuth';
-import CancelPage from './pages/CancelPage';
 import BookLoader from './components/BookLoader';
 
 type AppView = 'landing' | 'app' | 'payment' | 'cancel';
@@ -39,7 +37,7 @@ export default function App() {
     return (saved === 'app') ? 'app' : 'landing';
   });
   const [components, setComponents] = useState<GradeComponent[]>([]);
-  const [settings, setSettings] = useState<{ target_grade: number; is_premium: boolean }>({ target_grade: 80, is_premium: false });
+  const [settings, setSettings] = useState<{ target_grade: number }>({ target_grade: 80 });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -55,8 +53,8 @@ export default function App() {
     ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
   }), [session]);
 
-  const fetchData = useCallback(async (showLoader = false) => {
-    if (showLoader) setLoading(true);
+  const fetchData = useCallback(async () => {
+    setLoading(true);
     try {
       const h = authHeaders();
       const [compsRes, entriesRes, settingsRes, gradesRes] = await Promise.all([
@@ -99,7 +97,7 @@ export default function App() {
       if (settingsData && !settingsData.error) {
         setSettings({
           target_grade: settingsData.target_grade ?? 80,
-          is_premium: settingsData.is_premium ?? false,
+          
         });
       }
       setSavedGrades(gradesArray);
@@ -121,7 +119,7 @@ export default function App() {
         setAppView('app');
       } else {
         // Already in app view, fetch data now that we have a real session
-        fetchData(true);
+        fetchData();
       }
     } else {
       // Auth resolved with no user — go to landing
@@ -134,7 +132,7 @@ export default function App() {
   // Fetch data whenever appView switches to 'app' and we have a session
   useEffect(() => {
     if (appView === 'app' && session && !authLoading) {
-      fetchData(true);
+      fetchData();
     }
   }, [appView]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -176,7 +174,6 @@ export default function App() {
     });
   };
 
-  const goToPayment = () => setAppView('payment');
 
   const goToLanding = async () => {
     await supabase.auth.signOut({ scope: 'local' });
@@ -184,7 +181,7 @@ export default function App() {
     localStorage.clear();
     setComponents([]);
     setSavedGrades([]);
-    setSettings({ target_grade: 80, is_premium: false });
+    setSettings({ target_grade: 80 });
     setAppView('landing');
   };
 
@@ -203,89 +200,66 @@ export default function App() {
         setApiError(msg);
       } else {
         setApiError(null);
-        const newComp = await res.json().catch(() => null);
-        if (newComp && newComp.id) {
-          setComponents(prev => [...prev, { ...newComp, entries: [] }]);
-        } else {
-          await fetchData();
-        }
       }
     } catch (err) {
       console.error('Add component error:', err);
-      await fetchData();
     }
+    await fetchData();
     setSaving(false);
   };
 
   const deleteComponent = async (id: number) => {
     setSaving(true);
-    setComponents(prev => prev.filter(c => c.id !== id));
     await fetch('/api/components', {
       method: 'DELETE',
       headers: authHeaders(),
       body: JSON.stringify({ id }),
     });
+    await fetchData();
     setSaving(false);
   };
 
   const updateComponent = async (id: number, data: Partial<GradeComponent>) => {
     setSaving(true);
-    setComponents(prev => prev.map(c => c.id === id ? { ...c, ...data } : c));
     await fetch('/api/components', {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({ id, ...data }),
     });
+    await fetchData();
     setSaving(false);
   };
 
   const toggleDone = async (id: number, done: boolean) => {
     setSaving(true);
-    setComponents(prev => prev.map(c => c.id === id ? { ...c, done } : c));
     await fetch('/api/components', {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({ id, done }),
     });
+    await fetchData();
     setSaving(false);
   };
 
   const addEntry = async (componentId: number, score: number, maxScore: number, label: string) => {
     setSaving(true);
-    try {
-      const res = await fetch('/api/entries', {
-        method: 'POST',
-        headers: authHeaders(),
-        body: JSON.stringify({ component_id: componentId, score, max_score: maxScore, label }),
-      });
-      if (res.ok) {
-        const newEntry = await res.json().catch(() => null);
-        if (newEntry && newEntry.id) {
-          setComponents(prev => prev.map(c =>
-            c.id === componentId ? { ...c, entries: [...c.entries, newEntry] } : c
-          ));
-        } else {
-          await fetchData();
-        }
-      }
-    } catch (err) {
-      console.error('Add entry error:', err);
-      await fetchData();
-    }
+    await fetch('/api/entries', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ component_id: componentId, score, max_score: maxScore, label }),
+    });
+    await fetchData();
     setSaving(false);
   };
 
   const deleteEntry = async (entryId: number) => {
     setSaving(true);
-    setComponents(prev => prev.map(c => ({
-      ...c,
-      entries: c.entries.filter(e => e.id !== entryId),
-    })));
     await fetch('/api/entries', {
       method: 'DELETE',
       headers: authHeaders(),
       body: JSON.stringify({ id: entryId }),
     });
+    await fetchData();
     setSaving(false);
   };
 
@@ -298,18 +272,17 @@ export default function App() {
     });
   };
 
-  // Premium is managed via Supabase — no client-side toggle
 
   const clearAllComponents = async () => {
     setSaving(true);
     setShowClearConfirm(false);
-    setComponents([]);
-    setActiveGradeId(null);
     await fetch('/api/components?action=clear', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({}),
     });
+    setActiveGradeId(null);
+    await fetchData();
     setSaving(false);
   };
 
@@ -404,27 +377,14 @@ export default function App() {
 
   // Landing page
   if (appView === 'payment') {
-    return <PaymentPage onBack={() => setAppView('app')} />;
-  }
 
-  if (appView === 'cancel') {
-    return (
-      <CancelPage
-        onBack={() => setAppView('app')}
-        onCancelled={() => {
-          setSettings(s => ({ ...s, is_premium: false }));
-          setAppView('app');
-        }}
-      />
-    );
   }
 
   if (appView === 'landing') {
     return (
       <LandingPage
         onEnterFree={enterApp}
-        onGoToPayment={goToPayment}
-      />
+              />
     );
   }
 
@@ -438,19 +398,18 @@ export default function App() {
 
   // Page routing
   if (currentPage === 'forum') {
-    return <ForumPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} session={session} />;
+    return <ForumPage onBack={() => setCurrentPage('dashboard')} session={session} />;
   }
   if (currentPage === 'templates') {
-    if (!settings.is_premium) { setCurrentPage('dashboard'); return null; }
-    return <TemplateBrowserPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} onApplyTemplate={applyTemplate} session={session} />;
+    return <TemplateBrowserPage onBack={() => setCurrentPage('dashboard')} onApplyTemplate={applyTemplate} session={session} />;
   }
   if (currentPage === 'gwa') {
-    return <GWACalculatorPage onBack={() => setCurrentPage('dashboard')} isPremium={settings.is_premium} savedGrades={savedGrades} />;
+    return <GWACalculatorPage onBack={() => setCurrentPage('dashboard')} savedGrades={savedGrades} />;
   }
 
   return (
     <div className="min-h-screen themed-bg themed-text">
-      <AdBanner variant="top" isPremium={settings.is_premium} />
+      <AdBanner variant="top" />
 
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-400/[0.02] rounded-full blur-[120px]" />
@@ -458,9 +417,7 @@ export default function App() {
       </div>
 
       <Header
-        isPremium={settings.is_premium}
-        onTogglePremium={settings.is_premium ? () => setAppView('cancel') : goToPayment}
-        currentPage={currentPage}
+                        currentPage={currentPage}
         onNavigate={setCurrentPage}
         onGoToLanding={goToLanding}
       />
@@ -485,25 +442,23 @@ export default function App() {
             <SavedGradesSidebar
               savedGrades={savedGrades}
               activeGradeId={activeGradeId}
-              isPremium={settings.is_premium}
-              currentGrade={gradeResult?.currentGrade ?? 0}
+                            currentGrade={gradeResult?.currentGrade ?? 0}
               onSave={saveGrade}
               onLoad={loadGrade}
               onDelete={deleteSavedGrade}
               onUpdate={updateSavedGrade}
             />
-            <AdBanner variant="sidebar" isPremium={settings.is_premium} />
+            <AdBanner variant="sidebar" />
           </div>
 
           <div className="lg:col-span-6 space-y-5">
             <GradeOverview
               gradeResult={gradeResult}
               target={settings.target_grade}
-              isPremium={settings.is_premium}
-              onTargetChange={updateTarget}
+                            onTargetChange={updateTarget}
             />
 
-            <AdBanner variant="inline" isPremium={settings.is_premium} />
+            <AdBanner variant="inline" />
 
             <div>
               <div className="flex items-center justify-between mb-3">
@@ -525,8 +480,7 @@ export default function App() {
                     </div>
                   )}
                   <TemplateManager
-                    isPremium={settings.is_premium}
-                    currentComponents={components.map(c => ({ name: c.name, weight: c.weight }))}
+                                        currentComponents={components.map(c => ({ name: c.name, weight: c.weight }))}
                     onApplyTemplate={applyTemplate}
                   />
                   <span className="text-[10px] themed-text/20">
@@ -541,8 +495,7 @@ export default function App() {
                       key={comp.id}
                       component={comp}
                       average={gradeResult?.componentAverages.get(comp.id) ?? -1}
-                      isPremium={settings.is_premium}
-                      onDelete={deleteComponent}
+                                            onDelete={deleteComponent}
                       onUpdate={updateComponent}
                       onToggleDone={toggleDone}
                       onAddEntry={addEntry}
@@ -558,28 +511,25 @@ export default function App() {
           <div className="lg:col-span-4 space-y-5">
             <AICoach
               analysis={coachAnalysis}
-              isPremium={settings.is_premium}
-              onSelectStrategy={(id) => setSelectedStrategyId(id)}
+                            onSelectStrategy={(id) => setSelectedStrategyId(id)}
             />
             <StrategyPanel
               strategies={strategies}
-              isPremium={settings.is_premium}
-              targetPossible={targetPossible}
+                            targetPossible={targetPossible}
               externalSelectedId={selectedStrategyId}
               onExternalSelectedClear={() => setSelectedStrategyId(null)}
             />
             <PredictionPanel
               prediction={prediction}
-              isPremium={settings.is_premium}
-              currentGrade={gradeResult?.currentGrade ?? 0}
+                            currentGrade={gradeResult?.currentGrade ?? 0}
             />
-            <WeakAreasPanel weakAreas={weakAreas} isPremium={settings.is_premium} />
-            <ScenarioSimulator components={components} isPremium={settings.is_premium} />
-            <AdBanner variant="sidebar" isPremium={settings.is_premium} />
+            <WeakAreasPanel weakAreas={weakAreas} />
+            <ScenarioSimulator components={components} />
+            <AdBanner variant="sidebar" />
           </div>
         </div>
 
-        {settings.is_premium && (
+        {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

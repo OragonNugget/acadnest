@@ -5,8 +5,7 @@ import type { GradePrediction } from '../lib/predictionEngine';
 
 interface Props {
   prediction: GradePrediction | null;
-  isPremium: boolean;
-  currentGrade: number;
+    currentGrade: number;
 }
 
 const directionConfig = {
@@ -46,20 +45,9 @@ function MiniSparkline({ points, color }: { points: number[]; color: string }) {
   );
 }
 
-export default function PredictionPanel({ prediction, isPremium, currentGrade }: Props) {
+export default function PredictionPanel({ prediction, currentGrade }: Props) {
   const [expanded, setExpanded] = useState(false);
 
-  if (!isPremium) {
-    return (
-      <div className="rounded-2xl themed-surface border themed-border p-5">
-        <div className="flex items-center gap-2 mb-2">
-          <Lock className="w-3.5 h-3.5 themed-text/15" />
-          <h3 className="text-xs font-medium themed-text/25">Grade Prediction</h3>
-        </div>
-        <p className="text-[10px] themed-text/15">Premium feature — AI trend analysis & forecasting</p>
-      </div>
-    );
-  }
 
   if (!prediction || prediction.componentTrends.length === 0) {
     return (

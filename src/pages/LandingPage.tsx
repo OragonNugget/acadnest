@@ -1,27 +1,25 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Crown, ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
-  Bot, BarChart3, Save, MessageSquare, Library, CheckCircle, Sparkles,
+  ArrowRight, Zap, Shield, Target, TrendingUp, Wrench,
+  Bot, BarChart3, Save, MessageSquare, Library, CheckCircle,
 } from 'lucide-react';
-import { PREMIUM_PRICE, PREMIUM_PRICE_PERIOD } from './PaymentPage';
 import BrandLogo from '../components/BrandLogo';
 
 interface Props {
   onEnterFree: () => void;
-  onGoToPayment: () => void;
 }
 
 
 const features = [
-  { icon: BarChart3, title: 'Grade Calculator', desc: 'Weighted averages, component tracking, entry management', free: true },
-  { icon: Target, title: 'Target System', desc: 'Set goals, detect feasibility, track progress', free: false },
-  { icon: Bot, title: 'Grade Coach', desc: 'Personalized coaching, weak point analysis, strategy picks', free: false },
-  { icon: Zap, title: '5 Strategy Engines', desc: 'Weak Area Repair, High Impact, Survival, Optimal, Conservative', free: false },
-  { icon: Save, title: 'Save & Load Grades', desc: 'Switch between subjects, snapshot your progress', free: false },
-  { icon: Library, title: 'Template Library', desc: 'Pre-made grading systems from real courses', free: false },
-  { icon: MessageSquare, title: 'Community Forum', desc: 'Read free, post with Premium', free: false },
-  { icon: Shield, title: 'Scenario Simulator', desc: 'Test "what if" scores before they happen', free: false },
+  { icon: BarChart3, title: 'Grade Calculator', desc: 'Weighted averages, component tracking, entry management' },
+  { icon: Target, title: 'Target System', desc: 'Set goals, detect feasibility, track progress' },
+  { icon: Bot, title: 'Grade Coach', desc: 'Personalized coaching, weak point analysis, strategy picks' },
+  { icon: Zap, title: '5 Strategy Engines', desc: 'Weak Area Repair, High Impact, Survival, Optimal, Conservative' },
+  { icon: Save, title: 'Save & Load Grades', desc: 'Switch between subjects, snapshot your progress' },
+  { icon: Library, title: 'Template Library', desc: 'Pre-made grading systems from real courses' },
+  { icon: MessageSquare, title: 'Community Forum', desc: 'Ask questions, share tips, talk grades with other students' },
+  { icon: Shield, title: 'Scenario Simulator', desc: 'Test "what if" scores before they happen' },
 ];
 
 const strategies = [
@@ -32,7 +30,7 @@ const strategies = [
   { icon: Zap, name: 'Conservative', color: '#a855f7', desc: 'Safety buffer for peace of mind' },
 ];
 
-export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
+export default function LandingPage({ onEnterFree }: Props) {
   const [showLogin, setShowLogin] = useState(false);
 
 
@@ -139,63 +137,30 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
 
           {/* CTA Cards */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch max-w-xl mx-auto">
-            {/* Free card */}
             <motion.button
               onClick={onEnterFree}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="flex-1 rounded-2xl themed-surface border themed-border-subtle p-6 text-left cursor-pointer transition-colors hover:themed-surface-h hover:themed-border-subtle group"
+              className="w-full max-w-md mx-auto rounded-2xl themed-surface border themed-border p-6 text-left cursor-pointer hover:themed-border-subtle transition-colors group"
             >
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-semibold themed-text/50 uppercase tracking-wider">Free</span>
-                <span className="text-xl font-bold themed-text/70">₱0</span>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 themed-accent" />
+                  <span className="text-xs font-semibold themed-text/70 uppercase tracking-wider">Everything, free</span>
+                </div>
+                <span className="text-xl font-bold themed-accent-soft">₱0</span>
               </div>
               <ul className="space-y-2 mb-5">
-                {['Grade calculator', 'Add components & entries', 'View results', 'Browse & read forum posts', 'Browse template library'].map(f => (
-                  <li key={f} className="flex items-center gap-2 text-[11px] themed-text/35">
-                    <CheckCircle className="w-3 h-3 themed-text/20 flex-shrink-0" />{f}
+                {['Grade Calculator & tracking', 'GWA Calculator', 'Target grade system', 'Grade Coach', '5 Strategy engines', 'Template Library', 'Community Forum', 'Scenario Simulator', 'Save & load grades'].map(f => (
+                  <li key={f} className="flex items-center gap-2 text-[11px] themed-accent-soft">
+                    <CheckCircle className="w-3 h-3 themed-accent flex-shrink-0" />{f}
                   </li>
                 ))}
               </ul>
               <div className="flex items-center gap-2 text-sm font-medium themed-text/50 group-hover:themed-text/70 transition-colors">
-                Enter Free <ArrowRight className="w-4 h-4" />
+                Get started <ArrowRight className="w-4 h-4" />
               </div>
-            </motion.button>
-
-            {/* Premium card */}
-            <motion.button
-              onClick={onGoToPayment}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex-1 rounded-2xl bg-gradient-to-br from-yellow-300/[0.08] to-yellow-200/[0.04] border border-yellow-300/20 p-6 text-left cursor-pointer transition-colors hover:border-yellow-300/35 group relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-300/[0.06] rounded-full blur-[40px]" />
-              <div className="relative">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <Crown className="w-4 h-4 themed-accent" />
-                    <span className="text-xs font-semibold themed-accent-soft/80 uppercase tracking-wider">Premium</span>
-                  </div>
-                  {/* Edit price in PaymentPage.tsx → PREMIUM_PRICE / PREMIUM_PRICE_PERIOD */}
-                  <div className="text-right">
-                    <span className="text-xl font-bold themed-accent-soft">{PREMIUM_PRICE}</span>
-                    <span className="text-[10px] themed-accent-soft/40 ml-1">{PREMIUM_PRICE_PERIOD}</span>
-                  </div>
-                </div>
-                <ul className="space-y-2 mb-5">
-                  {['Everything in Free', 'GWA Calculator', 'Full Template Library (share & apply)', 'Post in Community Forum', 'Grade Coach', '5 strategy engines', 'Target system', 'Save/load grades', 'Scenario simulator', 'No ads'].map(f => (
-                    <li key={f} className="flex items-center gap-2 text-[11px] themed-accent-soft">
-                      <CheckCircle className="w-3 h-3 themed-accent flex-shrink-0" />{f}
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex items-center gap-2 text-sm font-medium themed-accent-soft group-hover:text-yellow-100 transition-colors">
-                  Get Premium <ArrowRight className="w-4 h-4" />
-                </div>
-              </div>
-            </motion.button>
-          </div>
-        </motion.div>
+            </motion.button>        </motion.div>
       </section>
 
       {/* Strategy showcase */}
@@ -224,7 +189,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
       <section className="relative z-10 max-w-6xl mx-auto px-6 py-20">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Everything in One Place</h2>
-          <p className="text-sm themed-text/30">Free gets you settled. Premium makes it home.</p>
+          <p className="text-sm themed-text/30">Everything you need to stay on top of your grades, for free.</p>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {features.map((f, i) => {
@@ -234,10 +199,7 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
                 <div className="flex items-center gap-2 mb-2">
                   <Icon className="w-4 h-4 themed-text/30" />
                   <h3 className="text-xs font-semibold themed-text/60">{f.title}</h3>
-                  {f.free
-                    ? <span className="text-[8px] px-1.5 py-0.5 rounded-full themed-surface-raised themed-text/30 ml-auto">Free</span>
-                    : <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-yellow-300/10 themed-accent/60 ml-auto">Pro</span>
-                  }
+                  
                 </div>
                 <p className="text-[10px] themed-text-subtle leading-relaxed">{f.desc}</p>
               </motion.div>
@@ -251,14 +213,9 @@ export default function LandingPage({ onEnterFree, onGoToPayment }: Props) {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-2xl bg-gradient-to-br from-yellow-300/[0.06] to-yellow-200/[0.03] border border-yellow-300/15 p-10">
           <h2 className="text-2xl font-bold mb-3">Ready to build your nest?</h2>
           <p className="text-sm themed-text/30 mb-8">Join students who finally have their grades figured out.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button onClick={onEnterFree} className="px-6 py-3 rounded-xl themed-surface-raised border themed-border-subtle text-sm font-medium themed-text/60 hover:themed-surface-raised hover:themed-text/80 transition-colors cursor-pointer">
-              Start Free
-            </button>
-            <button onClick={onGoToPayment} className="px-6 py-3 rounded-xl bg-gradient-to-r from-yellow-300/25 to-yellow-200/20 border border-yellow-300/25 text-sm font-medium themed-accent-soft hover:from-yellow-300/35 hover:to-yellow-200/30 transition-all cursor-pointer flex items-center gap-2 justify-center">
-              <Crown className="w-4 h-4" /> Go Premium
-            </button>
-          </div>
+          <button onClick={onEnterFree} className="px-8 py-3 rounded-xl bg-gradient-to-r from-yellow-300/25 to-yellow-200/20 border border-yellow-300/25 text-sm font-medium themed-accent-soft hover:from-yellow-300/35 hover:to-yellow-200/30 transition-all cursor-pointer">
+            Get started — it's free
+          </button>
         </motion.div>
       </section>
 
