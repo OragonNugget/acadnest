@@ -72,6 +72,7 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
   const [newSemYear, setNewSemYear] = useState('');
   const [showImportFor, setShowImportFor] = useState<string | null>(null);
   const [gwaRecords, setGwaRecords] = useState<GWARecord[]>([]);
+  const overallGWA = useMemo(() => calcOverallGWA(semesters), [semesters]);
 
   const authHeaders = useCallback((): Record<string, string> => ({
     'Content-Type': 'application/json',
