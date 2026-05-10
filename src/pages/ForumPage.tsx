@@ -68,9 +68,10 @@ export default function ForumPage({ onBack, session }: Props) {
       <ForumPostPage
         postId={selectedPostId}
         onBack={() => { setSelectedPostId(null); fetchPosts(); }}
-                session={session}
+        session={session}
       />
     );
+  }
 
   const handleCreate = async () => {
     if (!newTitle.trim() || !newBody.trim() || !newAuthor.trim()) return;
