@@ -508,7 +508,7 @@ export default function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-          {/* ── LEFT RAIL (col 2/12 ≈ 17%): Saved Grades + Deadlines + Strategy ── */}
+          {/* ── LEFT RAIL (col 2/12 ≈ 17%): Saved Grades + Deadlines + Grade Needed + Classmate Compare ── */}
           <div className="lg:col-span-2 space-y-4">
             <SavedGradesSidebar
               savedGrades={savedGrades}
@@ -522,11 +522,15 @@ export default function App() {
             <DeadlinePanel
               componentNames={components.map(c => c.name)}
             />
-            <StrategyPanel
-              strategies={strategies}
-              targetPossible={targetPossible}
-              externalSelectedId={selectedStrategyId}
-              onExternalSelectedClear={() => setSelectedStrategyId(null)}
+            <GradeNeededPanel
+              components={components}
+              gradeResult={gradeResult}
+              target={settings.target_grade}
+            />
+            <ClassmateCompare
+              currentGrade={gradeResult?.currentGrade ?? null}
+              session={session}
+              subjectTitle={subjectTitle}
             />
             <AdBanner variant="sidebar" />
           </div>
@@ -625,29 +629,24 @@ export default function App() {
             />
           </div>
 
-          {/* ── RIGHT (col 4/12 ≈ 33%): Coach + Grade Needed + Prediction + Weak + Scenario ── */}
+          {/* ── RIGHT (col 4/12 ≈ 33%): Coach + Strategy + Prediction + Weak + Scenario ── */}
           <div className="lg:col-span-4 space-y-5">
             <AICoach
               analysis={coachAnalysis}
               onSelectStrategy={(id) => setSelectedStrategyId(id)}
             />
-            <GradeNeededPanel
-              components={components}
-              gradeResult={gradeResult}
-              target={settings.target_grade}
+            <StrategyPanel
+              strategies={strategies}
+              targetPossible={targetPossible}
+              externalSelectedId={selectedStrategyId}
+              onExternalSelectedClear={() => setSelectedStrategyId(null)}
             />
             <PredictionPanel
               prediction={prediction}
               currentGrade={gradeResult?.currentGrade ?? 0}
             />
             <WeakAreasPanel weakAreas={weakAreas} />
-            <div className="grid grid-cols-1 2xl:grid-cols-2 gap-5">
-              <ScenarioSimulator components={components} />
-              <ClassmateCompare
-                currentGrade={gradeResult?.currentGrade ?? null}
-                session={session}
-              />
-            </div>
+            <ScenarioSimulator components={components} />
             <AdBanner variant="sidebar" />
           </div>
         </div>
