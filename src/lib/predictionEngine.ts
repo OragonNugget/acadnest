@@ -117,10 +117,11 @@ export function generatePrediction(
     };
   }
 
-  // Analyze each component with entries
+  // Analyze each incomplete component that has entries.
+  // Done components are locked in — no future entries to predict, no trend needed.
   const componentTrends: ComponentTrend[] = [];
   for (const comp of components) {
-    if (comp.entries.length >= 1) {
+    if (!comp.done && comp.entries.length >= 1) {
       componentTrends.push(analyzeComponentTrend(comp));
     }
   }
