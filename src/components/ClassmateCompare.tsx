@@ -46,6 +46,8 @@ const RANGES = ['below60', 's60to75', 's75to85', 's85to95', 's95plus'] as const;
 export default function ClassmateCompare({ currentGrade, session, subjectTitle }: Props) {
   const [dist, setDist] = useState<Distribution | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
+  const [mySubmittedRange, setMySubmittedRange] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [sharing, setSharing] = useState(false);
   const [collapsed, setCollapsed] = useState(true);
@@ -66,7 +68,10 @@ export default function ClassmateCompare({ currentGrade, session, subjectTitle }
       const params = new URLSearchParams({ subject: subjectTitle.trim() });
       const res = await fetch(`/api/compare?${params}`, { headers: authHeaders() });
       if (!res.ok) throw new Error(`${res.status}`);
-      setDist(await res.json());
+      const data = await res.json();
+      setDist(data);
+      setAlreadySubmitted(data.already_submitted ?? false);
+      setMySubmittedRange(data.my_range ?? null);
     } catch {
       setError('Could not load data. Make sure the grade_compare table is set up in Supabase.');
     } finally {
@@ -97,16 +102,19 @@ export default function ClassmateCompare({ currentGrade, session, subjectTitle }
     }
   };
 
-  // Re-fetch when subject changes (and panel is open) or panel opens
   useEffect(() => {
     if (!collapsed && hasSubject) {
       setSubmitted(false);
       setDist(null);
+      setAlreadySubmitted(false);
+      setMySubmittedRange(null);
       fetchDist();
     }
   }, [collapsed, subjectTitle]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const myRange = currentGrade !== null ? gradeToRange(currentGrade) : null;
+  // Whether current grade would land in a different range than what was submitted
+  const rangeChanged = alreadySubmitted && mySubmittedRange && myRange && mySubmittedRange !== myRange;
 
   return (
     <motion.div
@@ -215,22 +223,35 @@ export default function ClassmateCompare({ currentGrade, session, subjectTitle }
 
                   {/* Submit */}
                   {currentGrade !== null && currentGrade > 0 && (
-                    <button
-                      onClick={submitGrade}
-                      disabled={sharing}
-                      className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[11px] font-medium transition-colors cursor-pointer disabled:opacity-50 ${
-                        submitted
-                          ? 'bg-emerald-500/10 text-emerald-400/60 border border-emerald-500/15'
-                          : 'bg-cyan-500/10 hover:bg-cyan-500/15 text-cyan-300/70 hover:text-cyan-300/90 border border-cyan-500/15'
-                      }`}
-                    >
-                      <Share2 className="w-3.5 h-3.5" />
-                      {submitted
-                        ? 'Shared ✓'
-                        : sharing
-                        ? 'Submitting...'
-                        : `Share my range (${currentGrade.toFixed(0)}%)`}
-                    </button>
+                    <div className="space-y-1.5">
+                      <button
+                        onClick={submitGrade}
+                        disabled={sharing || (alreadySubmitted && !rangeChanged && !submitted)}
+                        className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[11px] font-medium transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                          submitted || (alreadySubmitted && !rangeChanged)
+                            ? 'bg-emerald-500/10 text-emerald-400/60 border border-emerald-500/15'
+                            : rangeChanged
+                            ? 'bg-yellow-400/10 hover:bg-yellow-400/15 text-yellow-300/70 hover:text-yellow-300/90 border border-yellow-400/15'
+                            : 'bg-cyan-500/10 hover:bg-cyan-500/15 text-cyan-300/70 hover:text-cyan-300/90 border border-cyan-500/15'
+                        }`}
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                        {sharing
+                          ? 'Submitting...'
+                          : submitted
+                          ? 'Shared ✓'
+                          : alreadySubmitted && !rangeChanged
+                          ? 'Already shared ✓'
+                          : rangeChanged
+                          ? `Update range (${RANGE_LABELS[mySubmittedRange!]} → ${RANGE_LABELS[myRange!]})`
+                          : `Share my range (${currentGrade.toFixed(0)}%)`}
+                      </button>
+                      {alreadySubmitted && !rangeChanged && !submitted && (
+                        <p className="text-[9px] themed-text/20 text-center">
+                          Your grade range is already in the pool for this subject.
+                        </p>
+                      )}
+                    </div>
                   )}
                 </>
               )}
