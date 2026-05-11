@@ -328,8 +328,9 @@ export default function App() {
     // Optimistically rebuild local state from snapshot immediately
     const snapshot = grade.components_snapshot as any[];
     const tempComponents = snapshot.map((c: any, i: number) => ({
-      id: -(i + 1), // temp negative IDs until server responds
+      id: -(i + 1),
       user_id: '',
+      student_id: '',
       name: c.name,
       weight: c.weight,
       done: c.done ?? false,
@@ -405,6 +406,7 @@ export default function App() {
     const tempComponents = templateComponents.map((tc, i) => ({
       id: -(i + 1),
       user_id: '',
+      student_id: '',
       name: tc.name,
       weight: tc.weight,
       done: false,
