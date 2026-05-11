@@ -42,158 +42,219 @@ export function generateCoachAnalysis(
   const { currentGrade, maxPossibleGrade, isComplete } = gradeResult;
   const insights: CoachInsight[] = [];
 
-  // Determine overall verdict
+  // Partition components
+  const doneComponents = components.filter(c => c.done);
+  const activeComponents = components.filter(c => !c.done);
+  const activeWithEntries = activeComponents.filter(c => (gradeResult.componentAverages.get(c.id) ?? -1) >= 0);
+  const activeWithNoEntries = activeComponents.filter(c => (gradeResult.componentAverages.get(c.id) ?? -1) < 0);
+  const doneWeight = doneComponents.reduce((s, c) => s + c.weight, 0);
+  const activeWeight = activeComponents.reduce((s, c) => s + c.weight, 0);
+  const activeNoEntryWeight = activeWithNoEntries.reduce((s, c) => s + c.weight, 0);
+  const totalWeight = components.reduce((s, c) => s + c.weight, 0);
+
+  // ── Overall verdict ───────────────────────────────────────────
   let verdictType: CoachAnalysis['verdictType'] = 'good';
   let overallVerdict = '';
   let greeting = '';
 
-  if (currentGrade >= 90) {
-    verdictType = 'great';
-    greeting = "Outstanding work! 🏆";
-    overallVerdict = `You're sitting at ${currentGrade.toFixed(1)}% — that's excellent. You're in a strong position and should focus on maintaining this momentum.`;
-  } else if (currentGrade >= target) {
-    verdictType = 'great';
-    greeting = "Nice job! 💪";
-    overallVerdict = `At ${currentGrade.toFixed(1)}%, you're above your ${target}% target. Keep doing what you're doing, but don't get complacent — there's always room to push higher.`;
-  } else if (currentGrade >= target - 10) {
-    verdictType = 'good';
-    greeting = "You're in the zone. 🎯";
-    overallVerdict = `You're at ${currentGrade.toFixed(1)}%, which is ${(target - currentGrade).toFixed(1)} points below your ${target}% target. This is very doable — a focused push on the right areas will get you there.`;
-  } else if (maxPossibleGrade >= target) {
-    verdictType = 'caution';
-    greeting = "Time to lock in. ⚡";
-    overallVerdict = `At ${currentGrade.toFixed(1)}%, you're ${(target - currentGrade).toFixed(1)} points away from your ${target}% target. It's still reachable (max possible: ${maxPossibleGrade.toFixed(1)}%), but you'll need a strategic approach.`;
+  if (isComplete) {
+    if (currentGrade >= 90) {
+      verdictType = 'great';
+      greeting = 'All done — exceptional result! 🏆';
+      overallVerdict = `Final grade: ${currentGrade.toFixed(1)}%. All ${components.length} components are locked in. That's well above your ${target}% target — nothing left to do here.`;
+    } else if (currentGrade >= target) {
+      verdictType = 'great';
+      greeting = 'Wrapped up — you passed! 🎉';
+      overallVerdict = `Final grade: ${currentGrade.toFixed(1)}%. All components done. You cleared your ${target}% target by ${(currentGrade - target).toFixed(1)} points — grade is sealed.`;
+    } else {
+      verdictType = 'danger';
+      greeting = 'All done — grade is locked. 📋';
+      overallVerdict = `Final grade: ${currentGrade.toFixed(1)}%. All components are marked done, so there's no more room to improve. Consider speaking with your professor about your options.`;
+    }
+  } else if (doneComponents.length > 0 && activeComponents.length > 0) {
+    const lockedContrib = doneComponents.reduce((s, c) => s + (gradeResult.componentAverages.get(c.id) ?? 0) * c.weight, 0);
+    const lockedPoints = totalWeight > 0 ? lockedContrib / totalWeight : 0;
+
+    if (currentGrade >= 90) {
+      verdictType = 'great';
+      greeting = 'Outstanding with room to grow! 🏆';
+      overallVerdict = `You're at ${currentGrade.toFixed(1)}%. ${doneComponents.length} component${doneComponents.length > 1 ? 's' : ''} locked (${doneWeight}% weight, contributing ${lockedPoints.toFixed(1)} pts). The remaining ${activeWeight}% is still open — you're in an excellent spot.`;
+    } else if (currentGrade >= target) {
+      verdictType = 'great';
+      greeting = 'Above target with components still open! 💪';
+      overallVerdict = `At ${currentGrade.toFixed(1)}%, you're ${(currentGrade - target).toFixed(1)} points above your ${target}% target. ${doneComponents.length} component${doneComponents.length > 1 ? 's are' : ' is'} locked in — your remaining ${activeWeight}% can only push this higher.`;
+    } else if (maxPossibleGrade >= target) {
+      verdictType = currentGrade >= target - 10 ? 'good' : 'caution';
+      greeting = currentGrade >= target - 10 ? 'Solid base, keep pushing. 🎯' : 'Still reachable — lock in now. ⚡';
+      const needed = activeNoEntryWeight + activeWithEntries.reduce((s, c) => s + c.weight, 0);
+      const neededScore = needed > 0
+        ? ((target * totalWeight - doneComponents.reduce((s, c) => s + (gradeResult.componentAverages.get(c.id) ?? 0) * c.weight, 0) - activeWithEntries.reduce((s, c) => s + (gradeResult.componentAverages.get(c.id) ?? 0) * c.weight, 0)) / needed).toFixed(1)
+        : '—';
+      overallVerdict = `At ${currentGrade.toFixed(1)}% with ${doneWeight}% locked in. You have ${activeWeight}% of components still open — max possible: ${maxPossibleGrade.toFixed(1)}%. You need roughly ${neededScore}% average on what's left to hit your ${target}% target.`;
+    } else {
+      verdictType = 'danger';
+      greeting = "Let's be honest with you. 📊";
+      overallVerdict = `With ${doneWeight}% of weight already locked in at your current scores, the max you can reach is ${maxPossibleGrade.toFixed(1)}% — below your ${target}% target. Focus on maximizing the remaining ${activeWeight}%.`;
+    }
   } else {
-    verdictType = 'danger';
-    greeting = "Let's be real with you. 📊";
-    overallVerdict = `Your current grade is ${currentGrade.toFixed(1)}% and the maximum you can achieve is ${maxPossibleGrade.toFixed(1)}%. Your ${target}% target isn't reachable with current weights. Consider adjusting your target to something achievable, and let's maximize what we can.`;
+    // Nothing locked yet
+    if (currentGrade >= 90) {
+      verdictType = 'great'; greeting = 'Flying high! 🚀';
+      overallVerdict = `${currentGrade.toFixed(1)}% across the board — strong start. No components are locked yet, so you control everything right now.`;
+    } else if (currentGrade >= target) {
+      verdictType = 'great'; greeting = 'On track! 💪';
+      overallVerdict = `At ${currentGrade.toFixed(1)}%, you're above your ${target}% target. Nothing is locked in yet — all components are still in play.`;
+    } else if (maxPossibleGrade >= target) {
+      verdictType = currentGrade >= target - 10 ? 'good' : 'caution';
+      greeting = currentGrade >= target - 10 ? 'Looking good, stay focused. 🎯' : 'Time to lock in. ⚡';
+      overallVerdict = `You're at ${currentGrade.toFixed(1)}%, ${(target - currentGrade).toFixed(1)} below your ${target}% target. Max possible is ${maxPossibleGrade.toFixed(1)}% — reachable, but needs consistent effort on all open components.`;
+    } else {
+      verdictType = 'danger'; greeting = "Let's be real with you. 📊";
+      overallVerdict = `Current: ${currentGrade.toFixed(1)}%, max possible: ${maxPossibleGrade.toFixed(1)}%. Your ${target}% target isn't reachable at current weights. Adjust your target and focus on maximizing what you can.`;
+    }
   }
 
-  // Weak areas analysis
-  if (weakAreas.length > 0) {
-    const worst = weakAreas[0];
-    insights.push({
-      icon: '🔍',
-      title: `Biggest weak spot: ${worst.componentName}`,
-      message: `At ${worst.average.toFixed(1)}% with ${worst.weight}% weight, this is dragging your grade down the most. Improving here gives you the highest return on effort — every 1% improvement here adds ${(worst.weight / 100).toFixed(2)} points to your final grade.`,
-      type: 'warning',
-    });
+  // ── Insight: Done components recap ───────────────────────────
+  if (doneComponents.length > 0 && !isComplete) {
+    const badDone = doneComponents.filter(c => (gradeResult.componentAverages.get(c.id) ?? 0) < target);
+    const goodDone = doneComponents.filter(c => (gradeResult.componentAverages.get(c.id) ?? 0) >= target);
 
-    if (weakAreas.length > 1) {
-      const names = weakAreas.slice(1).map(w => w.componentName).join(', ');
+    if (badDone.length > 0) {
+      const badList = badDone
+        .map(c => `${c.name} (${(gradeResult.componentAverages.get(c.id) ?? 0).toFixed(1)}%, ${c.weight}% wt)`)
+        .join(', ');
       insights.push({
-        icon: '⚠️',
-        title: `${weakAreas.length} weak areas total`,
-        message: `Besides ${worst.componentName}, you should also watch: ${names}. These are all below the performance threshold.`,
+        icon: '🔒',
+        title: `${badDone.length} locked component${badDone.length > 1 ? 's are' : ' is'} below target`,
+        message: `${badList} — ${badDone.length > 1 ? 'these are' : 'this is'} done and the scores can't change. You'll need to compensate on your remaining open components to make up the gap.`,
         type: 'warning',
       });
     }
-  } else if (components.some(c => (gradeResult.componentAverages.get(c.id) ?? -1) >= 0)) {
-    insights.push({
-      icon: '✅',
-      title: 'No major weak spots',
-      message: 'All your components are performing at or above average. Keep this balanced approach going.',
-      type: 'encouragement',
-    });
-  }
 
-  // Consistency check
-  const avgs = components
-    .map(c => gradeResult.componentAverages.get(c.id) ?? -1)
-    .filter(a => a >= 0);
-  if (avgs.length >= 2) {
-    const mean = avgs.reduce((s, a) => s + a, 0) / avgs.length;
-    const variance = avgs.reduce((s, a) => s + (a - mean) ** 2, 0) / avgs.length;
-    const stdDev = Math.sqrt(variance);
-
-    if (stdDev > 15) {
+    if (goodDone.length > 0 && badDone.length === 0) {
       insights.push({
-        icon: '📉',
-        title: 'High inconsistency detected',
-        message: `Your scores vary a lot (±${stdDev.toFixed(1)}%). This suggests you're strong in some areas but struggling in others. Focus on bringing your lows up rather than pushing your highs higher — that's where the real gains are.`,
-        type: 'action',
-      });
-    } else if (stdDev < 5) {
-      insights.push({
-        icon: '📊',
-        title: 'Very consistent performer',
-        message: `Your scores are remarkably consistent (±${stdDev.toFixed(1)}%). This is great — you can reliably predict your performance. Focus on uniformly raising all components.`,
+        icon: '🔒',
+        title: `${goodDone.length} locked component${goodDone.length > 1 ? 's' : ''} — all clear`,
+        message: `${goodDone.map(c => `${c.name} (${(gradeResult.componentAverages.get(c.id) ?? 0).toFixed(1)}%)`).join(', ')} — all done and above ${target}%. That's ${doneWeight}% of your grade secured at a good level.`,
         type: 'encouragement',
       });
     }
   }
 
-  // Remaining potential
-  if (!isComplete) {
-    const gap = maxPossibleGrade - currentGrade;
-    if (gap > 20) {
+  // ── Insight: Weak areas — only active components ─────────────
+  const activeWeakAreas = weakAreas.filter(w => {
+    const comp = components.find(c => c.id === w.componentId);
+    return comp && !comp.done;
+  });
+
+  if (activeWeakAreas.length > 0) {
+    const worst = activeWeakAreas[0];
+    insights.push({
+      icon: '🔍',
+      title: `Weakest open component: ${worst.componentName}`,
+      message: `${worst.componentName} is at ${worst.average.toFixed(1)}% (${worst.weight}% weight) — and it's still open, so you can fix this. Every 1% improvement here adds ${(worst.weight / 100).toFixed(2)} points to your final grade.`,
+      type: 'warning',
+    });
+    if (activeWeakAreas.length > 1) {
+      const rest = activeWeakAreas.slice(1).map(w => `${w.componentName} (${w.average.toFixed(1)}%)`).join(', ');
+      insights.push({
+        icon: '⚠️',
+        title: `${activeWeakAreas.length} open weak areas total`,
+        message: `Beyond ${worst.componentName}, watch: ${rest}. None of these are locked yet — there's still time to turn them around.`,
+        type: 'warning',
+      });
+    }
+  } else if (activeWithEntries.length > 0 && weakAreas.filter(w => {
+    const c = components.find(cc => cc.id === w.componentId);
+    return c && c.done;
+  }).length === 0) {
+    insights.push({
+      icon: '✅',
+      title: 'No weak spots in your open components',
+      message: 'All active (non-locked) components are at or above average. Consistency is your strength right now.',
+      type: 'encouragement',
+    });
+  }
+
+  // ── Insight: Untouched high-weight open components ───────────
+  for (const comp of activeWithNoEntries.filter(c => c.weight >= 20).sort((a, b) => b.weight - a.weight).slice(0, 2)) {
+    insights.push({
+      icon: '🎯',
+      title: `${comp.name} (${comp.weight}% weight) — no scores yet`,
+      message: `This open component has no entries, which means it's contributing 0 to your weighted grade right now. At ${comp.weight}% weight it's one of your biggest levers — get scores in here.`,
+      type: 'action',
+    });
+  }
+
+  // ── Insight: High-performing open components ─────────────────
+  const highPerformingActive = activeWithEntries.filter(c => (gradeResult.componentAverages.get(c.id) ?? -1) >= 88);
+  if (highPerformingActive.length > 0 && verdictType !== 'danger') {
+    insights.push({
+      icon: '⭐',
+      title: `Strong open ${highPerformingActive.length > 1 ? 'components' : 'component'}: ${highPerformingActive.map(c => c.name).join(', ')}`,
+      message: `${highPerformingActive.map(c => `${c.name} (${(gradeResult.componentAverages.get(c.id)!).toFixed(0)}%)`).join(', ')} — performing well and still open. Same approach, same energy.`,
+      type: 'encouragement',
+    });
+  }
+
+  // ── Insight: Consistency in active components ────────────────
+  const activeAvgs = activeWithEntries.map(c => gradeResult.componentAverages.get(c.id)!).filter(a => a >= 0);
+  if (activeAvgs.length >= 2) {
+    const mean = activeAvgs.reduce((s, a) => s + a, 0) / activeAvgs.length;
+    const stdDev = Math.sqrt(activeAvgs.reduce((s, a) => s + (a - mean) ** 2, 0) / activeAvgs.length);
+    if (stdDev > 15) {
+      insights.push({
+        icon: '📉',
+        title: 'Wide spread across open components',
+        message: `Your active component scores vary by ±${stdDev.toFixed(1)}% — you're strong in some areas but struggling in others. Raise your lowest active scores first; those give the most grade per effort.`,
+        type: 'action',
+      });
+    } else if (stdDev < 5 && activeAvgs.length >= 3) {
+      insights.push({
+        icon: '📊',
+        title: 'Very consistent across open components',
+        message: `Active scores are tightly grouped (±${stdDev.toFixed(1)}%). Small uniform improvements across all open components will lift your grade efficiently.`,
+        type: 'encouragement',
+      });
+    }
+  }
+
+  // ── Insight: Remaining upside ────────────────────────────────
+  if (!isComplete && activeNoEntryWeight > 0 && verdictType !== 'danger') {
+    const potentialBoost = maxPossibleGrade - currentGrade;
+    if (potentialBoost > 15) {
       insights.push({
         icon: '🚀',
-        title: `${gap.toFixed(0)}% potential upside remaining`,
-        message: `You still have significant room to improve. The remaining components haven't been finalized yet — this is your opportunity to make a big push.`,
+        title: `${potentialBoost.toFixed(0)} points of grade still up for grabs`,
+        message: `${activeWithNoEntries.length} open component${activeWithNoEntries.length > 1 ? 's' : ''} with ${activeNoEntryWeight}% weight ${activeWithNoEntries.length > 1 ? 'have' : 'has'} no scores yet. Each one you perform well on directly raises your final grade.`,
         type: 'info',
       });
     }
   }
 
-  // High-weight component check
-  const highWeight = components.filter(c => c.weight >= 25);
-  for (const hw of highWeight) {
-    const avg = gradeResult.componentAverages.get(hw.id) ?? -1;
-    if (avg < 0) {
-      insights.push({
-        icon: '🎯',
-        title: `${hw.name} is worth ${hw.weight}% — and it's not done yet`,
-        message: `This is a make-or-break component. Scoring well here could single-handedly hit your target. Prioritize preparation for this above everything else.`,
-        type: 'action',
-      });
-    } else if (avg < target) {
-      insights.push({
-        icon: '💡',
-        title: `${hw.name} is underperforming its weight`,
-        message: `At ${avg.toFixed(1)}% on a ${hw.weight}%-weight component, this is below your target. Since it's so heavily weighted, even a small improvement here has outsized impact.`,
-        type: 'action',
-      });
-    }
-  }
-
-  // Best strategy recommendation
+  // ── Best strategy ────────────────────────────────────────────
   let bestStrategy: CoachAnalysis['bestStrategy'] = null;
   const feasible = strategies.filter(s => s.feasible && s.steps.length > 0);
 
-  if (feasible.length > 0) {
-    // Pick based on situation
+  if (!isComplete && feasible.length > 0) {
     if (verdictType === 'danger') {
-      const survival = feasible.find(s => s.id === 'survival');
-      if (survival) {
-        bestStrategy = { id: 'survival', reason: "Given the tight margins, Survival Strategy is your best bet — it tells you the absolute minimum you need on each remaining component. No wasted effort." };
-      }
-    } else if (weakAreas.length >= 2) {
-      const weakArea = feasible.find(s => s.id === 'weak-area');
-      if (weakArea) {
-        bestStrategy = { id: 'weak-area', reason: `With ${weakAreas.length} weak areas identified, Weak Area Repair gives you the most efficient path. Fix the leaks before trying to fill the bucket higher.` };
-      }
+      const s = feasible.find(s => s.id === 'survival');
+      if (s) bestStrategy = { id: 'survival', reason: `Survival Strategy shows the minimum you need on each open component. Tight margins — no wasted effort.` };
+    } else if (activeWeakAreas.length >= 2) {
+      const s = feasible.find(s => s.id === 'weak-area');
+      if (s) bestStrategy = { id: 'weak-area', reason: `${activeWeakAreas.length} open weak areas identified. Weak Area Repair targets them directly — fix the leaks before pushing higher.` };
     } else if (verdictType === 'caution') {
-      const highImpact = feasible.find(s => s.id === 'high-impact');
-      if (highImpact) {
-        bestStrategy = { id: 'high-impact', reason: "You need targeted improvement. High Impact Optimization focuses your energy where it matters most — the components with the biggest weight × improvement potential." };
-      }
-    } else if (verdictType === 'good' || verdictType === 'great') {
-      const conservative = feasible.find(s => s.id === 'conservative');
-      if (conservative) {
-        bestStrategy = { id: 'conservative', reason: "You're in a good position. The Conservative Strategy adds a safety buffer so you're protected against any unexpected dips on exam day." };
-      }
+      const s = feasible.find(s => s.id === 'high-impact');
+      if (s) bestStrategy = { id: 'high-impact', reason: `Focus your energy where weight × improvement potential is highest on your open components.` };
+    } else {
+      const s = feasible.find(s => s.id === 'conservative');
+      if (s) bestStrategy = { id: 'conservative', reason: `You're in a good spot. Conservative Strategy builds a safety buffer on your remaining open components.` };
     }
-
     if (!bestStrategy) {
-      const optimal = feasible.find(s => s.id === 'optimal');
-      if (optimal) {
-        bestStrategy = { id: 'optimal', reason: "The Optimal Strategy distributes effort proportionally across all your components — it's the most balanced and mathematically efficient path to your target." };
-      }
+      const s = feasible.find(s => s.id === 'optimal');
+      if (s) bestStrategy = { id: 'optimal', reason: `Optimal Strategy distributes effort across open components proportionally — the most balanced path forward.` };
     }
   }
-
-  const motivationalQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
   return {
     greeting,
@@ -201,6 +262,6 @@ export function generateCoachAnalysis(
     verdictType,
     insights,
     bestStrategy,
-    motivationalQuote,
+    motivationalQuote: quotes[Math.floor(Math.random() * quotes.length)],
   };
 }

@@ -10,8 +10,8 @@ interface HeaderProps {
 export default function Header({ currentPage, onNavigate, onGoToLanding }: HeaderProps) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'semester', label: 'Semesters', icon: BookOpen },
     { id: 'gwa', label: 'GWA', icon: GraduationCap },
+    { id: 'semester', label: 'Semesters', icon: BookOpen },
     { id: 'forum', label: 'Forum', icon: MessageSquare },
     { id: 'templates', label: 'Templates', icon: Library },
   ];

@@ -1,11 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, BookOpen, Plus, Trash2, ChevronDown, ChevronUp,
-  GraduationCap
+  GraduationCap, BarChart2
 } from 'lucide-react';
 import type { SavedGrade } from '../components/SavedGradesSidebar';
 import { percentToGPA, formatGPA, gpaToColor, calculateGWA, GPA_TABLE } from '../lib/gpaScale';
+import { useAuth } from '../hooks/useAuth';
 
 interface SemesterCourse {
   id: string;
@@ -13,6 +14,7 @@ interface SemesterCourse {
   units: number;
   gradePercent: number | null;
   fromSavedGradeId: number | null;
+  source?: 'manual' | 'grade-tracker' | 'gwa';
 }
 
 interface SemesterData {
@@ -21,6 +23,15 @@ interface SemesterData {
   year: string;
   courses: SemesterCourse[];
   collapsed: boolean;
+}
+
+interface GWARecord {
+  id: number;
+  name: string;
+  semester: string;
+  courses: { name: string; units: number; gradePercent: number; gpa: number }[];
+  gwa: number;
+  created_at: string;
 }
 
 let _id = 0;
@@ -39,11 +50,9 @@ function calcOverallGWA(semesters: SemesterData[]) {
 }
 
 const STORAGE_KEY = 'acadnest_semesters';
-
 function loadSemesters(): SemesterData[] {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { return []; }
 }
 function saveSemesters(s: SemesterData[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
@@ -54,12 +63,46 @@ interface Props {
   savedGrades: SavedGrade[];
 }
 
+// Which dropdown is open: `gt:${semId}` or `gwa:${semId}`
+type OpenDropdown = `gt:${string}` | `gwa:${string}` | null;
+
 export default function SemesterPage({ onBack, savedGrades }: Props) {
+  const { session } = useAuth();
   const [semesters, setSemesters] = useState<SemesterData[]>(() => loadSemesters());
   const [showNewSem, setShowNewSem] = useState(false);
   const [newSemName, setNewSemName] = useState('');
   const [newSemYear, setNewSemYear] = useState('');
-  const [showImportFor, setShowImportFor] = useState<string | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null);
+  const [gwaRecords, setGwaRecords] = useState<GWARecord[]>([]);
+  const [gwaLoading, setGwaLoading] = useState(false);
+  const [gwaFetched, setGwaFetched] = useState(false);
+
+  const authHeaders = useCallback((): Record<string, string> => ({
+    'Content-Type': 'application/json',
+    ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
+  }), [session]);
+
+  const fetchGWARecords = useCallback(async () => {
+    if (gwaFetched || !session) return;
+    setGwaLoading(true);
+    try {
+      const res = await fetch('/api/gwa', { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setGwaRecords(data || []);
+      }
+    } catch (e) {
+      console.error('GWA fetch error', e);
+    } finally {
+      setGwaLoading(false);
+      setGwaFetched(true);
+    }
+  }, [session, authHeaders, gwaFetched]);
+
+  // Fetch GWA records when a GWA dropdown is about to open
+  useEffect(() => {
+    if (openDropdown?.startsWith('gwa:')) fetchGWARecords();
+  }, [openDropdown, fetchGWARecords]);
 
   const update = (fn: (prev: SemesterData[]) => SemesterData[]) => {
     setSemesters(prev => {
@@ -72,41 +115,30 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
   const addSemester = () => {
     if (!newSemName.trim()) return;
     update(prev => [...prev, {
-      id: uid(),
-      name: newSemName.trim(),
-      year: newSemYear.trim(),
-      courses: [],
-      collapsed: false,
+      id: uid(), name: newSemName.trim(), year: newSemYear.trim(), courses: [], collapsed: false,
     }]);
-    setNewSemName('');
-    setNewSemYear('');
-    setShowNewSem(false);
+    setNewSemName(''); setNewSemYear(''); setShowNewSem(false);
   };
 
   const deleteSemester = (id: string) => update(prev => prev.filter(s => s.id !== id));
-
   const toggleCollapse = (id: string) => update(prev =>
     prev.map(s => s.id === id ? { ...s, collapsed: !s.collapsed } : s)
   );
-
   const addCourse = (semId: string) => update(prev =>
-    prev.map(s => s.id === semId ? {
-      ...s, courses: [...s.courses, { id: uid(), name: '', units: 3, gradePercent: null, fromSavedGradeId: null }]
-    } : s)
+    prev.map(s => s.id === semId
+      ? { ...s, courses: [...s.courses, { id: uid(), name: '', units: 3, gradePercent: null, fromSavedGradeId: null, source: 'manual' }] }
+      : s)
   );
-
   const updateCourse = (semId: string, courseId: string, field: string, value: any) => update(prev =>
-    prev.map(s => s.id === semId ? {
-      ...s,
-      courses: s.courses.map(c => c.id === courseId ? { ...c, [field]: value } : c)
-    } : s)
+    prev.map(s => s.id === semId
+      ? { ...s, courses: s.courses.map(c => c.id === courseId ? { ...c, [field]: value } : c) }
+      : s)
   );
-
   const removeCourse = (semId: string, courseId: string) => update(prev =>
     prev.map(s => s.id === semId ? { ...s, courses: s.courses.filter(c => c.id !== courseId) } : s)
   );
 
-  const importFromSaved = (semId: string, saved: SavedGrade) => {
+  const importFromGradeTracker = (semId: string, saved: SavedGrade) => {
     const snapshot = saved.components_snapshot as any[];
     let weightedSum = 0, totalWeight = 0;
     for (const comp of snapshot) {
@@ -118,21 +150,42 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
       }
     }
     const gradePercent = totalWeight > 0 ? weightedSum / totalWeight : saved.current_grade;
-
     update(prev => prev.map(s => s.id === semId ? {
-      ...s,
-      courses: [...s.courses, {
-        id: uid(),
-        name: saved.name,
-        units: 3,
-        gradePercent,
-        fromSavedGradeId: saved.id,
+      ...s, courses: [...s.courses, {
+        id: uid(), name: saved.name, units: 3, gradePercent,
+        fromSavedGradeId: saved.id, source: 'grade-tracker' as const,
       }]
     } : s));
-    setShowImportFor(null);
+    setOpenDropdown(null);
+  };
+
+  const importFromGWARecord = (semId: string, record: GWARecord) => {
+    // Import each course from the GWA record individually
+    const newCourses: SemesterCourse[] = record.courses.map(c => ({
+      id: uid(),
+      name: c.name || 'Unnamed Course',
+      units: c.units || 3,
+      gradePercent: c.gradePercent || null,
+      fromSavedGradeId: null,
+      source: 'gwa' as const,
+    }));
+    update(prev => prev.map(s => s.id === semId ? {
+      ...s, courses: [...s.courses, ...newCourses],
+    } : s));
+    setOpenDropdown(null);
   };
 
   const overallGWA = useMemo(() => calcOverallGWA(semesters), [semesters]);
+
+  const sourceTag = (source?: string) => {
+    if (source === 'grade-tracker') return (
+      <span className="text-[8px] px-1.5 py-0.5 rounded bg-green-500/10 text-green-400/60">GT</span>
+    );
+    if (source === 'gwa') return (
+      <span className="text-[8px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400/60">GWA</span>
+    );
+    return null;
+  };
 
   return (
     <div className="min-h-screen themed-bg themed-text">
@@ -179,7 +232,7 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
           )}
         </div>
 
-        {/* GPA Scale quick reference */}
+        {/* GPA Scale */}
         <div className="grid grid-cols-5 gap-1.5">
           {GPA_TABLE.filter(e => e.gpa <= 3).map(e => (
             <div key={e.gpa} className="text-center px-2 py-2 rounded-lg themed-surface border themed-border">
@@ -195,6 +248,9 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
             {semesters.map(sem => {
               const semGWA = calcGWA(sem.courses);
               const unitsTotal = sem.courses.reduce((s, c) => s + c.units, 0);
+              const gtOpen = openDropdown === `gt:${sem.id}`;
+              const gwaOpen = openDropdown === `gwa:${sem.id}`;
+
               return (
                 <motion.div
                   key={sem.id}
@@ -225,8 +281,7 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
                         )}
                         {sem.collapsed
                           ? <ChevronDown className="w-4 h-4 themed-text/20" />
-                          : <ChevronUp className="w-4 h-4 themed-text/20" />
-                        }
+                          : <ChevronUp className="w-4 h-4 themed-text/20" />}
                       </div>
                     </button>
                     <button onClick={() => deleteSemester(sem.id)} className="themed-text/15 hover:text-red-400 cursor-pointer">
@@ -240,13 +295,14 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
                         initial={{ height: 0 }}
                         animate={{ height: 'auto' }}
                         exit={{ height: 0 }}
-                        className="overflow-hidden"
+                        className="overflow-visible"
                       >
                         <div className="px-5 pb-5 space-y-2 border-t themed-border pt-4">
-                          {/* Course list */}
+                          {/* Course rows */}
                           {sem.courses.map((course, i) => (
                             <div key={course.id} className="flex flex-wrap items-center gap-2 group">
                               <span className="text-[9px] themed-text/15 w-4">{i + 1}</span>
+                              {sourceTag(course.source)}
                               <input
                                 value={course.name}
                                 onChange={e => updateCourse(sem.id, course.id, 'name', e.target.value)}
@@ -290,52 +346,116 @@ export default function SemesterPage({ onBack, savedGrades }: Props) {
                           ))}
 
                           {sem.courses.length === 0 && (
-                            <p className="text-[11px] themed-text/20 text-center py-3">No courses yet. Add one below or import from saved grades.</p>
+                            <p className="text-[11px] themed-text/20 text-center py-3">
+                              No courses yet — add manually or import from Grade Tracker / GWA Calculator.
+                            </p>
                           )}
 
-                          {/* Actions */}
+                          {/* Actions row */}
                           <div className="flex flex-wrap gap-2 pt-2">
+                            {/* Manual add */}
                             <button
                               onClick={() => addCourse(sem.id)}
-                              className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-dashed themed-border-subtle hover:themed-border-subtle themed-text/30 hover:themed-text/50 text-[11px] transition-all cursor-pointer"
+                              className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-dashed themed-border-subtle themed-text/30 hover:themed-text/50 text-[11px] transition-all cursor-pointer"
                             >
                               <Plus className="w-3 h-3" /> Add Course
                             </button>
 
+                            {/* Import from Grade Tracker */}
                             {savedGrades.length > 0 && (
                               <div className="relative">
                                 <button
-                                  onClick={() => setShowImportFor(showImportFor === sem.id ? null : sem.id)}
+                                  onClick={() => setOpenDropdown(gtOpen ? null : `gt:${sem.id}`)}
                                   className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-green-500/15 bg-green-500/[0.04] hover:bg-green-500/[0.08] text-green-400/60 hover:text-green-400/80 text-[11px] transition-all cursor-pointer"
                                 >
                                   <GraduationCap className="w-3 h-3" /> Import from Grade Tracker
-                                  <ChevronDown className={`w-2.5 h-2.5 transition-transform ${showImportFor === sem.id ? 'rotate-180' : ''}`} />
+                                  <ChevronDown className={`w-2.5 h-2.5 transition-transform ${gtOpen ? 'rotate-180' : ''}`} />
                                 </button>
                                 <AnimatePresence>
-                                  {showImportFor === sem.id && (
-                                    <motion.div
-                                      initial={{ opacity: 0, y: -5 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      exit={{ opacity: 0, y: -5 }}
-                                      className="absolute top-full left-0 mt-1 w-64 rounded-xl bg-[#12121f] border themed-border-subtle shadow-2xl z-40 overflow-hidden"
-                                    >
-                                      <div className="p-2 max-h-48 overflow-y-auto">
-                                        {savedGrades.map(sg => (
-                                          <button
-                                            key={sg.id}
-                                            onClick={() => importFromSaved(sem.id, sg)}
-                                            className="w-full text-left px-3 py-2 rounded-lg hover:themed-surface-h text-[11px] themed-text/50 hover:themed-text/70 cursor-pointer"
-                                          >
-                                            <p className="font-medium truncate">{sg.name}</p>
-                                            <p className="text-[9px] themed-text/25">{sg.current_grade.toFixed(1)}% · {formatGPA(percentToGPA(sg.current_grade))} GPA</p>
-                                          </button>
-                                        ))}
-                                      </div>
-                                    </motion.div>
+                                  {gtOpen && (
+                                    <>
+                                      <div className="fixed inset-0 z-40" onClick={() => setOpenDropdown(null)} />
+                                      <motion.div
+                                        initial={{ opacity: 0, y: -5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -5 }}
+                                        className="absolute top-full left-0 mt-1 w-64 rounded-xl bg-[#12121f] border themed-border-subtle shadow-2xl z-50 overflow-hidden"
+                                      >
+                                        <p className="text-[9px] themed-text/25 uppercase tracking-wider px-3 pt-3 pb-1">Saved subjects</p>
+                                        <div className="p-2 max-h-52 overflow-y-auto">
+                                          {savedGrades.map(sg => (
+                                            <button
+                                              key={sg.id}
+                                              onClick={() => importFromGradeTracker(sem.id, sg)}
+                                              className="w-full text-left px-3 py-2 rounded-lg hover:themed-surface-h text-[11px] themed-text/50 hover:themed-text/70 cursor-pointer"
+                                            >
+                                              <p className="font-medium truncate">{sg.name}</p>
+                                              <p className="text-[9px] themed-text/25">{sg.current_grade.toFixed(1)}% · {formatGPA(percentToGPA(sg.current_grade))} GPA</p>
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </motion.div>
+                                    </>
                                   )}
                                 </AnimatePresence>
                               </div>
                             )}
+
+                            {/* Import from GWA Calculator */}
+                            <div className="relative">
+                              <button
+                                onClick={() => setOpenDropdown(gwaOpen ? null : `gwa:${sem.id}`)}
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-blue-500/15 bg-blue-500/[0.04] hover:bg-blue-500/[0.08] text-blue-400/60 hover:text-blue-400/80 text-[11px] transition-all cursor-pointer"
+                              >
+                                <BarChart2 className="w-3 h-3" /> Import from GWA Calc
+                                <ChevronDown className={`w-2.5 h-2.5 transition-transform ${gwaOpen ? 'rotate-180' : ''}`} />
+                              </button>
+                              <AnimatePresence>
+                                {gwaOpen && (
+                                  <>
+                                    <div className="fixed inset-0 z-40" onClick={() => setOpenDropdown(null)} />
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -5 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -5 }}
+                                      className="absolute top-full left-0 mt-1 w-72 rounded-xl bg-[#12121f] border themed-border-subtle shadow-2xl z-50 overflow-hidden"
+                                    >
+                                      <p className="text-[9px] themed-text/25 uppercase tracking-wider px-3 pt-3 pb-1">
+                                        Saved GWA records
+                                        <span className="ml-1 normal-case">(imports all courses)</span>
+                                      </p>
+                                      <div className="p-2 max-h-52 overflow-y-auto">
+                                        {gwaLoading ? (
+                                          <p className="text-[11px] themed-text/25 text-center py-4">Loading...</p>
+                                        ) : gwaRecords.length === 0 ? (
+                                          <p className="text-[11px] themed-text/25 text-center py-4">
+                                            No saved GWA records yet. Save one in the GWA Calculator first.
+                                          </p>
+                                        ) : (
+                                          gwaRecords.map(rec => (
+                                            <button
+                                              key={rec.id}
+                                              onClick={() => importFromGWARecord(sem.id, rec)}
+                                              className="w-full text-left px-3 py-2.5 rounded-lg hover:themed-surface-h text-[11px] themed-text/50 hover:themed-text/70 cursor-pointer"
+                                            >
+                                              <div className="flex items-center justify-between">
+                                                <p className="font-medium truncate flex-1">{rec.name}</p>
+                                                <span className="text-[9px] font-bold ml-2" style={{ color: gpaToColor(rec.gwa) }}>
+                                                  {formatGPA(rec.gwa)}
+                                                </span>
+                                              </div>
+                                              <p className="text-[9px] themed-text/25 mt-0.5">
+                                                {rec.semester && `${rec.semester} · `}{rec.courses.length} courses
+                                              </p>
+                                            </button>
+                                          ))
+                                        )}
+                                      </div>
+                                    </motion.div>
+                                  </>
+                                )}
+                              </AnimatePresence>
+                            </div>
                           </div>
                         </div>
                       </motion.div>
