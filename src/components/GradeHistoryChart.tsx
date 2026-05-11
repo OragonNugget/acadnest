@@ -17,20 +17,40 @@ interface DataPoint {
   label: string;
   grade: number;
   compName: string;
+  date: string;
+}
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function formatISODate(iso: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return '';
+  const [y, m, d] = iso.split('-');
+  return `${MONTHS[+m - 1]} ${+d} ${y}`;
+}
+
+function extractDate(label: string): string {
+  // Labels are stored as "Topic · YYYY-MM-DD" — grab the date suffix.
+  const parts = label.split(' · ');
+  const last = parts[parts.length - 1];
+  return /^\d{4}-\d{2}-\d{2}$/.test(last) ? last : '0000-00-00';
 }
 
 function buildHistoryPoints(components: Component[]): DataPoint[] {
   const points: DataPoint[] = [];
 
-  // We replay adding entries one by one in order to show grade evolution
-  // Collect all entries sorted by id (proxy for insertion order)
+  // Collect all entries and sort by their recorded date (oldest first),
+  // using insertion id as tiebreaker for same-day entries.
   const allEntries = components.flatMap(comp =>
     comp.entries.map(e => ({ ...e, compName: comp.name }))
-  ).sort((a, b) => a.id - b.id);
+  ).sort((a, b) => {
+    const da = extractDate(a.label);
+    const db = extractDate(b.label);
+    if (da !== db) return da.localeCompare(db);
+    return a.id - b.id;
+  });
 
   if (allEntries.length === 0) return [];
 
-  // For each entry added, compute what the grade would be
   for (let i = 0; i < allEntries.length; i++) {
     const includedIds = new Set(allEntries.slice(0, i + 1).map(e => e.id));
     const simulated = components.map(comp => ({
@@ -38,10 +58,12 @@ function buildHistoryPoints(components: Component[]): DataPoint[] {
       entries: comp.entries.filter(e => includedIds.has(e.id)),
     }));
     const result = computeGrades(simulated);
+    const isoDate = extractDate(allEntries[i].label);
     points.push({
       label: `${allEntries[i].compName}: ${allEntries[i].label || `#${i + 1}`}`,
       grade: parseFloat(result.currentGrade.toFixed(2)),
       compName: allEntries[i].compName,
+      date: isoDate !== '0000-00-00' ? formatISODate(isoDate) : '',
     });
   }
 
@@ -50,9 +72,15 @@ function buildHistoryPoints(components: Component[]): DataPoint[] {
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (!active || !payload || !payload.length) return null;
+  const raw: string = payload[0]?.payload?.label ?? '';
+  // Format "CompName: Topic · YYYY-MM-DD" → "CompName: Topic · MMM DD YYYY"
+  const formatted = raw.replace(/ · (\d{4}-\d{2}-\d{2})/, (_: string, iso: string) => {
+    const [y, m, d] = iso.split('-');
+    return ` · ${MONTHS[+m - 1]} ${+d} ${y}`;
+  });
   return (
     <div className="px-3 py-2 rounded-xl bg-[#111118] border border-white/10 shadow-2xl text-[11px]">
-      <p className="themed-text/40 mb-1 max-w-[160px] truncate">{payload[0]?.payload?.label}</p>
+      <p className="themed-text/40 mb-1 max-w-[180px] truncate">{formatted}</p>
       <p className="text-yellow-300 font-bold text-sm">{payload[0]?.value?.toFixed(1)}%</p>
     </div>
   );
@@ -103,10 +131,11 @@ export default function GradeHistoryChart({ components, target }: Props) {
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
             <XAxis
-              dataKey="label"
-              tick={false}
+              dataKey="date"
+              tick={{ fill: 'rgba(255,255,255,0.18)', fontSize: 8 }}
               axisLine={false}
               tickLine={false}
+              interval="preserveStartEnd"
             />
             <YAxis
               domain={[min, max]}
@@ -138,7 +167,7 @@ export default function GradeHistoryChart({ components, target }: Props) {
       </div>
 
       <p className="text-[9px] themed-text/20 text-center mt-2">
-        Grade as each entry was added · dashed line = {target}% target
+        Grade evolution sorted by entry date · dashed line = {target}% target
       </p>
     </motion.div>
   );

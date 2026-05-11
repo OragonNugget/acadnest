@@ -180,7 +180,7 @@ export default function DeadlinePanel({ componentNames }: Props) {
                             {dl.done ? 'Done' : daysLabel(days)}
                           </p>
                           <p className="text-[9px] themed-text/20">
-                            {new Date(dl.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })}
+                            {new Date(dl.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </p>
                         </div>
                         <button

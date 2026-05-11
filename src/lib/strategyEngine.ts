@@ -91,11 +91,14 @@ export function generateHighImpactOptimization(
     return { name: 'High Impact Optimization', id: 'high-impact', description: 'Focus on highest-impact components.', feasible: false, infeasibleReason: 'No components.', steps: [], projectedGrade: 0 };
   }
 
-  // Rank by impact = weight * (100 - avg)
+  // Rank by impact = weight × (100 - currentAvg)
+  // Use 0 as baseline for components with no entries — consistent with currentWeightedSum below.
   const ranked = components
+    .filter(c => !c.done)
     .map(c => {
       const avg = gradeResult.componentAverages.get(c.id) ?? -1;
-      return { comp: c, avg: avg >= 0 ? avg : 50, impact: c.weight * (100 - (avg >= 0 ? avg : 50)) };
+      const currentAvg = avg >= 0 ? avg : 0;
+      return { comp: c, avg: currentAvg, impact: c.weight * (100 - currentAvg) };
     })
     .sort((a, b) => b.impact - a.impact);
 

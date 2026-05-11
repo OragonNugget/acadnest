@@ -52,7 +52,9 @@ export default function App() {
   const [selectedStrategyId, setSelectedStrategyId] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [subjectTitle, setSubjectTitle] = useState('');
+  const [subjectTitle, setSubjectTitle] = useState(() =>
+    localStorage.getItem('acadnest_subject') || ''
+  );
 
   // Tracks whether we've done the first data load — loading screen only shows once
   const hasLoadedOnce = useRef(false);
@@ -286,6 +288,8 @@ export default function App() {
     setShowClearConfirm(false);
     setActiveGradeId(null);
     setComponents([]);
+    setSubjectTitle('');
+    localStorage.removeItem('acadnest_subject');
     fetch('/api/components?action=clear', {
       method: 'POST',
       headers: authHeaders(),
@@ -322,7 +326,9 @@ export default function App() {
   const loadGrade = async (grade: SavedGrade) => {
     // Restore subject title
     const dashIdx = grade.name.indexOf(' — ');
-    setSubjectTitle(dashIdx !== -1 ? grade.name.slice(0, dashIdx) : '');
+    const titleToSet = dashIdx !== -1 ? grade.name.slice(0, dashIdx) : '';
+    setSubjectTitle(titleToSet);
+    localStorage.setItem('acadnest_subject', titleToSet);
     setActiveGradeId(grade.id);
 
     // Optimistically rebuild local state from snapshot immediately
@@ -531,13 +537,16 @@ export default function App() {
             <div className="flex items-center gap-3 px-1">
               <input
                 value={subjectTitle}
-                onChange={e => setSubjectTitle(e.target.value)}
+                onChange={e => {
+                  setSubjectTitle(e.target.value);
+                  localStorage.setItem('acadnest_subject', e.target.value);
+                }}
                 placeholder="Subject or course name…"
                 className="flex-1 bg-transparent text-xl font-bold themed-text placeholder:themed-text/15 focus:outline-none border-b border-transparent focus:border-yellow-300/20 pb-1 transition-colors"
               />
               {subjectTitle && (
                 <button
-                  onClick={() => setSubjectTitle('')}
+                  onClick={() => { setSubjectTitle(''); localStorage.removeItem('acadnest_subject'); }}
                   className="text-[10px] themed-text/20 hover:themed-text/40 transition-colors cursor-pointer shrink-0"
                 >
                   clear
@@ -550,11 +559,6 @@ export default function App() {
               components={components}
               target={settings.target_grade}
               onTargetChange={updateTarget}
-            />
-
-            <GradeHistoryChart
-              components={components}
-              target={settings.target_grade}
             />
 
             <AdBanner variant="inline" />
@@ -614,6 +618,11 @@ export default function App() {
                 <AddComponentForm onAdd={addComponent} />
               </div>
             </div>
+
+            <GradeHistoryChart
+              components={components}
+              target={settings.target_grade}
+            />
           </div>
 
           {/* ── RIGHT (col 4/12 ≈ 33%): Coach + Grade Needed + Prediction + Weak + Scenario ── */}

@@ -73,10 +73,12 @@ export default function StrategyPanel({ strategies, targetPossible, externalSele
                 <Icon className="w-3.5 h-3.5" style={{ color }} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium themed-text/70">{strategy.name}</span>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className={`text-xs font-medium truncate ${!strategy.feasible ? 'text-red-400/80' : 'themed-text/70'}`}>
+                    {strategy.name}
+                  </span>
                   {!strategy.feasible && (
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-400">Infeasible</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
                   )}
                 </div>
               </div>

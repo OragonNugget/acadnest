@@ -3,6 +3,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Pencil, Trash2, CheckCircle, Circle, Plus, X, ChevronDown, ChevronUp, Lock } from 'lucide-react';
 import type { Component as GradeComponent } from '../lib/calculationEngine';
 
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+/** Converts stored "Topic · YYYY-MM-DD" to "Topic · MMM DD YYYY" for display. */
+function formatEntryLabel(raw: string): string {
+  const sep = ' · ';
+  const idx = raw.lastIndexOf(sep);
+  if (idx === -1) return raw;
+  const topic = raw.slice(0, idx);
+  const dateStr = raw.slice(idx + sep.length);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return raw;
+  const [y, m, d] = dateStr.split('-');
+  return `${topic} · ${MONTHS[+m - 1]} ${+d} ${y}`;
+}
+
 interface Props {
   component: GradeComponent;
   average: number;
@@ -182,7 +196,7 @@ export default function ComponentCard({
                     <div key={entry.id} className="flex items-center justify-between px-3 py-1.5 rounded-lg themed-surface group">
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         <span className="text-[11px] themed-text/20 w-5">#{i + 1}</span>
-                        {entry.label && <span className="text-xs themed-text/50 truncate">{entry.label}</span>}
+                        {entry.label && <span className="text-xs themed-text/50 truncate">{formatEntryLabel(entry.label)}</span>}
                       </div>
                       <div className="flex items-center gap-3 shrink-0">
                         <span className="text-sm themed-text/70 font-mono">
