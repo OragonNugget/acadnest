@@ -147,7 +147,6 @@ export default function App() {
       fetchData();
     }
   }, [appView]); // eslint-disable-line react-hooks/exhaustive-deps
-  }, [appView]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gradeResult: GradeResult | null = useMemo(() => {
     if (components.length === 0) return null;
