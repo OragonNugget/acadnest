@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Header';
 import GradeOverview from './components/GradeOverview';
@@ -16,7 +16,7 @@ import ForumPage from './pages/ForumPage';
 import TemplateBrowserPage from './pages/TemplateBrowserPage';
 import GWACalculatorPage from './pages/GWACalculatorPage';
 import LandingPage from './pages/LandingPage';
-import { Loader2, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import type { Component as GradeComponent, GradeResult, WeakArea } from './lib/calculationEngine';
 import { computeGrades, detectWeakAreas, isTargetPossible } from './lib/calculationEngine';
 import { generateAllStrategies, type Strategy } from './lib/strategyEngine';
@@ -46,7 +46,6 @@ export default function App() {
   const [components, setComponents] = useState<GradeComponent[]>([]);
   const [settings, setSettings] = useState<{ target_grade: number }>({ target_grade: 80 });
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [savedGrades, setSavedGrades] = useState<SavedGrade[]>([]);
   const [activeGradeId, setActiveGradeId] = useState<number | null>(null);
@@ -55,6 +54,9 @@ export default function App() {
   const [apiError, setApiError] = useState<string | null>(null);
   const [subjectTitle, setSubjectTitle] = useState('');
 
+  // Tracks whether we've done the first data load — loading screen only shows once
+  const hasLoadedOnce = useRef(false);
+
   // Build auth headers from the live session token
   const authHeaders = useCallback((): Record<string, string> => ({
     'Content-Type': 'application/json',
@@ -62,7 +64,11 @@ export default function App() {
   }), [session]);
 
   const fetchData = useCallback(async () => {
-    setLoading(true);
+    // Only show the full-screen loader the very first time (on login)
+    // All subsequent calls (background refreshes) are completely silent
+    if (!hasLoadedOnce.current) {
+      setLoading(true);
+    }
     try {
       const h = authHeaders();
       const [compsRes, entriesRes, settingsRes, gradesRes] = await Promise.all([
@@ -78,7 +84,6 @@ export default function App() {
         console.error(msg);
         setApiError(msg);
         setLoading(false);
-        setSaving(false);
         return;
       }
       const comps = await compsRes.json();
@@ -112,36 +117,36 @@ export default function App() {
     } catch (err) {
       console.error('Fetch error:', err);
     } finally {
+      hasLoadedOnce.current = true;
       setLoading(false);
     }
   }, [session, authHeaders]);
 
   // Auth state machine — runs once auth has fully resolved
   useEffect(() => {
-    if (authLoading) return; // wait for Supabase to restore session from storage
+    if (authLoading) return;
 
     if (user && session) {
-      // Logged in: make sure we're in app view and fetch data
       if (appView === 'landing') {
         sessionStorage.setItem('acadnest_view', 'app');
         setAppView('app');
-      } else {
-        // Already in app view, fetch data now that we have a real session
+      } else if (!hasLoadedOnce.current) {
+        // Only fetch on first load — not on every session token refresh (alt-tab, etc.)
         fetchData();
       }
     } else {
-      // Auth resolved with no user — go to landing
       sessionStorage.removeItem('acadnest_view');
       setAppView('landing');
       setLoading(false);
     }
   }, [authLoading, user, session]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch data whenever appView switches to 'app' and we have a session
+  // Fetch data when appView first switches to 'app' (right after login redirect)
   useEffect(() => {
-    if (appView === 'app' && session && !authLoading) {
+    if (appView === 'app' && session && !authLoading && !hasLoadedOnce.current) {
       fetchData();
     }
+  }, [appView]); // eslint-disable-line react-hooks/exhaustive-deps
   }, [appView]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const gradeResult: GradeResult | null = useMemo(() => {
@@ -194,7 +199,6 @@ export default function App() {
   };
 
   const addComponent = async (name: string, weight: number) => {
-    setSaving(true);
     try {
       const res = await fetch('/api/components', {
         method: 'POST',
@@ -203,99 +207,94 @@ export default function App() {
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        const msg = `POST /api/components ${res.status}: ${err.error || JSON.stringify(err)}`;
-        console.error(msg);
-        setApiError(msg);
-      } else {
-        setApiError(null);
+        setApiError(`POST /api/components ${res.status}: ${err.error || JSON.stringify(err)}`);
+        return;
       }
+      const newComp = await res.json();
+      setApiError(null);
+      setComponents(prev => [...prev, { ...newComp, entries: [] }]);
     } catch (err) {
       console.error('Add component error:', err);
     }
-    await fetchData();
-    setSaving(false);
   };
 
   const deleteComponent = async (id: number) => {
-    setSaving(true);
-    await fetch('/api/components', {
+    setComponents(prev => prev.filter(c => c.id !== id));
+    fetch('/api/components', {
       method: 'DELETE',
       headers: authHeaders(),
       body: JSON.stringify({ id }),
-    });
-    await fetchData();
-    setSaving(false);
+    }).catch(console.error);
   };
 
   const updateComponent = async (id: number, data: Partial<GradeComponent>) => {
-    setSaving(true);
-    await fetch('/api/components', {
+    setComponents(prev => prev.map(c => c.id === id ? { ...c, ...data } : c));
+    fetch('/api/components', {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({ id, ...data }),
-    });
-    await fetchData();
-    setSaving(false);
+    }).catch(console.error);
   };
 
   const toggleDone = async (id: number, done: boolean) => {
-    setSaving(true);
-    await fetch('/api/components', {
+    setComponents(prev => prev.map(c => c.id === id ? { ...c, done } : c));
+    fetch('/api/components', {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({ id, done }),
-    });
-    await fetchData();
-    setSaving(false);
+    }).catch(console.error);
   };
 
   const addEntry = async (componentId: number, score: number, maxScore: number, label: string) => {
-    setSaving(true);
-    await fetch('/api/entries', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ component_id: componentId, score, max_score: maxScore, label }),
-    });
-    await fetchData();
-    setSaving(false);
+    try {
+      const res = await fetch('/api/entries', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ component_id: componentId, score, max_score: maxScore, label }),
+      });
+      if (!res.ok) return;
+      const newEntry = await res.json();
+      setComponents(prev => prev.map(c =>
+        c.id === componentId ? { ...c, entries: [...c.entries, newEntry] } : c
+      ));
+    } catch (err) {
+      console.error('Add entry error:', err);
+    }
   };
 
   const deleteEntry = async (entryId: number) => {
-    setSaving(true);
-    await fetch('/api/entries', {
+    setComponents(prev => prev.map(c => ({
+      ...c,
+      entries: c.entries.filter(e => e.id !== entryId),
+    })));
+    fetch('/api/entries', {
       method: 'DELETE',
       headers: authHeaders(),
       body: JSON.stringify({ id: entryId }),
-    });
-    await fetchData();
-    setSaving(false);
+    }).catch(console.error);
   };
 
   const updateTarget = async (target: number) => {
     setSettings(s => ({ ...s, target_grade: target }));
-    await fetch('/api/settings', {
+    fetch('/api/settings', {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({ target_grade: target }),
-    });
+    }).catch(console.error);
   };
 
-
   const clearAllComponents = async () => {
-    setSaving(true);
     setShowClearConfirm(false);
-    await fetch('/api/components?action=clear', {
+    setActiveGradeId(null);
+    setComponents([]);
+    fetch('/api/components?action=clear', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({}),
-    });
-    setActiveGradeId(null);
-    await fetchData();
-    setSaving(false);
+    }).catch(console.error);
   };
 
   const saveGrade = async (name: string) => {
-    setSaving(true);
     const snapshot = components.map(c => ({
       name: c.name,
       weight: c.weight,
@@ -303,92 +302,137 @@ export default function App() {
       entries: c.entries.map(e => ({ score: e.score, max_score: e.max_score, label: e.label })),
     }));
     const fullName = subjectTitle.trim() ? `${subjectTitle.trim()} — ${name}` : name;
-    const res = await fetch('/api/grades', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({
-        name: fullName,
-        components_snapshot: snapshot,
-        current_grade: gradeResult?.currentGrade ?? 0,
-      }),
-    });
-    const data = await res.json();
-    setActiveGradeId(data.id);
-    await fetchData();
-    setSaving(false);
+    try {
+      const res = await fetch('/api/grades', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          name: fullName,
+          components_snapshot: snapshot,
+          current_grade: gradeResult?.currentGrade ?? 0,
+        }),
+      });
+      const data = await res.json();
+      setActiveGradeId(data.id);
+      setSavedGrades(prev => [data, ...prev]);
+    } catch (err) {
+      console.error('Save grade error:', err);
+    }
   };
 
   const loadGrade = async (grade: SavedGrade) => {
-    setSaving(true);
-    // Restore subject title if the saved name has the "Subject — label" pattern
+    // Restore subject title
     const dashIdx = grade.name.indexOf(' — ');
-    if (dashIdx !== -1) {
-      setSubjectTitle(grade.name.slice(0, dashIdx));
-    } else {
-      setSubjectTitle('');
-    }
-    await fetch('/api/components?action=clear', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({}),
-    });
-    const snapshot = grade.components_snapshot as any[];
-    await fetch('/api/components?action=bulk-create', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({ components: snapshot }),
-    });
+    setSubjectTitle(dashIdx !== -1 ? grade.name.slice(0, dashIdx) : '');
     setActiveGradeId(grade.id);
-    await fetchData();
-    setSaving(false);
+
+    // Optimistically rebuild local state from snapshot immediately
+    const snapshot = grade.components_snapshot as any[];
+    const tempComponents = snapshot.map((c: any, i: number) => ({
+      id: -(i + 1), // temp negative IDs until server responds
+      user_id: '',
+      name: c.name,
+      weight: c.weight,
+      done: c.done ?? false,
+      created_at: new Date().toISOString(),
+      entries: (c.entries ?? []).map((e: any, j: number) => ({
+        id: -(i * 1000 + j + 1),
+        component_id: -(i + 1),
+        user_id: '',
+        score: e.score,
+        max_score: e.max_score,
+        label: e.label ?? '',
+        created_at: new Date().toISOString(),
+      })),
+    }));
+    setComponents(tempComponents);
+
+    // Then do the real server write + fetch the real IDs in background
+    try {
+      await fetch('/api/components?action=clear', {
+        method: 'POST', headers: authHeaders(), body: JSON.stringify({}),
+      });
+      await fetch('/api/components?action=bulk-create', {
+        method: 'POST', headers: authHeaders(),
+        body: JSON.stringify({ components: snapshot }),
+      });
+      // Silently refresh to get real IDs (no loading screen)
+      const [compsRes, entriesRes] = await Promise.all([
+        fetch('/api/components', { headers: authHeaders() }),
+        fetch('/api/entries', { headers: authHeaders() }),
+      ]);
+      const comps = await compsRes.json();
+      const entries = await entriesRes.json();
+      const compsArray = Array.isArray(comps) ? comps : [];
+      const entriesArray = Array.isArray(entries) ? entries : [];
+      setComponents(compsArray.map((c: any) => ({
+        ...c,
+        entries: entriesArray.filter((e: any) => e.component_id === c.id),
+      })));
+    } catch (err) {
+      console.error('Load grade error:', err);
+    }
   };
 
   const updateSavedGrade = async (id: number) => {
-    setSaving(true);
     const snapshot = components.map(c => ({
       name: c.name,
       weight: c.weight,
       done: c.done,
       entries: c.entries.map(e => ({ score: e.score, max_score: e.max_score, label: e.label })),
     }));
-    await fetch('/api/grades', {
+    const currentGrade = gradeResult?.currentGrade ?? 0;
+    setSavedGrades(prev => prev.map(g => g.id === id ? { ...g, components_snapshot: snapshot, current_grade: currentGrade } : g));
+    fetch('/api/grades', {
       method: 'PUT',
       headers: authHeaders(),
-      body: JSON.stringify({ id, components_snapshot: snapshot, current_grade: gradeResult?.currentGrade ?? 0 }),
-    });
-    await fetchData();
-    setSaving(false);
+      body: JSON.stringify({ id, components_snapshot: snapshot, current_grade: currentGrade }),
+    }).catch(console.error);
   };
 
   const deleteSavedGrade = async (id: number) => {
-    setSaving(true);
-    await fetch('/api/grades', {
+    setSavedGrades(prev => prev.filter(g => g.id !== id));
+    if (activeGradeId === id) setActiveGradeId(null);
+    fetch('/api/grades', {
       method: 'DELETE',
       headers: authHeaders(),
       body: JSON.stringify({ id }),
-    });
-    if (activeGradeId === id) setActiveGradeId(null);
-    await fetchData();
-    setSaving(false);
+    }).catch(console.error);
   };
 
   const applyTemplate = async (templateComponents: { name: string; weight: number }[]) => {
-    setSaving(true);
-    await fetch('/api/components?action=clear', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({}),
-    });
-    await fetch('/api/components?action=bulk-create', {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({
-        components: templateComponents.map(tc => ({ name: tc.name, weight: tc.weight, done: false, entries: [] })),
-      }),
-    });
+    // Optimistically clear and set template components immediately
     setActiveGradeId(null);
-    await fetchData();
-    setSaving(false);
+    const tempComponents = templateComponents.map((tc, i) => ({
+      id: -(i + 1),
+      user_id: '',
+      name: tc.name,
+      weight: tc.weight,
+      done: false,
+      created_at: new Date().toISOString(),
+      entries: [],
+    }));
+    setComponents(tempComponents);
+
+    // Write to server in background, then silently refresh real IDs
+    try {
+      await fetch('/api/components?action=clear', {
+        method: 'POST', headers: authHeaders(), body: JSON.stringify({}),
+      });
+      await fetch('/api/components?action=bulk-create', {
+        method: 'POST', headers: authHeaders(),
+        body: JSON.stringify({
+          components: templateComponents.map(tc => ({ name: tc.name, weight: tc.weight, done: false, entries: [] })),
+        }),
+      });
+      const compsRes = await fetch('/api/components', { headers: authHeaders() });
+      const comps = await compsRes.json();
+      if (Array.isArray(comps)) {
+        setComponents(comps.map((c: any) => ({ ...c, entries: [] })));
+      }
+    } catch (err) {
+      console.error('Apply template error:', err);
+    }
   };
 
   // Always wait for auth to resolve before deciding what to render —
@@ -447,12 +491,6 @@ export default function App() {
       />
 
       <main className="relative max-w-[1600px] mx-auto px-6 sm:px-10 xl:px-16 py-6">
-        {saving && (
-          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-300/10 border border-yellow-300/20">
-            <Loader2 className="w-3 h-3 themed-accent animate-spin" />
-            <span className="text-[11px] themed-accent-soft">Saving...</span>
-          </div>
-        )}
         {apiError && (
           <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 max-w-lg w-full mx-4 flex items-start gap-3 px-4 py-3 rounded-xl bg-red-500/20 border border-red-500/40 shadow-2xl">
             <span className="text-red-400 text-xs font-bold mt-0.5">API ERROR</span>
